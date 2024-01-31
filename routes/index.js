@@ -1,12 +1,14 @@
 var express = require('express');
-const { db } = require('../models/Account');
+const Account = require('../models/Account');
 var router = express.Router();
-db.db
+var api = require('../ApiClient/AccountApi');
 
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
+
+
 
 module.exports = router;
