@@ -6,6 +6,8 @@ const donDatHangSchema = new mongoose.Schema({
   soTienShip: Number,
   tongTien: Number,
   trangThai: Number,
+},{
+  collection:'DonDatHang_Table'
 });
 
 const DonDatHang = mongoose.model('DonDatHang', donDatHangSchema);
