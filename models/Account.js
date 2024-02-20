@@ -1,16 +1,16 @@
-const db = require('./db');
+const mongoose = require('mongoose');
 
-const accountSchema = new db.mongoose.Schema({
+const accountSchema = new mongoose.Schema({
   idTk: String,
   nameTk: String,
   passTk: String,
-  quyenTc: [{type : db.mongoose.Schema.Types.ObjectId , ref :'PhanQuyen'}],
+  quyenTc: [{type : mongoose.Schema.Types.ObjectId , ref :'PhanQuyen'}],
   avavta: String,
   ttTaiKhoan: Boolean,
 }, {
   collection:'Account_table'
 });
 
-const Account = db.mongoose.model('Account', accountSchema);
+const Account = mongoose.model('Account', accountSchema);
 
 module.exports = {Account};
