@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 
 const sanPhamSchema = new mongoose.Schema({
-  idSanpham: String,
   soLuong: Number,
-  trangThai: Number,
+  trangThai: Boolean,
   giaTien: Number,
   weight: Number,
   os: String,
@@ -12,6 +11,8 @@ const sanPhamSchema = new mongoose.Schema({
   display: String,
   moTa: String,
   anh: [String],
+} , {
+  collection :  'SanPham_table'
 });
 
 const SanPham = mongoose.model('SanPham', sanPhamSchema);
