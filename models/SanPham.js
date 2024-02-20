@@ -2,9 +2,12 @@ const mongoose = require('mongoose');
 
 const sanPhamSchema = new mongoose.Schema({
   soLuong: Number,
+  tenSanPham:String,
   trangThai: Boolean,
   giaTien: Number,
-  weight: Number,
+  chieuCao:Number,
+  chieuRong:Number,
+  trongLuong: Number,
   os: String,
   cpu: String,
   gpu: String,

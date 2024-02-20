@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const accountSchema = new mongoose.Schema({
-  nameTk: String,
-  passTk: String,
-  quyenTc: [{type : mongoose.Schema.Types.ObjectId , ref :'PhanQuyen'}],
-  avata: String,
-  ttTaiKhoan: Boolean,
+  taiKhoan: String,
+  matKhau: String,
+  quyenTk: [{type : mongoose.Schema.Types.ObjectId , ref :'PhanQuyen'}],
+  avatar: String,
+  trangThai: Boolean,
 }, {
   collection:'Account_table'
 });

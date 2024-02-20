@@ -16,11 +16,11 @@ exports.listAccounts = async (req, res, next) => {
   exports.createAccount = async (req, res, next) => {
     try {
       const newAccount = new Account({
-        nameTk: req.body.nameTk,
-        passTk: req.body.passTk,
-        quyenTc: req.body.quyenTc,
-        avavta: req.body.avavta,
-        ttTaiKhoan: req.body.ttTaiKhoan || false,
+        nameTk: req.body.taiKhoan,
+        passTk: req.body.matKhau,
+        quyenTc: req.body.quyenTk,
+        avavta: req.body.avatar,
+        ttTaiKhoan: req.body.trangThai || false,
       });
   
       await newAccount.save();
@@ -32,7 +32,7 @@ exports.listAccounts = async (req, res, next) => {
   
   exports.getAccountByName = async (req, res, next) => {
     try {
-      const account = await accoutModel.findOne({ nameTk: req.params.nameTk });
+      const account = await accoutModel.findOne({ nameTk: req.params.taiKhoan });
       if (account) {
         res.json({ status: 200, msg: "Lấy dữ liệu thành công", data: account });
       } else {
@@ -59,11 +59,11 @@ exports.listAccounts = async (req, res, next) => {
   exports.updateAccount = async (req, res, next) => {
     try {
       const updatedData = {
-        nameTk: req.body.nameTk,
-        passTk: req.body.passTk,
-        quyenTc: req.body.quyenTc,
-        avavta: req.body.avavta,
-        ttTaiKhoan: req.body.ttTaiKhoan || true,
+        nameTk: req.body.taiKhoan,
+        passTk: req.body.matKhau,
+        quyenTc: req.body.quyenTk,
+        avavta: req.body.avatar,
+        ttTaiKhoan: req.body.trangThai || true,
       };
   
       await Account.updateOne({ _id: req.params.id }, updatedData);
@@ -75,7 +75,7 @@ exports.listAccounts = async (req, res, next) => {
   
   exports.deactivateAccount = async (req, res, next) => {
     try {
-      await Account.updateOne({ _id: req.params.id }, { ttTaiKhoan: false });
+      await Account.updateOne({ _id: req.params.id }, { trangThai: false });
       res.json({ status: 200, msg: "Vô hiệu hóa tài khoản thành công" });
     } catch (err) {
       res.json({ status: 500, msg: err.message });
