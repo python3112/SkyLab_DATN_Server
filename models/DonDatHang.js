@@ -17,13 +17,18 @@ const donDatHangSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Account'
   },
+  idPayment:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'thanhToan'
+  },
   trangThai: {
-    type: String,
-    soTienShip: Number,
-    tongTien: Number,
-    enum: trangThai
+    type: String, 
+    enum: trangThai,
   },
   ThoiGian: Date.now,
+  tongTien: Number,
+  tienShip:Number,
+  tongTien:Number,
 }, {
   collection: 'DonDatHang_Table'
 });
