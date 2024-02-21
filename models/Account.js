@@ -3,10 +3,11 @@ const mongoose = require('mongoose');
 const accountSchema = new mongoose.Schema({
   taiKhoan: String,
   matKhau: String,
+  Email:String,
   quyenTk: [{type : mongoose.Schema.Types.ObjectId , ref :'PhanQuyen'}],
   avatar: String,
   trangThai: Boolean,
-}, {
+},{
   collection:'Account_table'
 });
 
