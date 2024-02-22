@@ -1,92 +1,180 @@
-var accoutModel = require('../../models/Account');
-const multer = require('multer');
-const {getStorage} = require('firebase/storage');
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const Account = require('../../models/Account');
+const bcrypt = require('bcrypt');
+const { uploadImage, deleteImage } = require('../../middlewares/upload.image.firebase');
+const nameFolder = 'Account';
 
-exports.listAccounts = async (req, res, next) => {
+// Lấy tất cả các account có trạng thái là true
+exports.getAllAccount = async (req, res) => {
     try {
-      const accounts = await accoutModel.find().sort({ _id: -1 });
-      if (accounts.length > 0) {
-        res.json({ status: 200, msg: "Lấy dữ liệu thành công", data: accounts });
-      } else {
-        res.json({ status: 204, msg: "Không có dữ liệu", data: [] });
-      }
-    } catch (err) {
-      res.json({ status: 500, msg: err.message, data: [] });
+        const account = await Account.find({ trangThai: true });
+        res.json(account);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-  };
-  
-  exports.createAccount = upload.single('avata'), async (req, res, next) => {
+};
+
+// Lấy thông tin của một account dựa trên ID
+exports.getAccountById = async (req, res) => {
     try {
-      if(!req.file){
+        const account = await Account.findById(req.params.id);
+        if (!account) {
+            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+        }
+        res.json(account);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Đăng ký tài khoản
+exports.signUp = async (req, res) => {
+    try {
+        const { tenQuyen, taiKhoan, matKhau,hoTen, sdt, trangThai } = req.body;
+
+        // Kiểm tra nếu tài khoản đã tồn tại
+        const existingTaiKhoan = await Account.findOne({ taiKhoan });
+        if (existingTaiKhoan) {
+            return res.status(400).json({ success: false, message: 'Tài khoản đã tồn tại' });
+        }
+
+        // Kiểm tra nếu số điện thoại đã tồn tại
+        // const existingSdt = await Account.findOne({ sdt });
+        // if (existingSdt) {
+        //     return res.status(400).json({ success: false, message: 'Số điện thoại đã tồn tại' });
+        // }
+
+        // Tạo tài khoản mới
         const newAccount = new Account({
-          taiKhoan: req.body.taiKhoan,
-          matKhau: req.body.matKhau,
-          quyenTk: req.body.quyenTk,
-          Email:req.body.Email,
-          avatar: req.body.avatar,
-          trangThai: req.body.trangThai || false,
+            tenQuyen,
+            taiKhoan,
+            matKhau,
+            hoTen,
+            sdt,
+            trangThai
         });
-    
         await newAccount.save();
-      }
-      
-      res.json({ status: 200, msg: "Thêm tài khoản thành công" });
-    } catch (err) {
-      res.json({ status: 500, msg: err.message });
+        // Trả về thành công
+        return res.status(201).json({ success: true, message: 'Đăng ký thành công' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: error.message });
     }
-  };
-  
-  exports.getAccountByName = async (req, res, next) => {
+};
+
+// Đăng nhập tài khoản
+exports.signIn = async (req, res) => {
     try {
-      const account = await accoutModel.findOne({ nameTk: req.params.taiKhoan });
-      if (account) {
-        res.json({ status: 200, msg: "Lấy dữ liệu thành công", data: account });
-      } else {
-        res.json({ status: 204, msg: "Không tìm thấy tài khoản", data: null });
-      }
-    } catch (err) {
-      res.json({ status: 500, msg: err.message, data: null });
+        const { taiKhoan, matKhau } = req.body;
+
+        // Kiểm tra xem tài khoản tồn tại
+        const existingAccount = await Account.findOne({ taiKhoan, trangThai: true, tenQuyen: 'User' });
+
+        if (!existingAccount) {
+            return res.status(401).json({ message: 'Tài khoản không tồn tại' });
+        }
+
+        if(existingAccount.matKhau != matKhau){
+            return res.status(401).json({ message: 'Mật khẩu không chính xác' });
+        }
+        // Nếu tài khoản và mật khẩu đúng, trả về ID của tài khoản
+        return res.status(200).json({_id:existingAccount._id});
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: error.message });
     }
-  };
-  
-  exports.getAccountById = async (req, res, next) => {
+};
+
+// Cập nhật họ tên của một account dựa trên ID
+exports.editHoTen = async (req, res) => {
     try {
-      const account = await accoutModel.findById(req.params.id);
-      if (account) {
-        res.json({ status: 200, msg: "Lấy dữ liệu thành công", data: account });
-      } else {
-        res.json({ status: 204, msg: "Không tìm thấy tài khoản", data: null });
-      }
-    } catch (err) {
-      res.json({ status: 500, msg: err.message, data: null });
+        const { hoTen } = req.body;
+        const account = await Account.findById(req.params.id);
+
+        if (!account) {
+            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+        }
+
+        account.hoTen = hoTen;
+        await account.save();
+
+        res.json({ success: true, message: 'Cập nhật họ tên thành công' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
-  };
-  
-  exports.updateAccount = async (req, res, next) => {
+};
+
+// Cập nhật mật khẩu của một account dựa trên ID
+exports.editMatKhau = async (req, res) => {
     try {
-      const updatedData = {
-        nameTk: req.body.taiKhoan,
-        passTk: req.body.matKhau,
-        quyenTc: req.body.quyenTk,
-        avavta: req.body.avatar,
-        ttTaiKhoan: req.body.trangThai || true,
-      };
-  
-      await Account.updateOne({ _id: req.params.id }, updatedData);
-      res.json({ status: 200, msg: "Sửa thông tin tài khoản thành công" });
-    } catch (err) {
-      res.json({ status: 500, msg: err.message });
+        const { matKhau } = req.body;
+        const account = await Account.findById(req.params.id);
+
+        if (!account) {
+            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+        }
+
+        account.matKhau = matKhau;
+        await account.save();
+
+        res.json({ success: true, message: 'Cập nhật mật khẩu thành công' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
-  };
-  
-  exports.deactivateAccount = async (req, res, next) => {
+};
+
+// Cập nhật số điện thoại của một account dựa trên ID
+exports.editSdt = async (req, res) => {
     try {
-      await Account.updateOne({ _id: req.params.id }, { trangThai: false });
-      res.json({ status: 200, msg: "Vô hiệu hóa tài khoản thành công" });
-    } catch (err) {
-      res.json({ status: 500, msg: err.message });
+        const { sdt } = req.body;
+        const account = await Account.findById(req.params.id);
+
+        if (!account) {
+            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+        }
+
+        account.sdt = sdt;
+        await account.save();
+
+        res.json({ success: true, message: 'Cập nhật số điện thoại thành công' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
-  };
-  
+};
+
+// Cập nhật email của một account dựa trên ID
+exports.editEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const account = await Account.findById(req.params.id);
+
+        if (!account) {
+            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+        }
+
+        account.email = email;
+        await account.save();
+
+        res.json({ success: true, message: 'Cập nhật email thành công' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Cập nhật trạng thái của một account dựa trên ID
+exports.editTrangThai = async (req, res) => {
+    try {
+        const { trangThai } = req.body;
+        const account = await Account.findById(req.params.id);
+
+        if (!account) {
+            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+        }
+
+        account.trangThai = trangThai;
+        await account.save();
+
+        res.json({ success: true, message: 'Cập nhật trạng thái thành công' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

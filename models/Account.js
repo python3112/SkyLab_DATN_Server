@@ -2,9 +2,15 @@ const mongoose = require('mongoose');
 
 const accountSchema = new mongoose.Schema({
   taiKhoan: String,
+  hoTen:String,
   matKhau: String,
-  Email:String,
-  quyenTk: [{type : mongoose.Schema.Types.ObjectId , ref :'PhanQuyen'}],
+  email:String,
+  sdt:String,
+  tenQuyen: {
+    type: String,
+    enum: ['User', 'Admin', 'Shipper'],
+    default: 'User' 
+  },
   avatar: String,
   trangThai: Boolean,
 },{
@@ -13,4 +19,4 @@ const accountSchema = new mongoose.Schema({
 
 const Account = mongoose.model('Account', accountSchema);
 
-module.exports = {Account};
+module.exports = Account;
