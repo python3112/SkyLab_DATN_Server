@@ -24,6 +24,7 @@ exports.getHangsxById = async (req, res) => {
   }
 };
 
+//Thêm hãng sản xuất 
 exports.postHangSx = async (req, res) => {
   try {
     const { tenHangSx, trangThai } = req.body;
@@ -32,7 +33,11 @@ exports.postHangSx = async (req, res) => {
     if (!file) {
       return res.status(400).json({ message: 'Chưa có file upload' });
     }
-
+    // Kiểm tra nếu loại sản phẩm đã tồn tại
+    const existingHangSx = await Hangsx.findOne({ tenHangSx });
+    if (existingHangSx) {
+      return res.status(400).json({ message: 'Hãng sản xuất đã tồn tại' });
+    }
     const imageUrl = await uploadImage(file, nameFolder);
 
     const newHangsx = new Hangsx({
@@ -66,7 +71,11 @@ exports.editHangSx = async (req, res) => {
 
     // Lấy ra đường dẫn ảnh cũ từ thông tin cũ
     const oldImageLogo = oldHangsx.imageLogo;
-
+    // Kiểm tra nếu loại sản phẩm đã tồn tại
+    const existingHangSx = await Hangsx.findOne({ tenHangSx });
+    if (existingHangSx) {
+      return res.status(400).json({ message: 'Hãng sản xuất đã tồn tại' });
+    }
     // Tạo một object chứa các thuộc tính cần cập nhật
     const updateFields = {};
     if (tenHangSx) updateFields.tenHangSx = tenHangSx;
