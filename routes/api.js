@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const accountController = require('../controllers/apiController/Account.api.controller');
+
 const sanPhamController = require('../controllers/apiController/SanPham.api.controller');
 const theloaiSpController = require('../controllers/apiController/TheloaiSp.api.controller');
 
 const { validateSanPham,validateTheloaiSp } = require('../middlewares/validation');
+
 
 
 //---------Accounts API-------------------------
