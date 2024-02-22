@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const hangsxSchema = new mongoose.Schema({
-  idSanpham: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SanPham' }],
   tenHangSx: String,
   trangThai: Boolean,
+  imageLogo: String,
 }, {
   collection:'HangSanXuat_table'
 });
