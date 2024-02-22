@@ -10,13 +10,13 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var apiRouter = require('./routes/api');
 var connectDB = require('./models/Database');
-
+var connectFirebase = require('./models/firebase.config')
 
 var app = express();
 
 // Kết nối đến MongoDB
 connectDB();
-
+connectFirebase.app();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

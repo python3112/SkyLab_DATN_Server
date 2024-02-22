@@ -16,11 +16,12 @@ exports.listAccounts = async (req, res, next) => {
   exports.createAccount = async (req, res, next) => {
     try {
       const newAccount = new Account({
-        nameTk: req.body.taiKhoan,
-        passTk: req.body.matKhau,
-        quyenTc: req.body.quyenTk,
-        avavta: req.body.avatar,
-        ttTaiKhoan: req.body.trangThai || false,
+        taiKhoan: req.body.taiKhoan,
+        matKhau: req.body.matKhau,
+        quyenTk: req.body.quyenTk,
+        Email:req.body.Email,
+        avatar: req.body.avatar,
+        trangThai: req.body.trangThai || false,
       });
   
       await newAccount.save();
