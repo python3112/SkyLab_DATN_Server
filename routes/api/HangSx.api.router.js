@@ -10,5 +10,6 @@ const upload = multer({ storage: storage });
 router.get('/', hangSXCtrl.getAllHangsx);
 router.get('/:id', hangSXCtrl.getHangsxById);
 router.post('/add', upload.single('image'), hangSXCtrl.postHangSx);
+router.put('/edit/:id', upload.single('image'), hangSXCtrl.editHangSx);
 
 module.exports = router;

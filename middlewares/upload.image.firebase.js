@@ -1,10 +1,9 @@
 const { admin } = require('./firebase.config');
 
-const uploadImage = async (file) => {
+const uploadImage = async (file,folderName) => {
   return new Promise((resolve, reject) => {
     const bucket = admin.storage().bucket();
-    const fileName = Date.now() + '_' + file.originalname;
-
+    const fileName = `${folderName}/${Date.now()}_${file.originalname}`;
     const fileUpload = bucket.file(fileName);
     const blobStream = fileUpload.createWriteStream({
       metadata: {
@@ -25,5 +24,16 @@ const uploadImage = async (file) => {
     blobStream.end(file.buffer);
   });
 };
+const deleteImage = async (imageUrl) => {
+  const bucket = admin.storage().bucket();
+  const fileName = imageUrl.replace(`https://storage.googleapis.com/${bucket.name}/`, '');
 
-module.exports = { uploadImage };
+  try {
+    await bucket.file(fileName).delete();
+    console.log(`Image deleted successfully: ${fileName}`);
+  } catch (error) {
+    console.error('Error deleting image:', error);
+  }
+};
+
+module.exports = { uploadImage ,deleteImage};
