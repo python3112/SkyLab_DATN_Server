@@ -17,18 +17,21 @@ exports.listAccounts = async (req, res, next) => {
     }
   };
   
-  exports.createAccount = upload.single('avata'),async (req, res, next) => {
+  exports.createAccount = upload.single('avata'), async (req, res, next) => {
     try {
-      const newAccount = new Account({
-        taiKhoan: req.body.taiKhoan,
-        matKhau: req.body.matKhau,
-        quyenTk: req.body.quyenTk,
-        Email:req.body.Email,
-        avatar: req.body.avatar,
-        trangThai: req.body.trangThai || false,
-      });
-  
-      await newAccount.save();
+      if(!req.file){
+        const newAccount = new Account({
+          taiKhoan: req.body.taiKhoan,
+          matKhau: req.body.matKhau,
+          quyenTk: req.body.quyenTk,
+          Email:req.body.Email,
+          avatar: req.body.avatar,
+          trangThai: req.body.trangThai || false,
+        });
+    
+        await newAccount.save();
+      }
+      
       res.json({ status: 200, msg: "Thêm tài khoản thành công" });
     } catch (err) {
       res.json({ status: 500, msg: err.message });
