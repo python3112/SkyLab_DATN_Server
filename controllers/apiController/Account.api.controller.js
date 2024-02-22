@@ -178,3 +178,36 @@ exports.editTrangThai = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+exports.editAvatar = async (req, res) => {
+    try {
+        const accountId = req.params.id;
+        const file = req.file;
+
+        // Truy vấn để lấy thông tin cũ của account
+        const oldAccount = await Account.findById(accountId);
+
+        if (!oldAccount) {
+            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+        }
+
+        // Lấy ra đường dẫn ảnh cũ từ thông tin cũ
+        const oldAvatar = oldAccount.avatar;
+
+        if (oldAvatar) {
+            // Xóa ảnh cũ trên Firebase Storage
+            await deleteImage(oldAvatar);
+        }
+
+        if (file) {
+            oldAccount.avatar = await uploadImage(file, nameFolder);
+        }
+
+        await oldAccount.save();
+
+        res.json({ success: true, message: 'Cập nhật avatar thành công' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: error.message });
+    }
+}

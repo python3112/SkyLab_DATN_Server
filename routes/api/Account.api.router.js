@@ -16,4 +16,6 @@ router.put('/edit-mat-khau/:id', AccountCtrl.editMatKhau);
 router.put('/edit-sdt/:id', AccountCtrl.editSdt);
 router.put('/edit-email/:id', AccountCtrl.editEmail);
 router.put('/edit-trang-thai/:id', AccountCtrl.editTrangThai);
+router.put('/edit-avatar/:id', upload.single('image'), AccountCtrl.editAvatar);
+
 module.exports = router;
