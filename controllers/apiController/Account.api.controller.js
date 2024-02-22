@@ -1,4 +1,8 @@
 var accoutModel = require('../../models/Account');
+const multer = require('multer');
+const {getStorage} = require('firebase/storage');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 exports.listAccounts = async (req, res, next) => {
     try {
@@ -13,7 +17,7 @@ exports.listAccounts = async (req, res, next) => {
     }
   };
   
-  exports.createAccount = async (req, res, next) => {
+  exports.createAccount = upload.single('avata'),async (req, res, next) => {
     try {
       const newAccount = new Account({
         taiKhoan: req.body.taiKhoan,
