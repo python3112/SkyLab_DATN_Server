@@ -22,12 +22,12 @@ router.get('/sanpham/:id', sanPhamController.getSanPhamById);
 router.put('/sanpham/:id', validateSanPham, sanPhamController.updateSanPham);
 router.delete('/sanpham/:id', sanPhamController.deleteSanPham);
 
-//---------TheloaiSp API-------------------------
-// router.get('/theloaisp', theloaiSpController.listTheloaiSp);
-// router.post('/theloaisp', validateTheloaiSp, theloaiSpController.createTheloaiSp);
-// router.get('/theloaisp/:id', theloaiSpController.getTheloaiSpById);
-// router.put('/theloaisp/:id', validateTheloaiSp, theloaiSpController.updateTheloaiSp);
-// router.delete('/theloaisp/:id', theloaiSpController.deleteTheloaiSp);
+// ---------TheloaiSp API-------------------------
+router.get('/theloaisp', theloaiSpController.listTheloaiSp);
+router.post('/theloaisp', validateTheloaiSp, theloaiSpController.createTheloaiSp);
+router.get('/theloaisp/:id', theloaiSpController.getTheloaiSpById);
+router.put('/theloaisp/:id', validateTheloaiSp, theloaiSpController.updateTheloaiSp);
+router.delete('/theloaisp/:id', theloaiSpController.deleteTheloaiSp);
 
 
 module.exports = router;

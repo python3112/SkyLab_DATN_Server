@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 
-
-
 const PhanQuyenSchema = new mongoose.Schema({
-  idQuyen : String ,
   QuyenTruyCap : String,
    
+}, {
+  collection : 'PhanQuyen_table'
 });
 
-const PhanQuyen = mongoose.model('PhanQuyen', sanPhamSchema);
+const PhanQuyen = mongoose.model('PhanQuyen', PhanQuyenSchema);
 
-module.exports = SanPham;
+module.exports = PhanQuyen;

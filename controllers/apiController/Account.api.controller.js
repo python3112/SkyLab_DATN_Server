@@ -1,6 +1,7 @@
 var accoutModel = require('../../models/Account');
 const multer = require('multer');
-const {getStorage} = require('firebase/storage');
+const {getStorage , ref  , uploadString} = require('firebase/storage');
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -17,7 +18,7 @@ exports.listAccounts = async (req, res, next) => {
     }
   };
   
-  exports.createAccount = upload.single('avata'), async (req, res, next) => {
+  exports.createAccount = upload.single('avatar'), async (req, res, next) => {
     try {
       if(!req.file){
         const newAccount = new Account({
@@ -25,16 +26,37 @@ exports.listAccounts = async (req, res, next) => {
           matKhau: req.body.matKhau,
           quyenTk: req.body.quyenTk,
           Email:req.body.Email,
-          avatar: req.body.avatar,
+          avatar: 'profile.png',
+          Sdt:req.body.Sdt,
+          idDiachi:[],
           trangThai: req.body.trangThai || false,
         });
     
+        await newAccount.save();
+      }else{
+        console.log(req.file);
+        const storageRef = ref(getStorage());
+        const fileName = taiKhoan + '-' + image.originalname;
+        await uploadString(storageRef.child(fileName), req.file, 'data_url');
+        const imageUrl = `https://storage.googleapis.com/${firebaseConfig.storageBucket}/${fileName}`;
+
+        const newAccount = new Account({
+          taiKhoan: req.body.taiKhoan,
+          matKhau: req.body.matKhau,
+          quyenTk: req.body.quyenTk,
+          Email:req.body.Email,
+          avatar: fileName,
+          Sdt:req.body.Sdt,
+          idDiachi:[],
+          trangThai: req.body.trangThai || false,
+        });
         await newAccount.save();
       }
       
       res.json({ status: 200, msg: "Thêm tài khoản thành công" });
     } catch (err) {
       res.json({ status: 500, msg: err.message });
+      console.log(err)
     }
   };
   

@@ -8,9 +8,13 @@ dotenv.config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var apiRouter = require('./routes/api');
+
+var AccountApi = require('./routes/apis/Account.api.router');
+var PhanQuyenApi =  require('./routes/apis/PhanQuyen.api.router');
+
 var connectDB = require('./models/Database');
-var connectFirebase = require('./models/firebase.config')
+var connectFirebase = require('./models/firebase.config');
+
 
 var app = express();
 
@@ -30,8 +34,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/api' , apiRouter);
-
+app.use('/account-api' , AccountApi);
+app.use('/phanquyen-api' , PhanQuyenApi);
 
 
 // catch 404 and forward to error handler
