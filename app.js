@@ -8,16 +8,16 @@ dotenv.config();
 
 
 
-var AccountApi = require('./routes/api/Account.api.router');
-var PhanQuyenApi =  require('./routes/api/PhanQuyen.api.router');
 
-var connectDB = require('./models/Database');
 
 
 var connectDB = require('./models/Database');
 
 // api
 var routerApiHangSx = require('./routes/api/HangSx.api.router');
+var routerApiLoaiSp = require('./routes/api/LoaiSp.api.router');
+var routerApiAccount = require('./routes/api/Account.api.router');
+var routerApiShop = require('./routes/api/Shop.api.router');
 
 var app = express();
 
@@ -36,11 +36,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.use('/account-api' , AccountApi);
-app.use('/phanquyen-api' , PhanQuyenApi);
 
 
-app.use('/api/hangsx', routerApiHangSx);
+
+
+
+// API
+app.use('/api/hangSx', routerApiHangSx);
+app.use('/api/loaiSp',routerApiLoaiSp);
+app.use('/api/account',routerApiAccount);
+app.use('/api/shop',routerApiShop);
+
 
 
 // catch 404 and forward to error handler
