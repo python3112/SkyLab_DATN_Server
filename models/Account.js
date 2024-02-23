@@ -1,20 +1,27 @@
 const mongoose = require('mongoose');
 
+const diaChiSchema = new mongoose.Schema({
+  tenDiaChi: String,
+  diaChi: String,
+  trangThai: Boolean,
+});
+
 const accountSchema = new mongoose.Schema({
   taiKhoan: String,
-  hoTen:String,
+  hoTen: String,
   matKhau: String,
-  email:String,
-  sdt:String,
+  email: String,
+  sdt: String,
   tenQuyen: {
     type: String,
     enum: ['User', 'Admin', 'Shipper'],
-    default: 'User' 
+    default: 'User'
   },
   avatar: String,
   trangThai: Boolean,
-},{
-  collection:'Account_table'
+  diaChi: [diaChiSchema], // Mảng địa chỉ
+}, {
+  collection: 'Account_table'
 });
 
 const Account = mongoose.model('Account', accountSchema);
