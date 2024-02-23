@@ -6,21 +6,23 @@ var logger = require('morgan');
 var dotenv = require('dotenv');
 dotenv.config();
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+
 
 var AccountApi = require('./routes/apis/Account.api.router');
 var PhanQuyenApi =  require('./routes/apis/PhanQuyen.api.router');
 
 var connectDB = require('./models/Database');
-var connectFirebase = require('./models/firebase.config');
 
+
+var connectDB = require('./models/Database');
+
+// api
+var routerApiHangSx = require('./routes/api/HangSx.api.router');
 
 var app = express();
 
 // Kết nối đến MongoDB
 connectDB();
-connectFirebase.app();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -32,10 +34,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+
+
 app.use('/account-api' , AccountApi);
 app.use('/phanquyen-api' , PhanQuyenApi);
+
+
+app.use('/api/hangsx', routerApiHangSx);
 
 
 // catch 404 and forward to error handler
