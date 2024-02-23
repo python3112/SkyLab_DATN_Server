@@ -8,8 +8,8 @@ dotenv.config();
 
 
 
-var AccountApi = require('./routes/apis/Account.api.router');
-var PhanQuyenApi =  require('./routes/apis/PhanQuyen.api.router');
+var AccountApi = require('./routes/api/Account.api.router');
+var PhanQuyenApi =  require('./routes/api/PhanQuyen.api.router');
 
 var connectDB = require('./models/Database');
 
