@@ -1,5 +1,4 @@
 const Account = require('../../models/Account');
-const bcrypt = require('bcrypt');
 const { uploadImage, deleteImage } = require('../../middlewares/upload.image.firebase');
 const nameFolder = 'Account';
 

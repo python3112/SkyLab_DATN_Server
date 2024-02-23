@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
-
-const diaChiSchema = new mongoose.Schema({
-  tenDiaChi: String,
-  diaChi: String,
-  trangThai: Boolean,
-});
+const {diaChiSchema} = require('./DiaChi'); // Import DiaChi model
+const {shopSchema} = require('./Shop'); // Import Shop model
 
 const accountSchema = new mongoose.Schema({
   taiKhoan: String,
@@ -15,13 +11,14 @@ const accountSchema = new mongoose.Schema({
   tenQuyen: {
     type: String,
     enum: ['User', 'Admin', 'Shipper'],
-    default: 'User'
+    default: 'User',
   },
   avatar: String,
   trangThai: Boolean,
-  diaChi: [diaChiSchema], // Mảng địa chỉ
+  diaChi: [diaChiSchema], 
+  shop: shopSchema, 
 }, {
-  collection: 'Account_table'
+  collection: 'Account_table',
 });
 
 const Account = mongoose.model('Account', accountSchema);
