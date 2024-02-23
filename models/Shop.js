@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const {diaChiSchema} = require('./DiaChi');
+const { sanPhamSchema } = require('./SanPham');
 
 const shopSchema = new mongoose.Schema({
   tenShop: String,

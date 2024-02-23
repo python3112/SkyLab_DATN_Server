@@ -24,6 +24,34 @@ const uploadImage = async (file,folderName) => {
     blobStream.end(file.buffer);
   });
 };
+const uploadImages = async (files, folderName) => {
+  const uploadPromises = files.map((file) => {
+    return new Promise((resolve, reject) => {
+      const bucket = admin.storage().bucket();
+      const fileName = `${folderName}/${Date.now()}_${file.originalname}`;
+      const fileUpload = bucket.file(fileName);
+      const blobStream = fileUpload.createWriteStream({
+        metadata: {
+          contentType: file.mimetype,
+        },
+        predefinedAcl: 'publicRead', 
+      });
+
+      blobStream.on('error', (error) => {
+        reject(error);
+      });
+
+      blobStream.on('finish', () => {
+        const imageUrl = `https://storage.googleapis.com/${bucket.name}/${fileUpload.name}`;
+        resolve(imageUrl);
+      });
+
+      blobStream.end(file.buffer);
+    });
+  });
+
+  return Promise.all(uploadPromises);
+};
 const deleteImage = async (imageUrl) => {
   const bucket = admin.storage().bucket();
   const fileName = imageUrl.replace(`https://storage.googleapis.com/${bucket.name}/`, '');
@@ -36,4 +64,4 @@ const deleteImage = async (imageUrl) => {
   }
 };
 
-module.exports = { uploadImage ,deleteImage};
+module.exports = { uploadImage ,deleteImage,uploadImages};

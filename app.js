@@ -13,6 +13,7 @@ var routerApiHangSx = require('./routes/api/HangSx.api.router');
 var routerApiLoaiSp = require('./routes/api/LoaiSp.api.router');
 var routerApiAccount = require('./routes/api/Account.api.router');
 var routerApiShop = require('./routes/api/Shop.api.router');
+var routerApiSanPham = require('./routes/api/SanPham.api.router');
 
 var app = express();
 
@@ -35,6 +36,7 @@ app.use('/api/hangSx', routerApiHangSx);
 app.use('/api/loaiSp',routerApiLoaiSp);
 app.use('/api/account',routerApiAccount);
 app.use('/api/shop',routerApiShop);
+app.use('/api/sanPham',routerApiSanPham);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
