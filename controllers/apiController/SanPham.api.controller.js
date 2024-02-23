@@ -82,16 +82,16 @@ exports.updateSanPhamById = async (req, res) => {
     try {
         const { soLuong, tenSanPham, trangThai, giaTien, chieuCao, chieuRong, trongLuong, ram, rom,
             baohanh, os, cpu, gpu, pin, display, moTa, phuKien, mauSac } = req.body;
-        const files = req.files;
-
+            const files = req.files;
         // Kiểm tra xem sản phẩm có tồn tại hay không
         const existingSanPham = await SanPham.findById(req.params.id);
         if (!existingSanPham) {
             return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
         }
         // Nếu có files được gửi lên, thì cập nhật ảnh mới
-        let imageUrl = existingSanPham.anh;
-        if (files) {
+        let imageUrl = [];
+        imageUrl = existingSanPham.anh;
+        if (files.length > 0) {
             imageUrl = await uploadImages(files, nameFolder);
         }
         // Cập nhật thông tin sản phẩm
@@ -113,7 +113,7 @@ exports.updateSanPhamById = async (req, res) => {
         existingSanPham.moTa = moTa || existingSanPham.moTa;
         existingSanPham.phuKien = phuKien || existingSanPham.phuKien;
         existingSanPham.mauSac = mauSac || existingSanPham.mauSac;
-        existingSanPham.anh = imageUrl;
+        existingSanPham.anh = imageUrl || existingSanPham.anh;
 
         const updatedSanPham = await existingSanPham.save();
         res.json(updatedSanPham);

@@ -8,6 +8,9 @@ const shopSchema = new mongoose.Schema({
   sdt: String,
   avatar:String,
   trangThai:Boolean,
+},
+{
+  collection:'Shop_Table'
 });
 
 const Shop = mongoose.model('Shop', shopSchema);
