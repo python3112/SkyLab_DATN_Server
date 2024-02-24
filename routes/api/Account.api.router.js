@@ -11,7 +11,7 @@ const upload = multer({ storage: storage });
 
 router.get('/', AccountCtrl.listAccounts);
 router.get('/:id', AccountCtrl.getAccountById);
-router.post('/sign-up', AccountCtrl.createAccount);
+router.post('/sign-up', AccountCtrl.signUp);
 router.post('/sign-in', AccountCtrl.signIn);
 router.put('/edit-ho-ten/:id', AccountCtrl.editHoTen);
 router.put('/edit-mat-khau/:id', AccountCtrl.editMatKhau);

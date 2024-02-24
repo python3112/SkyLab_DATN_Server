@@ -26,24 +26,37 @@ exports.getAccountById = async (req, res) => {
     }
   };
   
-  exports.createAccount = upload.single('avata'), async (req, res, next) => {
+  exports.signUp = async (req, res) => {
     try {
-      if(!req.file){
+        const { tenQuyen, taiKhoan, matKhau,hoTen, sdt, trangThai } = req.body;
+
+        // Kiểm tra nếu tài khoản đã tồn tại
+        // const existingTaiKhoan = await Account.findOne({ taiKhoan : taiKhoan });
+        // if (existingTaiKhoan) {
+        //     return res.status(400).json({ success: false, message: 'Tài khoản đã tồn tại' });
+        // }
+
+        // Kiểm tra nếu số điện thoại đã tồn tại
+        // const existingSdt = await Account.findOne({ sdt });
+        // if (existingSdt) {
+        //     return res.status(400).json({ success: false, message: 'Số điện thoại đã tồn tại' });
+        // }
+
+        // Tạo tài khoản mới
         const newAccount = new Account({
-          taiKhoan: req.body.taiKhoan,
-          matKhau: req.body.matKhau,
-          quyenTk: req.body.quyenTk,
-          Email:req.body.Email,
-          avatar: req.body.avatar,
-          trangThai: req.body.trangThai || false,
+            tenQuyen  : tenQuyen,
+            taiKhoan :  taiKhoan,
+            matKhau :  matKhau,
+            hoTen :  hoTen,
+            sdt :  sdt,
+            trangThai  : trangThai
         });
-    
         await newAccount.save();
-      }
-      
-      res.json({ status: 200, msg: "Thêm tài khoản thành công" });
-    } catch (err) {
-      res.json({ status: 500, msg: err.message });
+        // Trả về thành công
+        return res.status(201).json({ success: true, message: 'Đăng ký thành công' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: error.message });
     }
 };
 

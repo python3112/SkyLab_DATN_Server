@@ -19,6 +19,7 @@ var routerApiLoaiSp = require('./routes/api/LoaiSp.api.router');
 var routerApiAccount = require('./routes/api/Account.api.router');
 var routerApiShop = require('./routes/api/Shop.api.router');
 var routerApiSanPham = require('./routes/api/SanPham.api.router');
+var routerApiGioHang= require('./routes/api/Giohang.api.router');
 
 var app = express();
 
@@ -48,6 +49,7 @@ app.use('/api/loaiSp',routerApiLoaiSp);
 app.use('/api/account',routerApiAccount);
 app.use('/api/shop',routerApiShop);
 app.use('/api/sanPham',routerApiSanPham);
+app.use('/api/giohang' , routerApiGioHang);
 
 
 
