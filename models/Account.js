@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const {diaChiSchema} = require('./DiaChi'); // Import DiaChi model
+const {DiaChiSchema} = require('./DiaChi'); // Import DiaChi model
 const {shopSchema} = require('./Shop'); // Import Shop model
 
 const accountSchema = new mongoose.Schema({
@@ -14,8 +14,9 @@ const accountSchema = new mongoose.Schema({
     default: 'User',
   },
   avatar: String,
+  idDiachi:{type : mongoose.Schema.Types.ObjectId , ref:'Diachi'},
   trangThai: Boolean,
-  diaChi: [diaChiSchema], 
+  diaChi: [DiaChiSchema], 
   shop: shopSchema, 
 }, {
   collection: 'Account_table',
