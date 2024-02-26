@@ -1,9 +1,10 @@
-const Account = require('../../models/Account');
-const { uploadImage, deleteImage } = require('../../middlewares/upload.image.firebase');
-const nameFolder = 'Account';
+var Account = require('../../models/Account');
+const multer = require('multer');
+const {getStorage} = require('firebase/storage');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-// Lấy tất cả các account có trạng thái là true
-exports.getAllAccount = async (req, res) => {
+exports.listAccounts = async (req, res, next) => {
     try {
         const account = await Account.find({ trangThai: true });
         res.json(account);
@@ -23,18 +24,17 @@ exports.getAccountById = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-};
-
-// Đăng ký tài khoản
-exports.signUp = async (req, res) => {
+  };
+  
+  exports.signUp = async (req, res) => {
     try {
         const { tenQuyen, taiKhoan, matKhau,hoTen, sdt, trangThai } = req.body;
 
         // Kiểm tra nếu tài khoản đã tồn tại
-        const existingTaiKhoan = await Account.findOne({ taiKhoan });
-        if (existingTaiKhoan) {
-            return res.status(400).json({ success: false, message: 'Tài khoản đã tồn tại' });
-        }
+        // const existingTaiKhoan = await Account.findOne({ taiKhoan : taiKhoan });
+        // if (existingTaiKhoan) {
+        //     return res.status(400).json({ success: false, message: 'Tài khoản đã tồn tại' });
+        // }
 
         // Kiểm tra nếu số điện thoại đã tồn tại
         // const existingSdt = await Account.findOne({ sdt });
@@ -44,12 +44,12 @@ exports.signUp = async (req, res) => {
 
         // Tạo tài khoản mới
         const newAccount = new Account({
-            tenQuyen,
-            taiKhoan,
-            matKhau,
-            hoTen,
-            sdt,
-            trangThai
+            tenQuyen  : tenQuyen,
+            taiKhoan :  taiKhoan,
+            matKhau :  matKhau,
+            hoTen :  hoTen,
+            sdt :  sdt,
+            trangThai  : trangThai
         });
         await newAccount.save();
         // Trả về thành công

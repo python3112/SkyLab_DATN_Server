@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
-
-const diaChiSchema = new mongoose.Schema({
-  tenDiaChi: String,
-  diaChi: String,
-  trangThai: Boolean,
+const DiaChiSchema = new mongoose.Schema({
+  Ten:String,
+  Diachi:String,
+  idNguoiDung_diachi: [{type : mongoose.Schema.Types.ObjectId , ref :'Account'}],
 },{
-  collection:'DiaChi_Table'
+  collection:'Diachi_table'
 });
 
-const DiaChi = mongoose.model('DiaChi', diaChiSchema);
+const Diachi = mongoose.model('Diachi', DiaChiSchema);
 
-module.exports = {DiaChi,diaChiSchema};
+module.exports = {Diachi , DiaChiSchema};
