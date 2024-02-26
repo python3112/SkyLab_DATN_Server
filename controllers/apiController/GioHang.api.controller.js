@@ -1,72 +1,97 @@
-const { json } = require('express');
 const GioHang = require('../../models/GioHang');
 
-exports.getGioHangbyId = async (req, res, next) => {
+// Lấy giỏ hàng theo id account
+exports.getGioHangByIdAccount = async (req, res, next) => {
     try {
         const giohang = await GioHang.findOne({ idNguoiMua: req.params.id });
-
         if (giohang) {
             return res.json(giohang);
         } else {
-            return res.status(400).json({ message: "" });
+            return res.status(400).json({ message: "Không có" });
         }
 
-
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
+};
 
-exports.createGioHang = async (req, res, next) => {
+exports.addGioHang = async (req, res) => {
     try {
-        const { idSanpham, idNguoiMua } = req.body;
-        const checkGioHang = await GioHang.findOne({ idNguoiMua: idNguoiMua });
-        if (checkGioHang) {
-            return;
+        const { idAccount, idSanPham } = req.body;
+
+        // Kiểm tra xem idAccount và idSanPham có tồn tại hay không
+        if (!idAccount || !idSanPham) {
+            return res.status(400).json({ error: 'BAD_REQUEST', message: 'Missing idAccount or idSanPham in request body' });
         }
 
-        const newGioHang = new GioHang({
-            idNguoiMua,
-            idSanpham: [],
-        })
-        const luuGiohang = await newGioHang.save();
+        // Kiểm tra nếu giỏ hàng đã có sản phẩm đó thì tăng số lượng
+        const existingGH = await GioHang.findOne({ idSanPham: idSanPham, idAccount: idAccount });
 
-        return res.json(luuGiohang)
-
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
-
-exports.GetSpGioHang = async (req, res, next) => {
-    try {
-        const idGiohang = req.params.idGiohang;
-        const giohang = await GioHang.findById(idGiohang);
-        const listSp = giohang.idSanpham;
-        return res.json(listSp);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-
-}
-exports.updateListSp = async (req, res, next) => {
-    try {
-        const { listsp } = req.body;
-        const giohang = await GioHang.findById(req.params.id);
-
-        if (!giohang) {
-            res.status(400).json({ message: 'vô lý !' });
+        if (existingGH !== null && existingGH !== undefined) {
+            // Sử dụng ++existingGH.soLuong hoặc existingGH.soLuong += 1 thay vì existingGH.soLuong = existingGH.soLuong++;
+            existingGH.soLuong = ++existingGH.soLuong;
+            await existingGH.save();
+            return res.status(200).json(existingGH);
         }
 
-        giohang.idSanpham = listsp;
+        // Nếu chưa có sản phẩm trong giỏ hàng, thêm mới
+        const newGH = new GioHang({
+            idAccount, idSanPham, soLuong: 1,
+        });
 
-        await giohang.save();
-
-
+        const savedGH = await newGH.save();
+        return res.status(201).json(savedGH);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error(error);
+        return res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', message: error.message });
     }
+};
 
+// Sửa số lượng của sản phẩm trong giỏ hàng
+exports.editSoLuongSanPham = async (req, res) => {
+    try {
+        const { idAccount, idSanPham, soLuong } = req.body;
 
-}
+        // Kiểm tra xem idAccount, idSanPham và soLuong có tồn tại hay không
+        if (!idAccount || !idSanPham || soLuong === undefined) {
+            return res.status(400).json({ error: 'BAD_REQUEST', message: 'Missing idAccount, idSanPham, or soLuong in request body' });
+        }
 
+        // Kiểm tra nếu giỏ hàng có sản phẩm đó thì sửa số lượng
+        const existingGH = await GioHang.findOne({ idSanPham: idSanPham, idAccount: idAccount });
+
+        if (existingGH !== null && existingGH !== undefined) {
+            // Đặt số lượng mới cho sản phẩm trong giỏ hàng
+            existingGH.soLuong = soLuong;
+            await existingGH.save();
+            return res.status(200).json(existingGH);
+        } else {
+            return res.status(404).json({ error: 'NOT_FOUND', message: 'Sản phẩm không tồn tại trong giỏ hàng' });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', message: error.message });
+    }
+};
+// Xóa 
+exports.deleteGioHang = async (req, res) => {
+    try {
+        const { idAccount, idSanPham } = req.body;
+
+        // Kiểm tra xem idAccount và idSanPham có tồn tại hay không
+        if (!idAccount || !idSanPham) {
+            return res.status(400).json({ error: 'BAD_REQUEST', message: 'Missing idAccount or idSanPham in request body' });
+        }
+        // Kiểm tra nếu giỏ hàng có sản phẩm đó thì xóa sản phẩm
+        const result = await GioHang.deleteOne({ idSanPham: idSanPham, idAccount: idAccount });
+
+        if (result.deletedCount > 0) {
+            return res.status(200).json({ messsage: 'Xóa sản phẩm khỏi giỏ hàng thành công' });
+        } else {
+            return res.status(404).json({ error: 'NOT_FOUND', message: 'Sản phẩm không tồn tại trong giỏ hàng' });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', message: error.message });
+    }
+};

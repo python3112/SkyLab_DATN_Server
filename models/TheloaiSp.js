@@ -6,12 +6,8 @@ const theloaiSpSchema = new mongoose.Schema({
 
 }, {
   collection : 'TheLoai_table'
-
 },
-{
-  collection:'LoaiSanPham_table'
-
-});
+);
 
 const TheloaiSp = mongoose.model('TheloaiSp', theloaiSpSchema);
 

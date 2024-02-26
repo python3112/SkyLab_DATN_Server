@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 const DiaChiSchema = new mongoose.Schema({
-  Ten:String,
-  Diachi:String,
- 
+
+  tenDiaChi: String,
+  diaChi: String,
+  trangThai: Boolean,
+
 },{
-  collection:'Diachi_table'
+  collection:'DiaChi_Table'
 });
 
-const Diachi = mongoose.model('Diachi', DiaChiSchema);
+const DiaChi = mongoose.model('DiaChi', DiaChiSchema);
 
-module.exports = {Diachi , DiaChiSchema};
+module.exports = {DiaChi , DiaChiSchema};

@@ -1,8 +1,6 @@
 var Account = require('../../models/Account');
-const multer = require('multer');
-const {getStorage} = require('firebase/storage');
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const { uploadImage, deleteImage } = require('../../middlewares/upload.image.firebase');
+const nameFolder = 'Account';
 
 exports.listAccounts = async (req, res, next) => {
     try {

@@ -1,20 +1,17 @@
 const mongoose = require('mongoose');
-// private String _id;
-//     private Date thoiGianBatDau;
-//     private Date thoiGianKetThuc;
-//     private String moTa;
-//     private int soLuong;
-//     private boolean trangThai;
 const KhuyenMaiSchema = new mongoose.Schema({
     thoiGianBatDau:Date,
     thoiGianKetThuc:Date,
-    CodeKhuyenMai:String,
+    code:String,
+    moTa:String,
     soLuong:Number,
-    trangThai_Km:Boolean,
+    soTienGiam:Number,
+    trangThai:Boolean,
+    anh:String,
 },{
     collection:'KhuyenMai_table'
 })
-const KhuyenMai = mongoose.model('khuyenmai' , KhuyenMaiSchema)
+const KhuyenMai = mongoose.model('KhuyenMai' , KhuyenMaiSchema)
 module.exports = KhuyenMai;
 
 
