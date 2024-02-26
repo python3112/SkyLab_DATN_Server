@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var dotenv = require('dotenv');
+const port = process.env.PORT || 4000;
 dotenv.config();
 
 
@@ -68,5 +69,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
 module.exports = app;

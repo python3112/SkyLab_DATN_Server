@@ -1,5 +1,4 @@
 const { json } = require('express');
-const {getAllSpGioHang} = require('../../middlewares/giohang.firebase');
 const GioHang = require('../../models/GioHang');
 
 exports.getGioHangbyId = async(req , res , next) =>{
