@@ -10,7 +10,7 @@ const accountSchema = new mongoose.Schema({
   sdt: String,
   tenQuyen: {
     type: String,
-    enum: ['User', 'Admin', 'Shipper'],
+    enum: ['User', 'Admin'],
     default: 'User',
   },
   avatar: String,

@@ -1,10 +1,6 @@
 const DonHang = require('../../models/DonDatHang');
-const GioHang = require('../../models/GioHang');
-
-
 
 exports.GetAllDonHang = async(req , res , next) =>{
-  
         try {
             const listdonhang = await DonHang.find();
             res.json(listdonhang);
@@ -13,36 +9,53 @@ exports.GetAllDonHang = async(req , res , next) =>{
         }
    
 }
-exports.getDonhangByidShop = async(req , res, next) =>{
+
+
+exports.addDonHang = async (req, res) => {
     try {
-        const listdonhang = await DonHang.find({idShop :  req.parmas.id});
-        res.json(listdonhang);
+        const { idSanPham, idAccount, idKhuyenMai, idPttt, soLuong, tongTien, ghiChu } = req.body;
+
+        const newDonHang = new DonHang({
+            idSanPham,
+            idAccount,
+            idKhuyenMai,
+            idPttt,
+            soLuong,
+            tongTien,
+            ghiChu,
+        });
+        const savedDonHang = await newDonHang.save();
+
+        return res.status(201).json(savedDonHang);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error(error);
+        return res.status(500).json({ message: error.message });
     }
-}
-exports.getDonhangByidShipper = async(req , res, next) =>{
+};
+
+exports.themTrangThai = async (req, res) => {
     try {
-        const listdonhang = await DonHang.find({idShipper :  req.parmas.id});
-        res.json(listdonhang);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
-exports.getDonhangByidNguoiMua = async(req , res, next) =>{
-    try {
-        const idgioHang = await GioHang.findOne({idNguoiMua : req.parmas.id  , thanhtoan :  true});
-        if(!idgioHang){
-            return res.json(null)   
-        }else{
-            const listdonhang = await DonHang.find({idGioHang : idgioHang._id});
-            return res.json(listdonhang);
+        const donHangId = req.params.id;
+        const { trangThai } = req.body;
+
+        const donHang = await DonHang.findById(donHangId);
+
+        if (!donHang) {
+            return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
         }
-       
+
+        // Kiểm tra xem trạng thái đã tồn tại hay chưa
+        const trangThaiDaTonTai = donHang.trangThai.some(item => item.trangThai === trangThai);
+        if (trangThaiDaTonTai) {
+            return res.status(400).json({ message: 'Trạng thái đã tồn tại trong đơn hàng' });
+        }
+
+        const newDH = { trangThai };
+        donHang.trangThai.push(newDH);
+        await donHang.save();
+
+        res.json({ success: true, message: 'Thêm trạng thái thành công' });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
-}
-exports.CreateDonHang = async(req , res , next)=>{
-    
-}
+};

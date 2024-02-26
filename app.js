@@ -9,6 +9,7 @@ dotenv.config();
 
 var connectDB = require('./models/Database');
 
+// Web
 var homeRoute= require('./routes/home.router');
 
 
@@ -20,6 +21,10 @@ var routerApiAccount = require('./routes/api/Account.api.router');
 var routerApiShop = require('./routes/api/Shop.api.router');
 var routerApiSanPham = require('./routes/api/SanPham.api.router');
 var routerApiGioHang= require('./routes/api/Giohang.api.router');
+var routerApiKhuyenMai= require('./routes/api/KhuyenMai.api.router');
+var routerApiPttt = require('./routes/api/PTTT.api.router');
+var routerApiDonHang = require('./routes/api/DonHang.api.router');
+
 
 var app = express();
 
@@ -45,6 +50,9 @@ app.use('/api/account',routerApiAccount);
 app.use('/api/shop',routerApiShop);
 app.use('/api/sanPham',routerApiSanPham);
 app.use('/api/gioHang' , routerApiGioHang);
+app.use('/api/khuyenMai' , routerApiKhuyenMai);
+app.use('/api/pttt' , routerApiPttt);
+app.use('/api/donHang' , routerApiDonHang);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

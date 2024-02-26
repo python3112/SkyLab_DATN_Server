@@ -1,30 +1,27 @@
 const mongoose = require('mongoose');
-const donDatHangSchema = new mongoose.Schema({
-  idShop: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Shop'
-  },
-  idGioHang: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'GioHang'
-  },
-  idShipper: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Shipper'
-  },
-  phuongThucThanhToan: {
-    type: String,
-    enum: ['Thanh toán khi nhận hàng', 'Momo'],
-},
+
+const trangThaiDonHangSchema = new mongoose.Schema({
   trangThai: {
     type: String,
-    enum: [
-      'Chờ Xác Nhận', 'Chờ Lấy Hàng', 'Chờ Giao Hàng', 'Đã Giao', 'Đã Hủy', 'Trả Hàng'],
+    enum: ['Chờ xác nhận', 'Chờ giao hàng', 'Đã giao hàng', 'Đã hủy', 'Trả hàng'],
+    default: 'Chờ xác nhận',
+    required: true
   },
-  ThoiGian: Date.now,
+  thoiGian: { type: Date, default: Date.now }
+});
+
+const donDatHangSchema = new mongoose.Schema({
+  idSanPham: { type: mongoose.Schema.Types.ObjectId, ref: 'SanPham' },
+  idAccount: { type: mongoose.Schema.Types.ObjectId, ref: 'Account' },
+  idKhuyenMai: { type: mongoose.Schema.Types.ObjectId, ref: 'KhuyenMai' },
+  idPttt: { type: mongoose.Schema.Types.ObjectId, ref: 'PhuongThucThanhToan' },
+  trangThai: {
+    type: [trangThaiDonHangSchema],
+    default: [{ trangThai: 'Chờ xác nhận' }]
+  },
+  soLuong:Number,
   tongTien: Number,
-  tienShip: Number,
-  tongTien: Number,
+  ghiChu: String,
 }, {
   collection: 'DonDatHang_Table'
 });
