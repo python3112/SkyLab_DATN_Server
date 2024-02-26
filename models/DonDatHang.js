@@ -2,8 +2,10 @@ const mongoose = require('mongoose');
 const trangThai = [
   'Chờ Xác Nhận', 'Chờ Lấy Hàng', 'Chờ Giao Hàng', 'Đã Giao', 'Đã Hủy', 'Trả Hàng']
 const donDatHangSchema = new mongoose.Schema({
-
-  idSanpham: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SanPham' }],
+  idShop: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Shop'
+  },
   idGioHang: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'GioHang'
@@ -12,23 +14,18 @@ const donDatHangSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Shipper'
   },
- 
-  idNguoiMua: {
+  idPayment: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Account'
-  },
-  idPayment:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref:'thanhToan'
+    ref: 'thanhToan'
   },
   trangThai: {
-    type: String, 
+    type: String,
     enum: trangThai,
   },
   ThoiGian: Date.now,
   tongTien: Number,
-  tienShip:Number,
-  tongTien:Number,
+  tienShip: Number,
+  tongTien: Number,
 }, {
   collection: 'DonDatHang_Table'
 });
