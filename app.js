@@ -38,11 +38,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', homeRoute);
 
-
-
-
-
-
 // API
 app.use('/api/hangSx', routerApiHangSx);
 app.use('/api/loaiSp',routerApiLoaiSp);
@@ -50,8 +45,6 @@ app.use('/api/account',routerApiAccount);
 app.use('/api/shop',routerApiShop);
 app.use('/api/sanPham',routerApiSanPham);
 app.use('/api/giohang' , routerApiGioHang);
-
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
