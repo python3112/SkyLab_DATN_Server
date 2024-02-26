@@ -7,11 +7,11 @@ var dotenv = require('dotenv');
 dotenv.config();
 
 
-
-
-
-
 var connectDB = require('./models/Database');
+
+var homeRoute= require('./routes/home.router');
+
+
 
 // api
 var routerApiHangSx = require('./routes/api/HangSx.api.router');
@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+app.use('/', homeRoute);
 
 
 
