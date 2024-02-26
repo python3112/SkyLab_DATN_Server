@@ -8,6 +8,7 @@ const sanPhamSchema = new mongoose.Schema({
   giaTien: Number,
   chieuCao:String,
   chieuRong:String,
+  chieuDoc:String,
   trongLuong: String,
   ram: String,
   rom: String,

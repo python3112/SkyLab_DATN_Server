@@ -34,7 +34,7 @@ exports.getSanPhamByIdShop = async (req, res) => {
 // Tạo sản phẩm
 exports.createSanPham = async (req, res) => {
     try {
-        const { idShop, soLuong, tenSanPham, trangThai, giaTien, chieuCao, chieuRong, trongLuong, ram, rom,
+        const { idShop, soLuong, tenSanPham, trangThai, giaTien, chieuCao, chieuRong,chieuDoc, trongLuong, ram, rom,
             baohanh, os, cpu, gpu, pin, display, moTa, phuKien, mauSac } = req.body;
         const files = req.files;
         if (!files) {
@@ -55,6 +55,7 @@ exports.createSanPham = async (req, res) => {
             giaTien,
             chieuCao,
             chieuRong,
+            chieuDoc,
             trongLuong,
             ram,
             rom,
@@ -80,7 +81,7 @@ exports.createSanPham = async (req, res) => {
 // Sửa thông tin sản phẩm theo id
 exports.updateSanPhamById = async (req, res) => {
     try {
-        const { soLuong, tenSanPham, trangThai, giaTien, chieuCao, chieuRong, trongLuong, ram, rom,
+        const { soLuong, tenSanPham, trangThai, giaTien, chieuCao, chieuRong,chieuDoc, trongLuong, ram, rom,
             baohanh, os, cpu, gpu, pin, display, moTa, phuKien, mauSac } = req.body;
             const files = req.files;
         // Kiểm tra xem sản phẩm có tồn tại hay không
@@ -101,6 +102,7 @@ exports.updateSanPhamById = async (req, res) => {
         existingSanPham.giaTien = giaTien || existingSanPham.giaTien;
         existingSanPham.chieuCao = chieuCao || existingSanPham.chieuCao;
         existingSanPham.chieuRong = chieuRong || existingSanPham.chieuRong;
+        existingSanPham.chieuDoc = chieuDoc || existingSanPham.chieuDoc;
         existingSanPham.trongLuong = trongLuong || existingSanPham.trongLuong;
         existingSanPham.ram = ram || existingSanPham.ram;
         existingSanPham.rom = rom || existingSanPham.rom;
