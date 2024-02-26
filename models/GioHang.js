@@ -5,6 +5,8 @@ const GioHangSchema = new mongoose.Schema({
     idNguoiMua:{ 
         type: mongoose.Schema.Types.ObjectId,
          ref: 'Account'},
+
+    thanhtoan : {type :  Boolean , default :  false}
 }, {
     collection:'GioHang_Table'
 })
