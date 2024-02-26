@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
 const sanPhamSchema = new mongoose.Schema({
-  idShop: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Shop' }],
+  idShop: { type: mongoose.Schema.Types.ObjectId, ref: 'Shop' },
+  idHangSx: { type: mongoose.Schema.Types.ObjectId, ref: 'Hangsx' },
+  idLoaiSp: { type: mongoose.Schema.Types.ObjectId, ref: 'TheloaiSp' },
   soLuong: Number,
   tenSanPham:String,
   trangThai: Boolean,
@@ -21,6 +23,9 @@ const sanPhamSchema = new mongoose.Schema({
   moTa: String,
   phuKien:String,
   mauSac:String,
+  doPhanGiai: String,
+  tanSoQuet:String,
+  tamNen:String,
   anh: [String],
 } , {
   collection :  'SanPham_table'

@@ -13,7 +13,7 @@ exports.getAllSanPham = async (req, res) => {
     }
 };
 // Lấy sản phẩm theo id
-exports.getSanPhamById= async (req, res) => {
+exports.getSanPhamById = async (req, res) => {
     try {
         const sanPham = await SanPham.findById(req.params.id);
         res.json(sanPham);
@@ -34,8 +34,10 @@ exports.getSanPhamByIdShop = async (req, res) => {
 // Tạo sản phẩm
 exports.createSanPham = async (req, res) => {
     try {
-        const { idShop, soLuong, tenSanPham, trangThai, giaTien, chieuCao, chieuRong,chieuDoc, trongLuong, ram, rom,
-            baohanh, os, cpu, gpu, pin, display, moTa, phuKien, mauSac } = req.body;
+        const { idShop,idHangSx,idLoaiSp, soLuong, tenSanPham, trangThai, giaTien, chieuCao, chieuRong, chieuDoc, trongLuong, ram, rom,
+            baohanh, os, cpu, gpu, pin, display, doPhanGiai,
+            tanSoQuet,
+            tamNen, moTa, phuKien, mauSac } = req.body;
         const files = req.files;
         if (!files) {
             return res.status(400).json({ message: 'Chưa có file upload' });
@@ -48,7 +50,7 @@ exports.createSanPham = async (req, res) => {
         // Create new SanPham instance
         const imageUrl = await uploadImages(files, nameFolder);
         const newSanPham = new SanPham({
-            idShop, 
+            idShop,idHangSx,idLoaiSp,
             soLuong,
             tenSanPham,
             trangThai,
@@ -65,6 +67,9 @@ exports.createSanPham = async (req, res) => {
             gpu,
             pin,
             display,
+            doPhanGiai,
+            tanSoQuet,
+            tamNen,
             moTa,
             phuKien,
             mauSac,
@@ -81,9 +86,11 @@ exports.createSanPham = async (req, res) => {
 // Sửa thông tin sản phẩm theo id
 exports.updateSanPhamById = async (req, res) => {
     try {
-        const { soLuong, tenSanPham, trangThai, giaTien, chieuCao, chieuRong,chieuDoc, trongLuong, ram, rom,
-            baohanh, os, cpu, gpu, pin, display, moTa, phuKien, mauSac } = req.body;
-            const files = req.files;
+        const {idHangSx,idLoaiSp,soLuong, tenSanPham, trangThai, giaTien, chieuCao, chieuRong, chieuDoc, trongLuong, ram, rom,
+            baohanh, os, cpu, gpu, pin, display, doPhanGiai,
+            tanSoQuet,
+            tamNen, moTa, phuKien, mauSac } = req.body;
+        const files = req.files;
         // Kiểm tra xem sản phẩm có tồn tại hay không
         const existingSanPham = await SanPham.findById(req.params.id);
         if (!existingSanPham) {
@@ -97,6 +104,8 @@ exports.updateSanPhamById = async (req, res) => {
         }
         // Cập nhật thông tin sản phẩm
         existingSanPham.soLuong = soLuong || existingSanPham.soLuong;
+        existingSanPham.idHangSx = idHangSx || existingSanPham.idHangSx;
+        existingSanPham.idLoaiSp = idLoaiSp || existingSanPham.idLoaiSp;
         existingSanPham.tenSanPham = tenSanPham || existingSanPham.tenSanPham;
         existingSanPham.trangThai = trangThai || existingSanPham.trangThai;
         existingSanPham.giaTien = giaTien || existingSanPham.giaTien;
@@ -112,6 +121,9 @@ exports.updateSanPhamById = async (req, res) => {
         existingSanPham.gpu = gpu || existingSanPham.gpu;
         existingSanPham.pin = pin || existingSanPham.pin;
         existingSanPham.display = display || existingSanPham.display;
+        existingSanPham.doPhanGiai = doPhanGiai || existingSanPham.doPhanGiai,
+        existingSanPham.tamNen = tamNen || existingSanPham.tamNen,
+        existingSanPham.tanSoQuet = tanSoQuet || existingSanPham.tanSoQuet,
         existingSanPham.moTa = moTa || existingSanPham.moTa;
         existingSanPham.phuKien = phuKien || existingSanPham.phuKien;
         existingSanPham.mauSac = mauSac || existingSanPham.mauSac;
