@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const trangThai = [
-  'Chờ Xác Nhận', 'Chờ Lấy Hàng', 'Chờ Giao Hàng', 'Đã Giao', 'Đã Hủy', 'Trả Hàng']
 const donDatHangSchema = new mongoose.Schema({
   idShop: {
     type: mongoose.Schema.Types.ObjectId,
@@ -14,13 +12,14 @@ const donDatHangSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Shipper'
   },
-  idPayment: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'thanhToan'
-  },
+  phuongThucThanhToan: {
+    type: String,
+    enum: ['Thanh toán khi nhận hàng', 'Momo'],
+},
   trangThai: {
     type: String,
-    enum: trangThai,
+    enum: [
+      'Chờ Xác Nhận', 'Chờ Lấy Hàng', 'Chờ Giao Hàng', 'Đã Giao', 'Đã Hủy', 'Trả Hàng'],
   },
   ThoiGian: Date.now,
   tongTien: Number,

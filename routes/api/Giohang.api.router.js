@@ -1,14 +1,11 @@
-
 var express = require('express');
 var router = express.Router();
 const GiohangCtrl = require('../../controllers/apiController/GioHang.api.controller');
 
-router.get('/spGioHang' , GiohangCtrl.GetSpGioHang);
-// lấy giỏ hàng với id người mua //// 
-router.get('/:id' , GiohangCtrl.getGioHangbyId);
-router.post('/' , GiohangCtrl.createGioHang);
-router.put('/edit-list-sp/:id' , GiohangCtrl.updateListSp);
-
+router.get('/:id' , GiohangCtrl.getGioHangByIdAccount);
+router.post('/add' , GiohangCtrl.addGioHang);
+router.put('/edit-soLuong' , GiohangCtrl.editSoLuongSanPham);
+router.delete('/delete',GiohangCtrl.deleteGioHang);
 
 
 
