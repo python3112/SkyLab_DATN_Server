@@ -27,19 +27,16 @@ exports.getAccountById = async (req, res) => {
   exports.signUp = async (req, res) => {
     try {
         const {taiKhoan, matKhau } = req.body;
-
         // Kiểm tra nếu tài khoản đã tồn tại
         const existingTaiKhoan = await Account.findOne({ taiKhoan : taiKhoan });
         if (existingTaiKhoan) {
-            return res.status(400).json({ success: false, message: 'Tài khoản đã tồn tại. Vui lòng nhập tài khoản khác!' });
+            return res.status(200).json({ success: false, message: 'Tài khoản đã tồn tại. Vui lòng nhập tài khoản khác!' });
         }
-
         // // Kiểm tra nếu số điện thoại đã tồn tại
         // const existingSdt = await Account.findOne({ sdt });
         // if (existingSdt) {
         //     return res.status(400).json({ success: false, message: 'Số điện thoại đã tồn tại' });
         // }
-
         // Tạo tài khoản mới
         const newAccount = new Account({
             tenQuyen  : "User",
@@ -60,22 +57,21 @@ exports.getAccountById = async (req, res) => {
 exports.signIn = async (req, res) => {
     try {
         const { taiKhoan, matKhau } = req.body;
-
         // Kiểm tra xem tài khoản tồn tại
         const existingAccount = await Account.findOne({ taiKhoan, trangThai: true, tenQuyen: 'User' });
 
         if (!existingAccount) {
-            return res.status(401).json({ message: 'Tài khoản không tồn tại' });
+            return res.status(200).json({success: false, message: 'Tài khoản không tồn tại!' });
         }
 
         if(existingAccount.matKhau != matKhau){
-            return res.status(401).json({ message: 'Mật khẩu không chính xác' });
+            return res.status(200).json({success: false, message: 'Mật khẩu không chính xác!' });
         }
         // Nếu tài khoản và mật khẩu đúng, trả về ID của tài khoản
-        return res.status(200).json({_id:existingAccount._id});
+        return res.status(200).json({success: true, message: 'Đăng nhập thành công!',value:existingAccount._id});
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: error.message });
+        return res.status(500).json({success: false, message: error.message });
     }
 };
 
