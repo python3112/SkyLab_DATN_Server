@@ -26,15 +26,15 @@ exports.getAccountById = async (req, res) => {
   
   exports.signUp = async (req, res) => {
     try {
-        const { tenQuyen, taiKhoan, matKhau,hoTen, sdt, trangThai } = req.body;
+        const {taiKhoan, matKhau } = req.body;
 
         // Kiểm tra nếu tài khoản đã tồn tại
-        // const existingTaiKhoan = await Account.findOne({ taiKhoan : taiKhoan });
-        // if (existingTaiKhoan) {
-        //     return res.status(400).json({ success: false, message: 'Tài khoản đã tồn tại' });
-        // }
+        const existingTaiKhoan = await Account.findOne({ taiKhoan : taiKhoan });
+        if (existingTaiKhoan) {
+            return res.status(400).json({ success: false, message: 'Tài khoản đã tồn tại. Vui lòng nhập tài khoản khác!' });
+        }
 
-        // Kiểm tra nếu số điện thoại đã tồn tại
+        // // Kiểm tra nếu số điện thoại đã tồn tại
         // const existingSdt = await Account.findOne({ sdt });
         // if (existingSdt) {
         //     return res.status(400).json({ success: false, message: 'Số điện thoại đã tồn tại' });
@@ -42,12 +42,10 @@ exports.getAccountById = async (req, res) => {
 
         // Tạo tài khoản mới
         const newAccount = new Account({
-            tenQuyen  : tenQuyen,
+            tenQuyen  : "User",
             taiKhoan :  taiKhoan,
             matKhau :  matKhau,
-            hoTen :  hoTen,
-            sdt :  sdt,
-            trangThai  : trangThai
+            trangThai  : true
         });
         await newAccount.save();
         // Trả về thành công
