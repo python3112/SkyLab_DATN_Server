@@ -3,7 +3,7 @@ const GioHang = require('../../models/GioHang');
 // Lấy giỏ hàng theo id account
 exports.getGioHangByIdAccount = async (req, res, next) => {
     try {
-        const giohang = await GioHang.findOne({ idNguoiMua: req.params.id });
+        const giohang = await GioHang.findOne({ idAccount: req.params.id });
         if (giohang) {
             return res.json(giohang);
         } else {
