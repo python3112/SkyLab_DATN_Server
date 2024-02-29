@@ -57,6 +57,7 @@ exports.createShop = async (req, res) => {
             avatar: newShop.avatar,
         };
         await account.save();
+        await newShop.save();
         return res.status(201).json({ success: true, message: 'Tạo shop mới thành công' });
     } catch (error) {
         console.error(error);
