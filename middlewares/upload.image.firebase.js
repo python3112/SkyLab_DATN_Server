@@ -52,6 +52,7 @@ const uploadImages = async (files, folderName) => {
 
   return Promise.all(uploadPromises);
 };
+
 const deleteImage = async (imageUrl) => {
   const bucket = admin.storage().bucket();
   const fileName = imageUrl.replace(`https://storage.googleapis.com/${bucket.name}/`, '');

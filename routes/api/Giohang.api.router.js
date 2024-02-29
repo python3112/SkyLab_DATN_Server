@@ -7,6 +7,4 @@ router.post('/add' , GiohangCtrl.addGioHang);
 router.put('/edit-soLuong' , GiohangCtrl.editSoLuongSanPham);
 router.delete('/delete',GiohangCtrl.deleteGioHang);
 
-
-
 module.exports = router;
