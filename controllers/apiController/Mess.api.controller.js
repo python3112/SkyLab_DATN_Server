@@ -2,12 +2,15 @@ var Account = require('../../models/Account');
 var {Shop} = require('../../models/Shop');
 var Message = require('../../models/Mess');
 const { uploadImages, deleteImage } = require('../../middlewares/upload.image.firebase');
+
 const {newMessageRef} = require('../../middlewares/Mess.firebase');
+
 
 const nameFolder = 'Message';
 
 exports.CreateMess = async(req , res) => {
     try {
+
         const {idNguoiGui , content , idChat} = req.body
         console.log(req.files);
         const NewMess = new Message({
@@ -39,6 +42,20 @@ exports.CreateMessWithFile = async(req , res) => {
 
         if(!files){
             return res.status(400).json({ message: 'Chưa có file upload' });
+
+        const {idNguoiGui , idNguoinhan , content} = req.body
+        const files = req.files;
+        console.log(req.files);
+        const NewMess = new Message({
+            content :  content,
+            Nguoigui : idNguoiGui,
+            NguoiNhan: idNguoinhan,
+            Thuhoi:false,
+        })
+        if(!files){
+            await NewMess.save();
+            return res.json(NewMess);
+
         }
         const images = await uploadImages(files, nameFolder);
         NewMess.AnhTinNhan = images;
@@ -50,6 +67,7 @@ exports.CreateMessWithFile = async(req , res) => {
  
    
 }
+
 exports.getChats = async(req , res) =>{
     try {
         const {idChat } = req.body
@@ -82,4 +100,6 @@ exports.deleteMess = async(req , res , next) =>{
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
+
+
 }

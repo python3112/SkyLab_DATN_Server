@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const messageSchema = new mongoose.Schema({
 
 
+
   idChat: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Chat'
@@ -26,3 +27,4 @@ const messageSchema = new mongoose.Schema({
 const Message = mongoose.model('Message', messageSchema);
 
 module.exports = Message;
+

@@ -57,7 +57,9 @@ app.use('/api/khuyenMai' , routerApiKhuyenMai);
 app.use('/api/pttt' , routerApiPttt);
 app.use('/api/donHang' , routerApiDonHang);
 app.use('/api/mess' , routerApiMess);
+
 app.use('/api/chat' , routerApiChat);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
