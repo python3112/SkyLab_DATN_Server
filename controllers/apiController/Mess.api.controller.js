@@ -31,18 +31,7 @@ exports.CreateMess = async(req , res) => {
 }
 exports.CreateMessWithFile = async(req , res) => {
     try {
-        const {idNguoiGui, idChat} = req.body
-        const files = req.files;
-        console.log(req.files);
-        const NewMess = new Message({
-            idChat : idChat,
-            idAccount : idNguoiGui,
-            Thuhoi:false,
-        })
-
-        if(!files){
-            return res.status(400).json({ message: 'Chưa có file upload' });
-
+       
         const {idNguoiGui , idNguoinhan , content} = req.body
         const files = req.files;
         console.log(req.files);
