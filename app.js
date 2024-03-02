@@ -25,6 +25,8 @@ var routerApiKhuyenMai= require('./routes/api/KhuyenMai.api.router');
 var routerApiPttt = require('./routes/api/PTTT.api.router');
 var routerApiDonHang = require('./routes/api/DonHang.api.router');
 var routerApiMess = require('./routes/api/Mess.api.router');
+var routerApiChat = require('./routes/api/Chat.api.router');
+
 
 
 var app = express();
@@ -55,6 +57,8 @@ app.use('/api/khuyenMai' , routerApiKhuyenMai);
 app.use('/api/pttt' , routerApiPttt);
 app.use('/api/donHang' , routerApiDonHang);
 app.use('/api/mess' , routerApiMess);
+
+app.use('/api/chat' , routerApiChat);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
