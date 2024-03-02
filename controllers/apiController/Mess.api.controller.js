@@ -1,5 +1,4 @@
 var Account = require('../../models/Account');
-var {Shop} = require('../../models/Shop');
 var Message = require('../../models/Mess');
 const { uploadImages, deleteImage } = require('../../middlewares/upload.image.firebase');
 

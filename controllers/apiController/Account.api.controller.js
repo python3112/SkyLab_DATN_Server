@@ -1,5 +1,4 @@
 var Account = require('../../models/Account');
-var {Shop} = require('../../models/Shop')
 const { uploadImage, deleteImage } = require('../../middlewares/upload.image.firebase');
 
 const nameFolder = 'Account';

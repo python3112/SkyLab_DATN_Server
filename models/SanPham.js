@@ -1,32 +1,54 @@
 const mongoose = require('mongoose');
 
 const sanPhamSchema = new mongoose.Schema({
-  idShop: { type: mongoose.Schema.Types.ObjectId, ref: 'Shop' },
   idHangSx: { type: mongoose.Schema.Types.ObjectId, ref: 'Hangsx' },
-  idLoaiSp: { type: mongoose.Schema.Types.ObjectId, ref: 'TheloaiSp' },
   soLuong: Number,
   tenSanPham:String,
   trangThai: Boolean,
   giaTien: Number,
-  chieuCao:String,
-  chieuRong:String,
-  chieuDoc:String,
-  trongLuong: String,
-  ram: String,
-  rom: String,
-  baohanh: String,
-  os: String,
+  anhSanPham:String,
+  anh: [String],
+  
+
   cpu: String,
-  gpu: String,
-  pin: String,
+  soNhan:Number,
+  soLuongCPU:Number,
+  tocDoCPU: String,
+  tocDoToiDa:String,
+  boNhoDem:String,
+
+  ram: String,
+  loaiRam:String,
+  tocDoBusRam:String,
+  hoTroRamToiDa: String,
+  rom: String,
+
   display: String,
-  moTa: String,
-  phuKien:String,
-  mauSac:String,
   doPhanGiai: String,
   tanSoQuet:String,
-  tamNen:String,
-  anh: [String],
+  doPhuMau: String,
+  congNgheManHinh: String,
+
+  moTa: String,
+  mauSac:String,
+  gpu: String,
+  congNgheAmThanh:String,
+
+  congGiaoTiep: String,
+  ketNoiKhongDay: String,
+  webCam:String,
+  tinhNangKhac: String,
+  denBanPhim: String,
+
+  kichThuocKhoiLuong:String,
+  chatLieu:String,
+
+  pin: String,
+  congSuatSac: String,
+  thoiDiemRaMat: String,
+  baohanh: String,
+  os: String,
+  phuKien:String,
 } , {
   collection :  'SanPham_table'
 });
