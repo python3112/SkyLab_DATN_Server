@@ -3,8 +3,20 @@ const {realtimeDatabase , admin} = require('../../middlewares/firebase.config');
 const moment = require('moment');
 
 exports.GetChats = async(req , res) =>{
-try {
-    
+
+    try {
+        // Khai báo một mảng để lưu trữ các chat
+        const chats = [];
+
+        // Sử dụng once() để lấy dữ liệu chat hiện có một lần
+        const snapshot = await realtimeDatabase.ref('/Chat').once('value');
+        snapshot.forEach((childSnapshot) => {
+            const chat = childSnapshot.val();
+            chats.push(chat);
+        });
+
+        // Gửi phản hồi sau khi đã thu thập đủ dữ liệu
+        return res.json(chats);
 } catch (error) {
     return res.status(500).json({ message: error.message });
 
@@ -34,6 +46,7 @@ exports.CreateConverSation = async(req , res) =>{
       newMessageRef.set({
         Nguoigui :  idNguoiGui,
         NguoiNhan : idNguoiNhan,
+        ThuHoi:false,
         ngay: moment(Date.now()).format('DD-MM-YYYY HH:mm:ss')
       });
       await realtimeDatabase.ref('/Chat/' + newMessageRef.key).once('value', (snapshot) => {
@@ -47,6 +60,14 @@ exports.CreateConverSation = async(req , res) =>{
         }
     });
 }
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+exports.RevokeChat = async(req , res) =>{
+    try {
+        await realtimeDatabase.ref('/Chat/' + req.params.id + '/ThuHoi').set(true);
+        return res.json({ msg: "Thu Hồi Thành Công !" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
