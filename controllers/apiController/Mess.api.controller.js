@@ -1,5 +1,4 @@
 var Account = require('../../models/Account');
-var { Shop } = require('../../models/Shop');
 var Message = require('../../models/Mess');
 const { uploadImages, deleteImage } = require('../../middlewares/upload.image.firebase');
 const { realtimeDatabase } = require('../../middlewares/firebase.config');
@@ -33,13 +32,13 @@ exports.CreateMess = async (req, res) => {
 exports.CreateMessWithFile = async (req, res) => {
     try {
 
+
         const { idNguoiGui, content, idChat } = req.body
         const files = req.files;
         console.log(req.files);
         if (!files) {
 
             return;
-
         }
         const images = await uploadImages(files, nameFolder);
 

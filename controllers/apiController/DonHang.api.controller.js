@@ -13,13 +13,12 @@ exports.GetAllDonHang = async(req , res , next) =>{
 
 exports.addDonHang = async (req, res) => {
     try {
-        const { idSanPham, idAccount, idKhuyenMai, idPttt, soLuong, tongTien, ghiChu } = req.body;
+        const { idSanPham, idAccount, idKhuyenMai,soLuong, tongTien, ghiChu } = req.body;
 
         const newDonHang = new DonHang({
             idSanPham,
             idAccount,
             idKhuyenMai,
-            idPttt,
             soLuong,
             tongTien,
             ghiChu,

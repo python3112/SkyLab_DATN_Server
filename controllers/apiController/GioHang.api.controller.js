@@ -1,4 +1,6 @@
 const GioHang = require('../../models/GioHang');
+const { SanPham } = require('../../models/SanPham');
+
 
 // Lấy giỏ hàng theo id account
 exports.getGioHangByIdAccount = async (req, res, next) => {
@@ -17,33 +19,37 @@ exports.getGioHangByIdAccount = async (req, res, next) => {
 
 exports.addGioHang = async (req, res) => {
     try {
-        const { idAccount, idSanPham } = req.body;
-
-        // Kiểm tra xem idAccount và idSanPham có tồn tại hay không
-        if (!idAccount || !idSanPham) {
-            return res.status(400).json({ error: 'BAD_REQUEST', message: 'Missing idAccount or idSanPham in request body' });
-        }
+        const { idAccount, idSanPham, soLuong } = req.body;
 
         // Kiểm tra nếu giỏ hàng đã có sản phẩm đó thì tăng số lượng
         const existingGH = await GioHang.findOne({ idSanPham: idSanPham, idAccount: idAccount });
-
+        const sanPham = await SanPham.findById(idSanPham);
+        let soLuongSP = sanPham.soLuong;
         if (existingGH !== null && existingGH !== undefined) {
-            // Sử dụng ++existingGH.soLuong hoặc existingGH.soLuong += 1 thay vì existingGH.soLuong = existingGH.soLuong++;
-            existingGH.soLuong = ++existingGH.soLuong;
+            let sl = existingGH.soLuong;
+            if (sl == soLuongSP) {
+                return res.status(200).json({ success: false, message: 'Số lượng sản phẩm này trong giỏ hàng đã đạt tối đa!' });
+            }
+
+            existingGH.soLuong = sl + soLuong;
+            if (existingGH.soLuong > soLuongSP) {
+                let slAdd = soLuongSP - sl;
+                return res.status(200).json({ success: false, message: 'Bạn chỉ được thêm ' + slAdd + ' sản phẩm nữa!' });
+            }
             await existingGH.save();
-            return res.status(200).json(existingGH);
+            return res.status(200).json({ success: true, message: 'Đã thêm vào giỏ hàng!' });
         }
 
         // Nếu chưa có sản phẩm trong giỏ hàng, thêm mới
         const newGH = new GioHang({
-            idAccount, idSanPham, soLuong: 1,
+            idAccount, idSanPham, soLuong,
         });
 
-        const savedGH = await newGH.save();
-        return res.status(201).json(savedGH);
+        await newGH.save();
+        return res.status(201).json({ success: true, message: 'Đã thêm vào giỏ hàng!' });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', message: error.message });
+        return res.status(500).json({ success: false, message: error.message });
     }
 };
 
