@@ -1,92 +1,112 @@
 var Account = require('../../models/Account');
-var {Shop} = require('../../models/Shop');
+var { Shop } = require('../../models/Shop');
 var Message = require('../../models/Mess');
 const { uploadImages, deleteImage } = require('../../middlewares/upload.image.firebase');
-
-const {newMessageRef} = require('../../middlewares/Mess.firebase');
-
-
+const { realtimeDatabase } = require('../../middlewares/firebase.config');
+const moment = require('moment');
+const { database } = require('firebase-admin');
 const nameFolder = 'Message';
 
-exports.CreateMess = async(req , res) => {
+exports.CreateMess = async (req, res) => {
     try {
 
-        const {idNguoiGui , content , idChat} = req.body
-        console.log(req.files);
-        const NewMess = new Message({
-            idChat : idChat,
-            content : content,
-            idAccount : idNguoiGui,
-            Thuhoi:false,
-        })
-        console.log(NewMess);
-        await NewMess.save();
-        
-        return res.json(NewMess);
+        const { idNguoiGui, content, idChat } = req.body
+        console.log(req.body)
+        const newMessageRef = await realtimeDatabase.ref('/messages').push();
+        newMessageRef.set({
+            idChat: idChat,
+            idAccount: idNguoiGui,
+            content: content,
+            AnhTinNhan: [],
+            Daxem: false,
+            ThuHoi: false,
+            thoiGian: moment(Date.now()).format('DD-MM-YYYY HH:mm:ss')
+        });
+
+        return res.json(newMessageRef);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
- 
-   
+
+
 }
-exports.CreateMessWithFile = async(req , res) => {
+exports.CreateMessWithFile = async (req, res) => {
     try {
- 
-        const {idNguoiGui , idNguoinhan , content} = req.body
+
+        const { idNguoiGui, content, idChat } = req.body
         const files = req.files;
         console.log(req.files);
-        const NewMess = new Message({
-            content :  content,
-            Nguoigui : idNguoiGui,
-            NguoiNhan: idNguoinhan,
-            Thuhoi:false,
-        })
-        if(!files){
-            await NewMess.save();
-            return res.json(NewMess);
+        if (!files) {
+
+            return;
 
         }
         const images = await uploadImages(files, nameFolder);
-        NewMess.AnhTinNhan = images;
-        await NewMess.save();
-        return res.json(NewMess);
-    
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
- 
-   
-}
 
-exports.getChats = async(req , res) =>{
-    try {
-        const {idChat } = req.body
-        const listChats = await Message.find({idChat : idChat })
-        return res.json(listChats);
+        const newMessageRef = await realtimeDatabase.ref('/messages').push();
+        newMessageRef.set({
+            idChat: idChat,
+            idAccount: idNguoiGui,
+            content: content,
+            AnhTinNhan: [images],
+            Daxem: false,
+            ThuHoi: false,
+            thoiGian: moment(Date.now()).format('DD-MM-YYYY HH:mm:ss')
+        });
+        return res.json(newMessageRef);
+
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 
+
 }
-exports.deleteMess = async(req , res , next) =>{
+
+exports.getChats = async (req, res) => {
     try {
-        const message = await Message.findById(req.params.id);
-        if(message.AnhTinNhan.length > 0){
-            for (let index = 0; index < message.AnhTinNhan.length; index++) {
-                const element = message.AnhTinNhan[index];
-                console.log(element);
-                await deleteImage(element);
-            }
-           const check = await Message.deleteOne({_id :  req.params.id});
-           if(check){
-            return res.status(200).json({mess :  'xóa thành công !'})
-           }
+        const { idChat } = req.body
+        var lisyChat = [];
+        const check = await realtimeDatabase.ref('/messages')
+            .orderByChild('idChat')
+            .equalTo(idChat)
+            .once('value')
+        if (check.exists()) {
+            lisyChat = check.val();
         }
-        const check = await Message.deleteOne({_id :  req.params.id});
-        if(check){
-            return res.status(200).json({mess :  'xóa thành công !'})
+        return res.json(lisyChat)
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+
+}
+exports.putSeen = async(req , res ) =>{
+    try {
+        const { listIdMess } = req.body;
+
+        for (let index = 0; index < listIdMess.length; index++) {
+            const element = listIdMess[index];
+            await realtimeDatabase.ref('/messages/' + element + '/Daxem').set(true);
         }
+        return res.json({ msg: "Tất cả tin nhắn đã được đánh dấu là đã xem!" });
+    } catch (error) {
         
+    }
+}
+
+exports.revokeMess = async(req , res ) =>{
+    try {
+            await realtimeDatabase.ref('/messages/' + req.params.id + '/ThuHoi').set(true);
+        return res.json({ msg: "Tất cả tin nhắn đã được đánh dấu là đã xem!" });
+    } catch (error) {
+        
+    }
+}
+
+
+exports.deleteMess = async (req, res, next) => {
+    try {
+        await realtimeDatabase.ref('/messages/' + req.params.id).remove();
+        return res.json({ msg: "Tất cả tin nhắn đã được đánh dấu là đã xem!" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
