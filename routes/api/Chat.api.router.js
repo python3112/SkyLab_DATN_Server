@@ -4,6 +4,7 @@ const ChatCtrl = require('../../controllers/apiController/Chat.api.controller');
 
 
 router.get('/', ChatCtrl.GetChats);
-router.post('/create', ChatCtrl.CreateConverSation);
+
+router.post('/create/:id', ChatCtrl.CreateConverSation);
 router.put('/revoke/:id' , ChatCtrl.RevokeChat);
 module.exports = router
