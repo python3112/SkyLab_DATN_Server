@@ -217,7 +217,7 @@ exports.themDiaChi = async (req, res) => {
       }
   
       const newDiaChi = { tenDiaChi, diaChi, trangThai };
-      account.diaChi.push(newDiaChi);
+      account.diaChi = newDiaChi;
   
       await account.save();
   
@@ -226,63 +226,4 @@ exports.themDiaChi = async (req, res) => {
       res.status(500).json({ success: false, message: error.message });
     }
   };
-  
-  // Lấy tất cả các địa chỉ của một account dựa trên ID
-  exports.getDiaChiTheoAccount = async (req, res) => {
-    try {
-      const accountId = req.params.id;
-      const account = await Account.findById(accountId);
-  
-      if (!account) {
-        return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
-      }
-  
-      res.json(account.diaChi);
-    } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  };
-
-// Sửa địa chỉ theo ID của địa chỉ
-exports.suaDiaChiTheoId = async (req, res) => {
-    try {
-      const accountId = req.params.id;
-      const diaChiId = req.params.diaChiId; // ID của địa chỉ cần sửa
-      const { tenDiaChi, diaChi, trangThai } = req.body;
-  
-      const account = await Account.findById(accountId);
-  
-      if (!account) {
-        return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
-      }
-  
-      const diaChiToUpdate = account.diaChi.id(diaChiId);
-  
-      if (!diaChiToUpdate) {
-        return res.status(404).json({ message: 'Không tìm thấy địa chỉ' });
-      }
-  
-      // Cập nhật chỉ các trường được truyền
-      if (tenDiaChi) {
-        diaChiToUpdate.tenDiaChi = tenDiaChi;
-      }
-  
-      if (diaChi) {
-        diaChiToUpdate.diaChi = diaChi;
-      }
-  
-      if (trangThai !== undefined) {
-        diaChiToUpdate.trangThai = trangThai;
-      }
-  
-      await account.save();
-  
-      res.json({ success: true, message: 'Sửa địa chỉ thành công' });
-    } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  };
-
-  // Route để gửi tin nhắn từ tài khoản đến cửa hàng
-
   
