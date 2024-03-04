@@ -5,7 +5,7 @@ const { SanPham } = require('../../models/SanPham');
 // Lấy giỏ hàng theo id account
 exports.getGioHangByIdAccount = async (req, res, next) => {
     try {
-        const giohang = await GioHang.findOne({ idAccount: req.params.id });
+        const giohang = await GioHang.find({ idAccount: req.params.id });
         if (giohang) {
             return res.json(giohang);
         } else {
@@ -37,7 +37,7 @@ exports.addGioHang = async (req, res) => {
                 return res.status(200).json({ success: false, message: 'Bạn chỉ được thêm ' + slAdd + ' sản phẩm nữa!' });
             }
             await existingGH.save();
-            return res.status(200).json({ success: true, message: 'Đã thêm vào giỏ hàng!' });
+            return res.status(200).json({ success: true, message: 'Đã thêm vào giỏ hàng!',value: existingGH._id  });
         }
 
         // Nếu chưa có sản phẩm trong giỏ hàng, thêm mới
@@ -46,7 +46,7 @@ exports.addGioHang = async (req, res) => {
         });
 
         await newGH.save();
-        return res.status(201).json({ success: true, message: 'Đã thêm vào giỏ hàng!' });
+        return res.status(201).json({ success: true, message: 'Đã thêm vào giỏ hàng!',value: newGH._id });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ success: false, message: error.message });
