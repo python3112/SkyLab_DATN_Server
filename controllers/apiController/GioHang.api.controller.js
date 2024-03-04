@@ -16,7 +16,20 @@ exports.getGioHangByIdAccount = async (req, res, next) => {
         res.status(500).json({ message: error.message });
     }
 };
+// Lấy giỏ hàng theo id giỏ hàng
+exports.getGioHangByIdGioHang = async (req, res, next) => {
+    try {
+        const giohang = await GioHang.findById(req.params.id);
+        if (giohang) {
+            return res.json(giohang);
+        } else {
+            return res.status(400).json({ message: "Không có" });
+        }
 
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 exports.addGioHang = async (req, res) => {
     try {
         const { idAccount, idSanPham, soLuong } = req.body;
