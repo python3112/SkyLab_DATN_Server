@@ -69,21 +69,13 @@ exports.addGioHang = async (req, res) => {
 // Sửa số lượng của sản phẩm trong giỏ hàng
 exports.editSoLuongSanPham = async (req, res) => {
     try {
-        const { idAccount, idSanPham, soLuong } = req.body;
-
-        // Kiểm tra xem idAccount, idSanPham và soLuong có tồn tại hay không
-        if (!idAccount || !idSanPham || soLuong === undefined) {
-            return res.status(400).json({ error: 'BAD_REQUEST', message: 'Missing idAccount, idSanPham, or soLuong in request body' });
-        }
-
-        // Kiểm tra nếu giỏ hàng có sản phẩm đó thì sửa số lượng
-        const existingGH = await GioHang.findOne({ idSanPham: idSanPham, idAccount: idAccount });
-
-        if (existingGH !== null && existingGH !== undefined) {
+        const {soLuong } = req.body;
+        const giohang = await GioHang.findById(req.params.id);
+        if (giohang !== null && giohang !== undefined) {
             // Đặt số lượng mới cho sản phẩm trong giỏ hàng
-            existingGH.soLuong = soLuong;
-            await existingGH.save();
-            return res.status(200).json(existingGH);
+            giohang.soLuong = soLuong;
+            await giohang.save();
+            return res.status(200).json(giohang);
         } else {
             return res.status(404).json({ error: 'NOT_FOUND', message: 'Sản phẩm không tồn tại trong giỏ hàng' });
         }
@@ -95,22 +87,16 @@ exports.editSoLuongSanPham = async (req, res) => {
 // Xóa 
 exports.deleteGioHang = async (req, res) => {
     try {
-        const { idAccount, idSanPham } = req.body;
+        const giohang = await GioHang.findByIdAndRemove(req.params.id);
 
-        // Kiểm tra xem idAccount và idSanPham có tồn tại hay không
-        if (!idAccount || !idSanPham) {
-            return res.status(400).json({ error: 'BAD_REQUEST', message: 'Missing idAccount or idSanPham in request body' });
-        }
-        // Kiểm tra nếu giỏ hàng có sản phẩm đó thì xóa sản phẩm
-        const result = await GioHang.deleteOne({ idSanPham: idSanPham, idAccount: idAccount });
-
-        if (result.deletedCount > 0) {
-            return res.status(200).json({ messsage: 'Xóa sản phẩm khỏi giỏ hàng thành công' });
+        if (giohang) {
+            return res.status(200).json({ success: true, message: 'Đã xóa giỏ hàng thành công' });
         } else {
-            return res.status(404).json({ error: 'NOT_FOUND', message: 'Sản phẩm không tồn tại trong giỏ hàng' });
+            return res.status(404).json({ success: false, message: 'Không tìm thấy giỏ hàng để xóa' });
         }
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'INTERNAL_SERVER_ERROR', message: error.message });
+        return res.status(500).json({success: false, message: error.message });
     }
 };
+;
