@@ -227,3 +227,32 @@ exports.themDiaChi = async (req, res) => {
     }
   };
   
+  exports.suaDiaChi = async (req, res) => {
+    try {
+      const accountId = req.params.id;
+      const { tenDiaChi, diaChi, trangThai } = req.body;
+  
+      const account = await Account.findById(accountId);
+  
+      if (!account) {
+        return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+      }
+  
+      // Kiểm tra xem tài khoản có địa chỉ hay không
+      if (!account.diaChi) {
+        return res.status(404).json({ message: 'Tài khoản không có địa chỉ' });
+      }
+  
+      // Cập nhật thông tin địa chỉ
+      account.diaChi.tenDiaChi = tenDiaChi;
+      account.diaChi.diaChi = diaChi;
+      account.diaChi.trangThai = trangThai;
+  
+      // Lưu thông tin tài khoản sau khi đã sửa địa chỉ
+      await account.save();
+  
+      res.json({ success: true, message: 'Sửa địa chỉ thành công' });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  };
