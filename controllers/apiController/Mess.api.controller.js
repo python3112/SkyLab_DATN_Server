@@ -9,12 +9,13 @@ const nameFolder = 'Message';
 exports.CreateMess = async (req, res) => {
     try {
 
-        const { idNguoiGui, content, idChat } = req.body
+        const { idAccount, content, idChat } = req.body
         console.log(req.body)
         const newMessageRef = await realtimeDatabase.ref('/messages').push();
         newMessageRef.set({
+            id:newMessageRef.key,
             idChat: idChat,
-            idAccount: idNguoiGui,
+            idAccount: idAccount,
             content: content,
             AnhTinNhan: [],
             Daxem: false,
@@ -33,7 +34,7 @@ exports.CreateMessWithFile = async (req, res) => {
     try {
 
 
-        const { idNguoiGui, content, idChat } = req.body
+        const { idAccount, content, idChat } = req.body
         const files = req.files;
         console.log(req.files);
         if (!files) {
@@ -44,10 +45,11 @@ exports.CreateMessWithFile = async (req, res) => {
 
         const newMessageRef = await realtimeDatabase.ref('/messages').push();
         newMessageRef.set({
+            id:newMessageRef.key,
             idChat: idChat,
-            idAccount: idNguoiGui,
+            idAccount: idAccount,
             content: content,
-            AnhTinNhan: [images],
+            AnhTinNhan: [],
             Daxem: false,
             ThuHoi: false,
             thoiGian: moment(Date.now()).format('DD-MM-YYYY HH:mm:ss')
@@ -64,15 +66,21 @@ exports.CreateMessWithFile = async (req, res) => {
 exports.getChats = async (req, res) => {
     try {
         const { idChat } = req.body
-        var lisyChat = [];
+        var listChat = [];
         const check = await realtimeDatabase.ref('/messages')
             .orderByChild('idChat')
             .equalTo(idChat)
             .once('value')
-        if (check.exists()) {
-            lisyChat = check.val();
-        }
-        return res.json(lisyChat)
+            if (check.exists()) {
+                // Chuyển đổi dữ liệu thành mảng
+                listChat = Object.entries(check.val()).map(([key, value]) => ({ id: key, ...value }));
+                
+                // Sắp xếp mảng theo thời gian
+                listChat.sort((a, b) => {
+                    return new Date(a.thoiGian) - new Date(b.thoiGian);
+                });
+            }
+        return res.json(listChat);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
