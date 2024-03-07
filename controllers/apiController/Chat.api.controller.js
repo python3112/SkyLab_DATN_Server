@@ -34,17 +34,18 @@ exports.CreateConverSation = async (req, res) => {
         if (check.exists()) {
             
             const checkKey = Object.keys(check.val())[0];
-            return res.status(206).json({ key: checkKey });
+            return res.status(206).json( checkKey );
         } else {
-
             const newMessageRef = await realtimeDatabase.ref('/Chat').push();
             const newMessageKey = newMessageRef.key; // Lấy key mới tạo
             newMessageRef.set({
+                
                 Nguoigui: req.params.id,
+                NguoiNhan:"",
                 ThuHoi: false,
                 ngay: moment(Date.now()).format('DD-MM-YYYY HH:mm:ss')
             });
-            return res.json({ key: newMessageKey });
+            return res.json(newMessageKey);
         }
 
     } catch (error) {
