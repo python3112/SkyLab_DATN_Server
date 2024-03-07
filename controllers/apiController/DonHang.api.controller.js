@@ -42,7 +42,6 @@ exports.themTrangThai = async (req, res) => {
         if (!donHang) {
             return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
         }
-
         // Kiểm tra xem trạng thái đã tồn tại hay chưa
         const trangThaiDaTonTai = donHang.trangThai.some(item => item.trangThai === trangThai);
         if (trangThaiDaTonTai) {

@@ -14,7 +14,7 @@ const accountSchema = new mongoose.Schema({
   },
   avatar: String,
   trangThai: Boolean,
-  diaChi: [DiaChiSchema], 
+  diaChi: DiaChiSchema, 
 }, {
   collection: 'Account_table',
 });
