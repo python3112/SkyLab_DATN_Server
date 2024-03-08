@@ -10,6 +10,18 @@ exports.GetAllDonHang = async(req , res , next) =>{
    
 }
 
+exports.layTheoIdAccountVaTrangThai = async (req, res) => {
+    try {
+        const idAccount = req.params.id;
+        const {trangThai} = req.body;
+
+        const donHangTheoIdVaTrangThai = await DonHang.find({ idAccount: idAccount, 'trangThai.trangThai': trangThai });
+
+        res.json(donHangTheoIdVaTrangThai);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 
 exports.addDonHang = async (req, res) => {
     try {

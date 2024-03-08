@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const trangThaiDonHangSchema = new mongoose.Schema({
   trangThai: {
     type: String,
-    enum: ['Chờ xác nhận', 'Chờ giao hàng', 'Đã giao hàng', 'Đã hủy', 'Trả hàng','Đã đánh giá'],
+    enum: ['Chờ xác nhận', 'Chờ giao hàng', 'Đã giao hàng', 'Đã hủy', 'Trả hàng'],
     default: 'Chờ xác nhận',
     required: true
   },

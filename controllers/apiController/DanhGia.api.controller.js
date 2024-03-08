@@ -4,66 +4,29 @@ const nameFolder = 'DanhGia';
 
 exports.getDaDanhGia = async (req, res, next) => {
     try {
-        const donHangList = await DonHang.find({
-            $and: [
-                {'trangThai.trangThai': 'Đã đánh giá'},
-                {idAccount: req.params.id},
-                {'trangThai.isNow': true},
-            ]
+        const idAccount = req.params.id;
+        const donHangDaDanhGia = await DonHang.find({
+            'idAccount': idAccount,
+            'danhGia': { '$exists': true, '$ne': null }
         });
 
-        if (donHangList && donHangList.length > 0) {
-            return res.json(donHangList);
-        } else {
-            return res.status(400).json({ message: "Không có đơn hàng nào đã đánh giá" });
-        }
+        res.json(donHangDaDanhGia);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
 exports.getChuaDanhGia = async (req, res, next) => {
     try {
-        const donHangList = await DonHang.find({
-            $and: [
-                {'trangThai.trangThai': 'Đã giao hàng'},
-                {idAccount: req.params.id},
-                {'trangThai.isNow': true},
-            ]
+        const idAccount = req.params.id;
+        const donHangChuaDanhGia = await DonHang.find({
+            'idAccount': idAccount,
+            'danhGia': { '$exists': false },
+            'trangThai.isNow': true,
+            'trangThai.trangThai': 'Đã giao hàng'
         });
 
-        if (donHangList && donHangList.length > 0) {
-            return res.json(donHangList);
-        } else {
-            return res.status(400).json({ message: "Không có đơn hàng nào đã đánh giá" });
-        }
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-exports.themDanhGia = async (req, res) => {
-    try {
-        const donHangID = req.params.id;
-        const { soSao, noiDung } = req.body;
-
-        const donHang = await DonHang.findById(donHangID);
-
-        if (!donHang) {
-            return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
-        }
-        
-        let imageUrlAnh =[];
-        let files = req.files;
-        if (files) {
-            imageUrlAnh = await uploadImages(files, nameFolder);
-        }
-        
-        const newDanhGia = { soSao, noiDung, anh: imageUrlAnh };
-        donHang.danhGia = newDanhGia;
-
-        await donHang.save();
-        res.json({ success: true, message: 'Thêm đánh giá thành công' });
+        res.json(donHangChuaDanhGia);
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
