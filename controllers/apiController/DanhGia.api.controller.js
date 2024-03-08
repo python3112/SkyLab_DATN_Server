@@ -5,7 +5,7 @@ const nameFolder = 'DanhGia';
 exports.getDaDanhGia = async (req, res, next) => {
     try {
         const donHangList = await DonHang.find({
-            'trangThai.trangThai': 'Đã đánh giá'
+            'trangThai.trangThai': 'Đã đánh giá',idAccount: req.params.id,
         });
 
         if (donHangList && donHangList.length > 0) {
@@ -22,7 +22,7 @@ exports.getDaDanhGia = async (req, res, next) => {
 exports.getChuaDanhGia = async (req, res, next) => {
     try {
         const donHangList = await DonHang.find({
-            'trangThai.trangThai': 'Chưa đánh giá'
+            'trangThai.trangThai': 'Đã giao hàng',idAccount: req.params.id,
         });
 
         if (donHangList && donHangList.length > 0) {

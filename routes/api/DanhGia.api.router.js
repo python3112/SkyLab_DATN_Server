@@ -6,8 +6,8 @@ const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-router.get('/', danhGiaCtrl.getDaDanhGia);
-router.get('/chuaDanhGia', danhGiaCtrl.getChuaDanhGia);
+router.get('/:id', danhGiaCtrl.getDaDanhGia);
+router.get('/chuaDanhGia/:id', danhGiaCtrl.getChuaDanhGia);
 router.post('/:id', upload.any('image'),danhGiaCtrl.themDanhGia);
 
 
