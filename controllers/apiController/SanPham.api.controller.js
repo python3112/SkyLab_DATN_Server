@@ -29,7 +29,14 @@ exports.getSanPhamByIdHang = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
+exports.getSanPhamByCpu = async (req, res) => {
+    try {
+        const sanPham = await SanPham.find({ cpu: req.params.cpu });
+        res.json(sanPham);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 // Tạo sản phẩm
 exports.createSanPham = async (req, res) => {
     try {

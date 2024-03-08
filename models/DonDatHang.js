@@ -7,6 +7,7 @@ const trangThaiDonHangSchema = new mongoose.Schema({
     default: 'Chờ xác nhận',
     required: true
   },
+  isNow: {type: Boolean, default: true},
   thoiGian: { type: Date, default: Date.now }
 });
 const DanhGiaSchema = new mongoose.Schema({
@@ -29,6 +30,7 @@ const donDatHangSchema = new mongoose.Schema({
   soLuong:Number,
   tongTien: Number,
   ghiChu: String,
+  thanhToan:Boolean,
 }, {
   collection: 'DonDatHang_Table'
 });

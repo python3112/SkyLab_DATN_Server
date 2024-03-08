@@ -9,6 +9,7 @@ const upload = multer({ storage: storage });
 router.get('/', SanPhamCtrl.getAllSanPham);
 router.get('/hang/:id', SanPhamCtrl.getSanPhamByIdHang);
 router.get('/:id', SanPhamCtrl.getSanPhamById);
+router.get('/cpu/:cpu', SanPhamCtrl.getSanPhamByCpu);
 router.post('/add',upload.any("image"), SanPhamCtrl.createSanPham);
 router.put('/edit/:id',upload.any("image"),SanPhamCtrl.updateSanPhamById);
 

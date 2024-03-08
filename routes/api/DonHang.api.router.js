@@ -5,6 +5,7 @@ const DonHangCtrl = require('../../controllers/apiController/DonHang.api.control
 router.get('/' , DonHangCtrl.GetAllDonHang);
 router.post('/add',DonHangCtrl.addDonHang);
 router.post('/add-trang-thai/:id',DonHangCtrl.themTrangThai);
+router.put('/editThanhToan/:id', DonHangCtrl.editThanhToan);
 
 
 module.exports = router;
