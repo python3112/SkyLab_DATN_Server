@@ -3,10 +3,11 @@ const mongoose = require('mongoose');
 const trangThaiDonHangSchema = new mongoose.Schema({
   trangThai: {
     type: String,
-    enum: ['Chờ xác nhận', 'Chờ giao hàng', 'Đã giao hàng', 'Đã hủy', 'Trả hàng','Đã đánh giá','Chưa đánh giá'],
+    enum: ['Chờ xác nhận', 'Chờ giao hàng', 'Đã giao hàng', 'Đã hủy', 'Trả hàng'],
     default: 'Chờ xác nhận',
     required: true
   },
+  isNow: {type: Boolean, default: true},
   thoiGian: { type: Date, default: Date.now }
 });
 const DanhGiaSchema = new mongoose.Schema({
@@ -29,6 +30,7 @@ const donDatHangSchema = new mongoose.Schema({
   soLuong:Number,
   tongTien: Number,
   ghiChu: String,
+  thanhToan:Boolean,
 }, {
   collection: 'DonDatHang_Table'
 });

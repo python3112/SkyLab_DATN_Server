@@ -4,35 +4,31 @@ const nameFolder = 'DanhGia';
 
 exports.getDaDanhGia = async (req, res, next) => {
     try {
-        const donHangList = await DonHang.find({
-            'trangThai.trangThai': 'Đã đánh giá'
+        const idAccount = req.params.id;
+        const donHangDaDanhGia = await DonHang.find({
+            'idAccount': idAccount,
+            'danhGia': { '$exists': true, '$ne': null }
         });
 
-        if (donHangList && donHangList.length > 0) {
-            return res.json(donHangList);
-        } else {
-            return res.status(400).json({ message: "Không có đơn hàng nào đã đánh giá" });
-        }
-
+        res.json(donHangDaDanhGia);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
 exports.getChuaDanhGia = async (req, res, next) => {
     try {
-        const donHangList = await DonHang.find({
-            'trangThai.trangThai': 'Chưa đánh giá'
+        const idAccount = req.params.id;
+        const donHangChuaDanhGia = await DonHang.find({
+            'idAccount': idAccount,
+            'danhGia': { '$exists': false },
+            'trangThai.isNow': true,
+            'trangThai.trangThai': 'Đã giao hàng'
         });
 
-        if (donHangList && donHangList.length > 0) {
-            return res.json(donHangList);
-        } else {
-            return res.status(400).json({ message: "Không có đơn hàng nào đã đánh giá" });
-        }
-
+        res.json(donHangChuaDanhGia);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
