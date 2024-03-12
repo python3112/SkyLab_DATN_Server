@@ -10,11 +10,10 @@ exports.GetAllDonHang = async(req , res , next) =>{
    
 }
 
-exports.layTheoIdAccountVaTrangThai = async (req, res) => {
+exports.layDonHangChoXacNhan = async (req, res) => {
     try {
         const idAccount = req.params.id;
-        const {trangThai} = req.body;
-
+        const trangThai = "Chờ xác nhận";
         const donHangTheoIdVaTrangThai = await DonHang.find({ idAccount: idAccount, 'trangThai.trangThai': trangThai });
 
         res.json(donHangTheoIdVaTrangThai);
