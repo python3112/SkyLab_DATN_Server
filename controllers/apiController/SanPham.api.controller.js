@@ -31,8 +31,7 @@ exports.getSanPhamByIdHang = async (req, res) => {
 };
 exports.getSanPhamByCpu = async (req, res) => {
     try {
-        const {cpu} = req.body;
-        const sanPham = await SanPham.find({ cpu: cpu });
+        const sanPham = await SanPham.find({ cpu: req.params.cpu });
         res.json(sanPham);
     } catch (error) {
         res.status(500).json({ message: error.message });
