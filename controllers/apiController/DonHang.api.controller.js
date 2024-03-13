@@ -21,7 +21,39 @@ exports.layDonHangChoXacNhan = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+exports.layDonHangChoGiaoHang = async (req, res) => {
+    try {
+        const idAccount = req.params.id;
+        const trangThai = "Chờ giao hàng";
+        const donHangTheoIdVaTrangThai = await DonHang.find({ idAccount: idAccount, 'trangThai.trangThai': trangThai });
 
+        res.json(donHangTheoIdVaTrangThai);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+exports.layDonHangDaGiaoHang = async (req, res) => {
+    try {
+        const idAccount = req.params.id;
+        const trangThai = "Đã giao hàng";
+        const donHangTheoIdVaTrangThai = await DonHang.find({ idAccount: idAccount, 'trangThai.trangThai': trangThai });
+
+        res.json(donHangTheoIdVaTrangThai);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+exports.layDonHangDaHuy = async (req, res) => {
+    try {
+        const idAccount = req.params.id;
+        const trangThai = "Đã hủy";
+        const donHangTheoIdVaTrangThai = await DonHang.find({ idAccount: idAccount, 'trangThai.trangThai': trangThai });
+
+        res.json(donHangTheoIdVaTrangThai);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 exports.addDonHang = async (req, res) => {
     try {
         const { idSanPham, idAccount, idKhuyenMai,soLuong, tongTien, ghiChu,thanhToan } = req.body;
