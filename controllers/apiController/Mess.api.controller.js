@@ -87,11 +87,11 @@ exports.getChats = async (req, res) => {
 }
 exports.putSeen = async(req , res ) =>{
     try {
-        const { idChat } = req.body
+       
         const messagesRef = realtimeDatabase.ref('/messages');
         const check = await realtimeDatabase.ref('/messages')
         .orderByChild('idChat')
-        .equalTo(idChat)
+        .equalTo(req.params.id)
         .once('value')
 
         check.forEach((childSnapshot) => {
