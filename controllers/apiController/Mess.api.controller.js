@@ -3,7 +3,6 @@ var Message = require('../../models/Mess');
 const { uploadImages, deleteImage } = require('../../middlewares/upload.image.firebase');
 const { realtimeDatabase } = require('../../middlewares/firebase.config');
 const moment = require('moment');
-const { database } = require('firebase-admin');
 const nameFolder = 'Message';
 
 exports.CreateMess = async (req, res) => {
@@ -88,15 +87,23 @@ exports.getChats = async (req, res) => {
 }
 exports.putSeen = async(req , res ) =>{
     try {
-        const { listIdMess } = req.body;
+        const { idChat } = req.body
+        const messagesRef = realtimeDatabase.ref('/messages');
+        const check = await realtimeDatabase.ref('/messages')
+        .orderByChild('idChat')
+        .equalTo(idChat)
+        .once('value')
 
-        for (let index = 0; index < listIdMess.length; index++) {
-            const element = listIdMess[index];
-            await realtimeDatabase.ref('/messages/' + element + '/Daxem').set(true);
-        }
+        check.forEach((childSnapshot) => {
+            const messageKey = childSnapshot.key;
+            const messageData = childSnapshot.val();
+            // Cập nhật trường Daxem thành true
+            messagesRef.child(messageKey).update({ Daxem: true });
+        });
+        
         return res.json({ msg: "Tất cả tin nhắn đã được đánh dấu là đã xem!" });
     } catch (error) {
-        
+        return res.status(500).json({ message: error.message });
     }
 }
 
@@ -113,7 +120,7 @@ exports.revokeMess = async(req , res ) =>{
 exports.deleteMess = async (req, res, next) => {
     try {
         await realtimeDatabase.ref('/messages/' + req.params.id).remove();
-        return res.json({ msg: "Tất cả tin nhắn đã được đánh dấu là đã xem!" });
+        return res.json({ msg: "Xóa tin nhắn thành công !" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
