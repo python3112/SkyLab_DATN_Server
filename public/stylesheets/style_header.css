@@ -13,7 +13,6 @@ body{
     height: 50px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Đổ bóng cho header */
     z-index: 999; /* Đảm bảo header nổi lên trên các phần khác của trang */
-    position: fixed; /* Đảm bảo header là cố định khi cuộn trang */
     width: 100%; /* Đảm bảo header chiếm toàn bộ chiều rộng của trang */
   }
   .logo {
@@ -29,11 +28,6 @@ body{
 
  /* CSS cho sidebar */
  .sidebar {
-    height: calc(100% - 50px); /* Đảm bảo sidebar chiếm phần còn lại của trang sau khi đã trừ đi chiều cao của header */
-    width: 200px;
-    position: fixed;
-    top: 50px; /* Dịch chuyển slidebar xuống phía dưới header */
-    left: 0;
     background-color: white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Đổ bóng cho sidebar */
   }
@@ -69,12 +63,10 @@ body{
   .sidebar ul li a i {
     margin-right: 10px; /* Khoảng cách giữa icon và text */
   }
-
-  /* CSS cho nội dung chính */
   .content {
-    left: 205px; 
-    position: fixed;
-    top: 50px;
-  }
+    padding: 10px;
+    overflow-y: auto; /* Kích hoạt cuộn dọc khi nội dung vượt qua kích thước */
+    max-height: calc(100vh - 50px); /* Chiều cao tối đa của phần nội dung, 50px là chiều cao của header */
+}
 
   

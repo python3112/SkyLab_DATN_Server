@@ -1,0 +1,30 @@
+<div class="sidebar col-md-2 sm-2">
+    <nav>
+      <ul>
+        <li><a href="/"><i class="material-icons" style="color: black;">home</i><span>Home</span></a></li>
+        <li><a href="/hang"><i class="material-icons" style="color: black;">category</i><span>Hãng</span></a></li>
+        <li><a href="/san-pham"><i class="material-icons" style="color: black;">laptop</i><span>Sản phẩm</span></a></li>
+        <li><a href="/user"><i class="material-icons" style="color: black;">person</i><span>Người dùng</span></a></li>
+        <li><a href="/don-hang"><i class="material-icons" style="color: black;">receipt</i><span>Đơn hàng</span></a></li>
+        <li><a href="/khuyen-mai"><i class="material-icons" style="color: black;">local_offer</i><span>Khuyến mãi</span></a></li>
+        <li><a href="#"><i class="material-icons" style="color: black;">insert_chart</i><span>Thống kê</span></a></li>
+        <ul id="submenu" style="display: none;">
+          <li><a href="#">Thống kê sản phẩm</a></li>
+          <li><a href="#">Thống kê người dùng</a></li>
+          <li><a href="#">Thống kê doanh thu</a></li>
+        </ul>
+        <li><a href="/tin-nhan"><i class="material-icons" style="color: black;">message</i><span>Tin nhắn</span></a></li>
+        <li><a href="/thong-bao"><i class="material-icons" style="color: black;">notifications</i><span>Thông báo</span></a></li>
+      </ul>
+    </nav>
+  </div>
+  <script>
+    // Lắng nghe sự kiện khi người dùng nhấp vào mục "Thống kê"
+    document.querySelector('.sidebar ul li:nth-child(7) a').addEventListener('click', function(event) {
+      // Ngăn chặn hành vi mặc định của thẻ <a> để không chuyển hướng trang
+      event.preventDefault();
+      // Hiển thị hoặc ẩn danh sách submenu khi nhấp vào mục "Thống kê"
+      var submenu = document.getElementById('submenu');
+      submenu.style.display = (submenu.style.display === 'block') ? 'none' : 'block';
+    });
+  </script>
