@@ -11,6 +11,14 @@ var connectDB = require('./models/Database');
 
 // Web
 var homeRoute= require('./routes/home.router');
+var userRoute= require('./routes/user.router');
+var hangRoute= require('./routes/hang.router');
+var sanphamRoute= require('./routes/sanpham.router');
+var donhangRoute= require('./routes/donhang.router');
+var thongbaoRoute= require('./routes/thongbao.router');
+var khuyenmaiRoute= require('./routes/khuyenmai.router');
+var tinnhanRoute= require('./routes/tinnhan.router');
+var thongkeRoute= require('./routes/thongke.router');
 
 
 
@@ -25,7 +33,6 @@ var routerApiMess = require('./routes/api/Mess.api.router');
 var routerApiChat = require('./routes/api/Chat.api.router');
 var routerApiDanhGia = require('./routes/api/DanhGia.api.router');
 var routerApiYeuThich = require('./routes/api/SanPhamYT.router');
-
 
 var app = express();
 
@@ -42,7 +49,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Web
 app.use('/', homeRoute);
+app.use('/user', userRoute);
+app.use('/hang', hangRoute);
+app.use('/san-pham', sanphamRoute);
+app.use('/thong-bao', thongbaoRoute);
+app.use('/thong-ke', thongkeRoute);
+app.use('/don-hang', donhangRoute);
+app.use('/tin-nhan', tinnhanRoute);
+app.use('/khuyen-mai', khuyenmaiRoute);
 
 // API
 app.use('/api/hangSx', routerApiHangSx);
