@@ -37,7 +37,6 @@ exports.CreateMessWithFile = async (req, res) => {
         const files = req.files;
         console.log(req.files);
         if (!files) {
-
             return;
         }
         const images = await uploadImages(files, nameFolder);
@@ -87,11 +86,10 @@ exports.getChats = async (req, res) => {
 }
 exports.putSeen = async(req , res ) =>{
     try {
-        const { idChat } = req.body
         const messagesRef = realtimeDatabase.ref('/messages');
-        const check = await realtimeDatabase.ref('/messages')
+        const check = await messagesRef
         .orderByChild('idChat')
-        .equalTo(idChat)
+        .equalTo(req.params.id)
         .once('value')
 
         check.forEach((childSnapshot) => {
