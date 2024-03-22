@@ -5,6 +5,7 @@ const DonHangCtrl = require('../../controllers/apiController/DonHang.api.control
 router.get('/' , DonHangCtrl.GetAllDonHang);
 router.get('/cho-xac-nhan/:id',DonHangCtrl.layDonHangChoXacNhan);
 router.get('/cho-giao-hang/:id',DonHangCtrl.layDonHangChoGiaoHang);
+router.get('/dang-giao-hang/:id',DonHangCtrl.layDonHangDangGiaoHang);
 router.get('/da-giao-hang/:id',DonHangCtrl.layDonHangDaGiaoHang);
 router.get('/da-huy/:id',DonHangCtrl.layDonHangDaHuy);
 router.post('/add',DonHangCtrl.addDonHang);
