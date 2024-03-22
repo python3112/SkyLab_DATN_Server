@@ -1,6 +1,7 @@
 const DonHang = require('../models/DonDatHang');
 const {SanPham} = require('../models/SanPham'); 
 const Account = require('../models/Account'); 
+const  {ThongBao}= require('../models/ThongBao'); 
 const axios = require('axios');
 
 exports.home = async (req, res, next) => {
@@ -25,7 +26,156 @@ exports.home = async (req, res, next) => {
         res.status(500).json({ message: error.message });
     }
 }
+exports.layChoXacNhan = async (req, res, next) => {
+    try {
+        const listdonhang = await DonHang.find({
+            'trangThai': {
+                $elemMatch: {
+                    'trangThai': 'Chờ xác nhận',
+                    'isNow': true
+                }
+            }
+        });
 
+        const listSanPham = [];
+        const listAccount = [];
+
+        for (const donhang of listdonhang) {
+            const sanPham = await SanPham.findById(donhang.idSanPham);
+            const account = await Account.findById(donhang.idAccount);
+            if (sanPham) {
+                listSanPham.push(sanPham);
+            }
+            if (account) {
+                listAccount.push(account);
+            }
+        }
+
+        res.render('donhang/home_donhang', { title: "Quản lý đơn hàng", listDonHang: listdonhang, listSanPham: listSanPham,listAccount:listAccount });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+exports.layChoGiaoHang = async (req, res, next) => {
+    try {
+        const listdonhang = await DonHang.find({
+            'trangThai': {
+                $elemMatch: {
+                    'trangThai': "Chờ giao hàng",
+                    'isNow': true
+                }
+            }
+        });
+
+        const listSanPham = [];
+        const listAccount = [];
+
+        for (const donhang of listdonhang) {
+            const sanPham = await SanPham.findById(donhang.idSanPham);
+            const account = await Account.findById(donhang.idAccount);
+            if (sanPham) {
+                listSanPham.push(sanPham);
+            }
+            if (account) {
+                listAccount.push(account);
+            }
+        }
+
+        res.render('donhang/home_donhang', { title: "Quản lý đơn hàng", listDonHang: listdonhang, listSanPham: listSanPham,listAccount:listAccount });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+exports.layDangGiaoHang = async (req, res, next) => {
+    try {
+        const listdonhang = await DonHang.find({
+            'trangThai': {
+                $elemMatch: {
+                    'trangThai': "Đang giao hàng",
+                    'isNow': true
+                }
+            }
+        });
+
+        const listSanPham = [];
+        const listAccount = [];
+
+        for (const donhang of listdonhang) {
+            const sanPham = await SanPham.findById(donhang.idSanPham);
+            const account = await Account.findById(donhang.idAccount);
+            if (sanPham) {
+                listSanPham.push(sanPham);
+            }
+            if (account) {
+                listAccount.push(account);
+            }
+        }
+
+        res.render('donhang/home_donhang', { title: "Quản lý đơn hàng", listDonHang: listdonhang, listSanPham: listSanPham,listAccount:listAccount });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+exports.layDaGiaoHang = async (req, res, next) => {
+    try {
+        const listdonhang = await DonHang.find({
+            'trangThai': {
+                $elemMatch: {
+                    'trangThai': 'Đã giao hàng',
+                    'isNow': true
+                }
+            }
+        });
+
+        const listSanPham = [];
+        const listAccount = [];
+
+        for (const donhang of listdonhang) {
+            const sanPham = await SanPham.findById(donhang.idSanPham);
+            const account = await Account.findById(donhang.idAccount);
+            if (sanPham) {
+                listSanPham.push(sanPham);
+            }
+            if (account) {
+                listAccount.push(account);
+            }
+        }
+
+        res.render('donhang/home_donhang', { title: "Quản lý đơn hàng", listDonHang: listdonhang, listSanPham: listSanPham,listAccount:listAccount });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+exports.layDaHuy = async (req, res, next) => {
+    try {
+        const listdonhang = await DonHang.find({
+            'trangThai': {
+                $elemMatch: {
+                    'trangThai': 'Đã hủy',
+                    'isNow': true
+                }
+            }
+        });
+
+        const listSanPham = [];
+        const listAccount = [];
+
+        for (const donhang of listdonhang) {
+            const sanPham = await SanPham.findById(donhang.idSanPham);
+            const account = await Account.findById(donhang.idAccount);
+            if (sanPham) {
+                listSanPham.push(sanPham);
+            }
+            if (account) {
+                listAccount.push(account);
+            }
+        }
+
+        res.render('donhang/home_donhang', { title: "Quản lý đơn hàng", listDonHang: listdonhang, listSanPham: listSanPham,listAccount:listAccount });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 exports.chitiet = async (req, res, next) => {
     try {
         // Lấy idDonhang từ request
@@ -91,21 +241,47 @@ exports.themTrangThaiPost = async (req, res) => {
                 const noiDung1 = 'Đơn hàng của bạn hiện đang chờ giao, vui lòng kiên nhẫn đợi.';
                 const to1 = `/topics/${donHang.idAccount}`;
                 await sendFirebaseNotification(tieuDe1, noiDung1, to1);
+                const newThongBao = new ThongBao({
+                    idDonHang: donHang._id,
+                    idSanPham:donHang.idSanPham,
+                    idAccount: donHang.idAccount,
+                    tieuDe: "Đơn hàng đang chờ giao",
+                    noiDung: "Đơn hàng của bạn hiện đang chờ giao, vui lòng kiên nhẫn đợi nhé!",
+                    daXem: false,
+                  });
+                  await newThongBao.save();
                 break;
             case "Đang giao hàng":
-                const tieuDe2 = 'Đang giao hàng';
-                const noiDung2 = 'Đơn hàng của bạn đang được giao, vui lòng kiên nhẫn đợi.';
+                const tieuDe2 = 'Đơn hàng đang được giao';
+                const noiDung2 = 'Đơn hàng của bạn đang được giao, vui lòng kiên nhẫn đợi nhé!';
                 const to2 = `/topics/${donHang.idAccount}`;
                 await sendFirebaseNotification(tieuDe2, noiDung2, to2);
+                const newThongBao2 = new ThongBao({
+                    idDonHang: donHang._id,
+                    idSanPham:donHang.idSanPham,
+                    idAccount: donHang.idAccount,
+                    tieuDe: "Đơn hàng đang được giao",
+                    noiDung: "Đơn hàng của bạn đang được giao, vui lòng kiên nhẫn đợi nhé!",
+                    daXem: false,
+                  });
+                  await newThongBao2.save();
                 break;
             case "Đã hủy":
                 const tieuDe4 = 'Đơn hàng đã bị hủy';
-                const noiDung4 = 'Đơn hàng đã bị hủy bởi shop, hãy đặt lại đơn hàng khác nhé';
+                const noiDung4 = 'Đơn hàng đã bị hủy bởi shop, hãy đặt lại đơn hàng khác nhé!';
                 const to4 = `/topics/${donHang.idAccount}`;
                 await sendFirebaseNotification(tieuDe4, noiDung4, to4);
+                const newThongBao3 = new ThongBao({
+                    idDonHang: donHang._id,
+                    idSanPham:donHang.idSanPham,
+                    idAccount: donHang.idAccount,
+                    tieuDe: "Đơn hàng đã bị hủy",
+                    noiDung: "Đơn hàng đã bị hủy bởi shop, hãy đặt lại đơn hàng khác nhé",
+                    daXem: false,
+                  });
+                  await newThongBao3.save();
                 break;
             default:
-                // Xử lý trường hợp mặc định nếu trạng thái không khớp với bất kỳ trường hợp nào
                 break;
         }
         // Redirect lại trang chi tiết đơn hàng

@@ -24,12 +24,12 @@
                   Tất cả
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" onclick="changeButtonText('Tất cả')">Tất cả</a></li>
-                  <li><a class="dropdown-item" href="#" onclick="changeButtonText('Chờ xác nhận')">Chờ xác nhận</a></li>
-                  <li><a class="dropdown-item" href="#" onclick="changeButtonText('Chờ giao hàng')">Chờ giao hàng</a>
-                  </li>
-                  <li><a class="dropdown-item" href="#" onclick="changeButtonText('Đã giao hàng')">Đã giao hàng</a></li>
-                  <li><a class="dropdown-item" href="#" onclick="changeButtonText('Đã hủy')">Đã hủy</a></li>
+                  <li><a class="dropdown-item" href="/don-hang/">Tất cả</a></li>
+                  <li><a class="dropdown-item" href="/don-hang/cho-xac-nhan">Chờ xác nhận</a></li>
+                  <li><a class="dropdown-item" href="/don-hang/cho-giao-hang">Chờ giao hàng</a></li>
+                  <li><a class="dropdown-item" href="/don-hang/dang-giao-hang">Đang giao hàng</a></li>
+                  <li><a class="dropdown-item" href="/don-hang/da-giao-hang">Đã giao hàng</a></li>
+                  <li><a class="dropdown-item" href="/don-hang/da-huy">Đã hủy</a></li>
                 </ul>
               </div>
 
@@ -92,7 +92,8 @@
                       <%= donHang.tongTien %>
                     </td>
                     <td>
-                      <a href="/don-hang/chi-tiet/<%= donHang._id %> " class="btn btn-primary icon-btn ms-2 me-2" >Chi tiết</a>
+                      <a href="/don-hang/chi-tiet/<%= donHang._id %> " class="btn btn-primary icon-btn ms-2 me-2">Chi
+                        tiết</a>
                     </td>
                   </tr>
                   <% }); %>
