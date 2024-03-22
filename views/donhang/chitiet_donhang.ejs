@@ -108,25 +108,22 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
-                    <form action="/don-hang/chi-tiet/<%= donhang._id %>" method="POST">
-                      <div class="row mb-3">
-                        <div class="col">
-                          <label for="currentStateInput" class="form-label">Trạng thái hiện tại:</label>
-                          <input type="text" class="form-control" id="currentStateInput" value="<%= ttNow.trangThai %>"
-                            disabled>
-                        </div>
-                        <div class="col-auto align-self-center">
-                          <i class="material-icons">keyboard_arrow_right</i>
-                        </div>
-                        <div class="col">
-                          <label for="nextStateInput" class="form-label">Chờ giao hàng:</label>
-                          <input type="text" class="form-control" id="nextStateInput" name="trangThai"
-                            value="Chờ giao hàng" disabled>
-                        </div>
-                      </div>
-                      <button type="submit" class="btn btn-primary">Đồng ý</button>
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    </form>
+                    <% let ttTiep="" %>
+                      <% if(ttNow.trangThai=="Chờ xác nhận" ) { %>
+                        <% ttTiep="Chờ giao hàng" %>
+                          <% } else if(ttNow.trangThai=="Chờ giao hàng" ) { %>
+                            <% ttTiep="Đang giao hàng" %>
+                              <% } %>
+                                <form action="/don-hang/chi-tiet/<%= donhang._id %>?trangThai=<%= ttTiep %>"
+                                  method="POST">
+                                  <div class="row mb-3">
+                                    <p>Bạn muốn thay đổi trạng thái đơn hàng từ <strong>
+                                        <%= ttNow.trangThai %>
+                                      </strong>sang <strong><%= ttTiep %> ?</strong></p>
+                                  </div>
+                                  <button type="submit" class="btn btn-primary">Đồng ý</button>
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                </form>
                   </div>
                 </div>
               </div>

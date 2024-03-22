@@ -1,6 +1,7 @@
 const DonHang = require('../models/DonDatHang');
 const {SanPham} = require('../models/SanPham'); 
 const Account = require('../models/Account'); 
+const axios = require('axios');
 
 exports.home = async (req, res, next) => {
     try {
@@ -61,8 +62,7 @@ exports.chitiet = async (req, res, next) => {
 exports.themTrangThaiPost = async (req, res) => {
     try {
         const donHangId = req.params.id;
-        const { trangThai } = req.body;
-        console.log(trangThai);
+        const trangThai = req.query.trangThai; 
         const donHang = await DonHang.findById(donHangId);
 
         if (!donHang) {
@@ -98,15 +98,9 @@ exports.themTrangThaiPost = async (req, res) => {
                 const to2 = `/topics/${donHang.idAccount}`;
                 await sendFirebaseNotification(tieuDe2, noiDung2, to2);
                 break;
-            case "Đã giao hàng":
-                const tieuDe3 = 'Giao hàng thành công';
-                const noiDung3 = 'Đơn hàng đã giao thành công, bạn có thể đánh giá sản phẩm nhé';
-                const to3 = `/topics/${donHang.idAccount}`;
-                await sendFirebaseNotification(tieuDe3, noiDung3, to3);
-                break;
             case "Đã hủy":
                 const tieuDe4 = 'Đơn hàng đã bị hủy';
-                const noiDung4 = 'Đơn hàng đã bị hủy bởi bạn, hãy đặt lại đơn hàng khác nhé';
+                const noiDung4 = 'Đơn hàng đã bị hủy bởi shop, hãy đặt lại đơn hàng khác nhé';
                 const to4 = `/topics/${donHang.idAccount}`;
                 await sendFirebaseNotification(tieuDe4, noiDung4, to4);
                 break;
@@ -120,3 +114,29 @@ exports.themTrangThaiPost = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+async function sendFirebaseNotification(tieuDe, noiDung, to) {
+    const fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+    const fcmKey = 'AAAAMC3MiGc:APA91bEjbqnn-hrzh5IVXy4RkirHhZBfCWycV06j3GzS4G7yZ_c_Y8qKtLBpijUFGffFOD58nvU2uTNpFQuO_2spQ6sJXhWeETpst342JSTSVh6HS3XsrCnOvngMSz7x9gLacX2oLrJT';
+
+    const notificationData = {
+        data: {
+            tieu_de: tieuDe,
+            noi_dung: noiDung
+        },
+        to: to
+    };
+    try {
+        const response = await axios.post(fcmUrl, notificationData, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `key=${fcmKey}`
+            }
+        });
+
+        console.log('Firebase notification sent successfully:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error sending Firebase notification:', error.response ? error.response.data : error.message);
+        throw error;
+    }
+}
