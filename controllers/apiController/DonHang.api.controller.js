@@ -1,5 +1,6 @@
 const DonHang = require('../../models/DonDatHang');
 const axios = require('axios');
+const  {ThongBao}= require('../../models/ThongBao'); 
 
 exports.GetAllDonHang = async (req, res, next) => {
     try {
@@ -121,9 +122,18 @@ exports.addDonHang = async (req, res) => {
         });
         const savedDonHang = await newDonHang.save();
         const tieuDe = 'Đặt hàng thành công';
-        const noiDung = 'Bạn đã đặt hàng thành công, vui lòng chờ xác nhận từ cửa hàng';
+        const noiDung = 'Bạn đã đặt hàng thành công, vui lòng chờ xác nhận từ cửa hàng nhé!';
         const to = `/topics/${idAccount}`;
         await sendFirebaseNotification(tieuDe, noiDung, to);
+        const newThongBao = new ThongBao({
+            idDonHang: savedDonHang._id,
+            idSanPham:savedDonHang.idSanPham,
+            idAccount: savedDonHang.idAccount,
+            tieuDe: "Đặt hàng thành công",
+            noiDung: "Bạn đã đặt hàng thành công, vui lòng chờ xác nhận từ cửa hàng nhé!",
+            daXem: false,
+          });
+          await newThongBao.save();
         return res.status(201).json(savedDonHang);
     } catch (error) {
         console.error(error);
@@ -159,18 +169,6 @@ exports.themTrangThai = async (req, res) => {
         donHang.trangThai.push(newDH);
         await donHang.save();
         switch(trangThai) {
-            case "Chờ giao hàng":
-                const tieuDe1 = 'Đơn hàng đang chờ giao';
-                const noiDung1 = 'Đơn hàng của bạn hiện đang chờ giao, vui lòng kiên nhẫn đợi.';
-                const to1 = `/topics/${donHang.idAccount}`;
-                await sendFirebaseNotification(tieuDe1, noiDung1, to1);
-                break;
-            case "Đang giao hàng":
-                const tieuDe2 = 'Đang giao hàng';
-                const noiDung2 = 'Đơn hàng của bạn đang được giao, vui lòng kiên nhẫn đợi.';
-                const to2 = `/topics/${donHang.idAccount}`;
-                await sendFirebaseNotification(tieuDe2, noiDung2, to2);
-                break;
             case "Đã giao hàng":
                 const tieuDe3 = 'Giao hàng thành công';
                 const noiDung3 = 'Đơn hàng đã giao thành công, bạn có thể đánh giá sản phẩm nhé';
@@ -184,7 +182,6 @@ exports.themTrangThai = async (req, res) => {
                 await sendFirebaseNotification(tieuDe4, noiDung4, to4);
                 break;
             default:
-                // Xử lý trường hợp mặc định nếu trạng thái không khớp với bất kỳ trường hợp nào
                 break;
         }
         res.json({ success: true, message: 'Thêm trạng thái thành công' });
