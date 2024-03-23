@@ -74,8 +74,8 @@
                       <%= index + 1 %>
                     </th>
                     <td>
-                      <% const account=listAccount.find(acc=> acc._id.toString() === donHang.idAccount.toString()); %>
-                        <%= account.hoTen ? account.hoTen : account.taiKhoan %>
+                      <% const account = listAccount.find(acc => acc._id.toString() === donHang.idAccount.toString()); %>
+                      <%= account && account.taiKhoan ? account.taiKhoan : "" %>
                     </td>
                     <td>
                       <% const sanPham=listSanPham.find(sp=> sp._id.toString() === donHang.idSanPham.toString()); %>
