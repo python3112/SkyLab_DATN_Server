@@ -22,10 +22,8 @@ exports.search = async (req,res,next)=>{
     }  
     }
     catch(error){
-        render.send("Oô có lỗi gì đó sai sai")
+        const listHang = await hang.find();
+        res.render('hang/home_hang',{title: "Quản lý hãng", listHang: listHang});
     }
    
-}
-exports.gotoAddView = (req, res, next) =>{
-    res.render('hang/them_hang',{title: "Thêm Hãng Sản Xuất"})
 }

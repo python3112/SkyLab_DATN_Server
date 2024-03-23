@@ -1,6 +1,7 @@
 const Hangsx = require('../../models/Hangsx');
 const { uploadImage, deleteImage } = require('../../middlewares/upload.image.firebase');
 const nameFolder = 'HangSx';
+const hangSXCtrl = require('../hang.controller')
 // Lấy tất cả các hãng sản xuất có trạng thái là true
 exports.getAllHangsx = async (req, res) => {
   try {
@@ -45,10 +46,37 @@ exports.postHangSx = async (req, res) => {
       trangThai,
       imageLogo: imageUrl,
     });
-
     const savedHangsx = await newHangsx.save();
-
     return res.status(201).json(savedHangsx);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+exports.postHangSxView = async (req, res) => {
+  try {
+    const { tenHangSx } = req.body;
+    const file = req.file;
+    let trangThai = false;
+
+    if (!file) {
+      return res.status(400).json({ message: 'Chưa có file upload' });
+    }
+    // Kiểm tra nếu loại sản phẩm đã tồn tại
+    const existingHangSx = await Hangsx.findOne({ tenHangSx });
+    if (existingHangSx) {
+      return res.status(400).json({ message: 'Hãng sản xuất đã tồn tại' });
+    }
+    const imageUrl = await uploadImage(file, nameFolder);
+
+    const newHangsx = new Hangsx({
+      tenHangSx,
+      trangThai,
+      imageLogo: imageUrl,
+    });
+    const savedHangsx = await newHangsx.save();
+    const listHang = await Hangsx.find();
+    return res.render('hang/home_hang',{title:"Quản lý Hãng",listHang:listHang })
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });

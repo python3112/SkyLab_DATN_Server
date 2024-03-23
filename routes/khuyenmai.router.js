@@ -1,12 +1,19 @@
 var express = require('express');
 var router = express.Router();
 
-// Đường dẫn tới home.controller.js
+
 var khuyenmaiCtrl = require('../controllers/khuyenmai.controller');
 
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-// Vào trang home theo địa chỉ '/'
 router.get('/',khuyenmaiCtrl.home);
+router.get('/search',khuyenmaiCtrl.search);
+// router.post('/addKhuyenMai',upload.single('file'), khuyenmaiCtrl.postHangSxView);
+router.get('/addKhuyenMai', (res,req,next)=>{
+    req.redirect('/', khuyenmaiCtrl.home)
+})
 
 // Xuất router
 module.exports = router;
