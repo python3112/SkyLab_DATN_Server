@@ -1,23 +1,248 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title><%= title %></title>
     <link rel='stylesheet' href='../stylesheets/style_header.css' />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-  integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  </head>
-  <body>
-    <%- include('../inc/header') %>
-  <div class="d-flex flex-row"> 
-  <%- include('../inc/sidebar') %>
-  <div class="content col-md-10 sm-10">
-    <h1>Cà Văn Chung</h1>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="css.css">
+    <style>
+        .tb1 {
+            width: 100%;
+            font-size: 100%;
+            padding: 5px;
+        }
+        
+        .tb2 {
+            width: 100%;
+            font-size: 100%;
+            padding: 5px;
+        }
+        
+        th {
+            border: 1px solid rgb(229, 218, 218);
+            border-bottom: 2px solid;
+            text-align: center;
+        }
+        
+        .th2 {
+            border: none;
+            text-align: center;
+        }
+        
+        .th2 img {
+            width: 30px;
+            height: 30px;
+        }
+        
+        td {
+            border: 1px solid rgb(229, 218, 218);
+            text-align: center;
+            align-items: center;
+        }
+        
+        .stt {
+            width: 3%;
+            text-align: center;
+        }
+        
+        .id {
+            width: 15%;
+        }
+        
+        .anh {
+            width: 10%;
+            height: 30px;
+        }
+        
+        .ten {
+            width: 20%;
+        }
+        .trangThai{
+            width: 10%;
+        }
+        
+        .hanhDong {
+            width: 10%;
+        }
+        
+        .img1 {
+            width: 80%;
+            height: 10%;
+            margin: auto;
+            padding: 9%;
+        }
+        
+        tr {
+            margin-top: 10px;
+        }
+        
+        .hang:hover {
+            background-color: rgb(243, 241, 241);
+            text-decoration: underline;
+        }
+        
+        #searchForm {
+            margin: 20px auto;
+        }
+        .modal-body{
+            display: flex;
+            flex-direction: column;
+           width: 100%;
+        }
+        .modal-body input{
+            width: 100%;
+            height: 50px;
+            margin: 20px auto;
+        }
+        .preview{
+            padding: 30px;
+        }
+        .add{
+            float: right;
+            width: 10%;
+            margin: 10px 15px;
+            text-align: center;
+            font-size: 100%;
+            min-width: 70px;
+        }
+        .top{
+            display: flex;
+            align-items: center;
+        }
+        .top #searchForm{
+            width: 100%;
+            margin: auto;
+        }
+        .top #form2{
+            width: 100%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+<%- include('../inc/header') %>
+<div class="d-flex flex-row">
+    <%- include('../inc/sidebar') %>
+    <div class="content col-md-10 sm-10">
+        <h2><%= title %></h2>
+        <div class="top">
+        <form id="searchForm" action="/khuyen-mai/search" method="GET">
+            <div class="row g-3">
+                <div class="col">
+                    <input type="text" id="textQuery" name="query" class="form-control" placeholder="Id Khuyen mai">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Tìm</button>
+                </div>
+                <div class="col-auto">
+                    <a href="/khuyen-mai" id="clear" class="btn btn-secondary">Clear</a>
+                </div>
+                <div class="col-auto">
+                </div>
+            </div>
+        </form>
+        <div>
+            <button  type="button" class="add btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Thêm
+            </button>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="form2 modal-content">
+                    <form id="form2" method="post" action="khuyen-mai/addHangSX" enctype="multipart/form-data">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Thêm Hãng</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" class="form-control" placeholder="Tên" name="tenHangSx">
+                            <input type="file" name="file" id="logoInput" accept="image/*">
+                        </div>
+                        <div class="modal-footer">
+                            <a type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</a>
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                        </div>
+                    </form>
+                    <div class="preview">
+                        <h5>Ảnh xem trước</h5>
+                        <img id="logoPreview" src="#" style="max-width: 100%; max-height: 200px;">
+                    </div>
+                </div>
+                </div>
+            </div>    
+        </div>
+    </div>
+        <table class="tb1">
+            <tr>
+                <th class="stt">STT</th>
+                <th class="id">ID</th>
+                <th class="anh">Ảnh</th>
+                <th class="trangThai">TrangThai</th>
+                <th class="hanhDong">Hành Động</th>
+            </tr>
+            <% listKhuyenMai.forEach((khuyenMai, index) => { %>
+            <tr class="hang">
+                <td><%= index + 1 %></td>
+                <td><%= khuyenMai._id %></td>
+                <td><img class="img1" src="<%= khuyenMai.anh %>" alt=""></td>
+                <td><%= khuyenMai.trangThai %></td>
+                <td>
+                    <table class="tb2">
+                        <th class="th2">
+                            <a href="/adu">
+                                <img src="https://cdn2.iconfinder.com/data/icons/lucid-generic/24/edit_update_pencil_post_write-512.png"
+                                     alt="">
+                            </a>
+                        </th>
+                    </table>
+                </td>
+            </tr>
+            <% }) %>
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              <li class="page-item"><a class="page-link" href="/khuyen-mai">1</a></li>
+              <li class="page-item"><a class="page-link" href="/khuyen-mai">2</a></li>
+              <li class="page-item"><a class="page-link" href="/khuyen-mai">3</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+    </div>
   </div>
-</div>
-  <%- include('../inc/footer') %>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-  crossorigin="anonymous"></script>
-  </body>
+<%- include('../inc/footer') %>
+
+<script>
+   document.getElementById("clear").addEventListener("click", function(){
+        document.getElementById("textQuery").value = "";
+    })
+    const logoInput = document.getElementById('logoInput');
+        const logoPreview = document.getElementById('logoPreview');
+
+        logoInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    logoPreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous">
+    
+    </script>
+</body>
 </html>
