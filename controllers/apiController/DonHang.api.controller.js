@@ -144,7 +144,7 @@ exports.addDonHang = async (req, res) => {
 exports.themTrangThai = async (req, res) => {
     try {
         const donHangId = req.params.id;
-        const { trangThai } = req.body;
+        const trangThai = req.query.trangThai; 
 
         const donHang = await DonHang.findById(donHangId);
 
