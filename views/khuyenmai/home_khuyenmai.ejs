@@ -60,7 +60,7 @@
             width: 20%;
         }
         .trangThai{
-            width: 10%;
+            width: 5%;
         }
         
         .hanhDong {
@@ -118,6 +118,9 @@
         .top #form2{
             width: 100%;
             margin: auto;
+        }
+        .sotien{
+          width: 10%;
         }
     </style>
 </head>
@@ -178,7 +181,8 @@
                 <th class="stt">STT</th>
                 <th class="id">ID</th>
                 <th class="anh">Ảnh</th>
-                <th class="trangThai">TrangThai</th>
+                <th class="sotien">Số tiền Giảm</th>
+                <th class="trangThai">Trạng Thái</th>
                 <th class="hanhDong">Hành Động</th>
             </tr>
             <% listKhuyenMai.forEach((khuyenMai, index) => { %>
@@ -186,6 +190,7 @@
                 <td><%= index + 1 %></td>
                 <td><%= khuyenMai._id %></td>
                 <td><img class="img1" src="<%= khuyenMai.anh %>" alt=""></td>
+                <td><%= khuyenMai.soTienGiam.toLocaleString() %></td>
                 <td><%= khuyenMai.trangThai %></td>
                 <td>
                     <table class="tb2">
