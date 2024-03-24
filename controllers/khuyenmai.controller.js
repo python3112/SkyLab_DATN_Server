@@ -1,11 +1,14 @@
 const khuyenmaiMd = require('../models/KhuyenMai')
+const nameFolder = 'KhuyenMai';
+const KhuyenMai = require('../models/KhuyenMai')
+const { uploadImage, deleteImage } = require('../middlewares/upload.image.firebase');
 exports.home = async (req,res,next)=>{
     try{
         let listKhuyenMai = await khuyenmaiMd.find();
         res.render('khuyenmai/home_khuyenmai',{title: "Quản lý khuyến mãi", listKhuyenMai: listKhuyenMai});
     }
     catch(error){
-        res.send("Co gi do sai sai !")
+        res.render("Error/err",{msg: error.message})
     }
     
 }
@@ -19,12 +22,44 @@ exports.search = async (req,res,next)=>{
     else{
         const khuyenmai = await khuyenmaiMd.findById(queryValue);
         listKhuyenMai.push(khuyenmai)
-        // res.send(null)
         res.render('khuyenmai/home_khuyenmai',{title: "Quản lý Khuyến mại id: "+queryValue, listKhuyenMai: listKhuyenMai});
     }  
     }
     catch(error){
-        res.render('khuyenmai/home_khuyenmai',{title: "Quản lý Khuyến mại id: "+queryValue, listKhuyenMai: listKhuyenMai});
+        res.render("Error/err",{msg: error.message});
     }
    
 }
+exports.addKhuyenMai = async (req, res) => {
+    try {
+        const { thoiGianBatDau,
+            thoiGianKetThuc,
+            code,
+            moTa,
+            soLuong,
+            soTienGiam} = req.body;
+        const file = req.file;
+        let checkStatus = req.body.trangThai
+        let trangThai = (checkStatus === "on") ? true : false;
+         if (!file) {
+            res.render("Error/err",{msg: "Chưa có file upload"});
+        }
+        const imageUrl = await uploadImage(file, nameFolder);
+        const newKhuyenMai = new KhuyenMai({
+            thoiGianBatDau,
+            thoiGianKetThuc,
+            code,
+            moTa,
+            soLuong,
+            soTienGiam,
+            trangThai,
+            anh: imageUrl,
+        });
+        const savedKhuyenMai = await newKhuyenMai.save();
+        let listKhuyenMai = await khuyenmaiMd.find();
+        return  res.redirect('/khuyen-mai');
+    } catch (error) {
+        console.error(error);
+        res.render("Error/err",{msg: error.message});
+    }
+};

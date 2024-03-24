@@ -36,7 +36,6 @@ exports.addKhuyenMai = async (req, res) => {
         }
         
         const imageUrl = await uploadImage(file, nameFolder);
-
         const newKhuyenMai = new KhuyenMai({
             thoiGianBatDau,
             thoiGianKetThuc,
@@ -49,10 +48,9 @@ exports.addKhuyenMai = async (req, res) => {
         });
 
         const savedKhuyenMai = await newKhuyenMai.save();
-
         return res.status(201).json(savedKhuyenMai);
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message+"ADad" });
     }
 };
