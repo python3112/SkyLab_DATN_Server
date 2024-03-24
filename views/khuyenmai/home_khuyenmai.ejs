@@ -16,7 +16,7 @@
         
         .tb2 {
             width: 100%;
-            font-size: 100%;
+            font-size: 80%;
             padding: 5px;
         }
         
@@ -66,18 +66,18 @@
         .hanhDong {
             width: 10%;
         }
-        
         .img1 {
-            width: 80%;
-            height: 10%;
+            width: 100%;
+            height: 20%;
             margin: auto;
-            padding: 9%;
+            max-width: 100%;
+            max-height: 50px;
+           padding: 2%;
         }
         
         tr {
             margin-top: 10px;
         }
-        
         .hang:hover {
             background-color: rgb(243, 241, 241);
             text-decoration: underline;
@@ -91,11 +91,11 @@
             flex-direction: column;
            width: 100%;
         }
-        .modal-body input{
+        /* .modal-body input{
             width: 100%;
             height: 50px;
             margin: 20px auto;
-        }
+        } */
         .preview{
             padding: 30px;
         }
@@ -120,7 +120,10 @@
             margin: auto;
         }
         .sotien{
-          width: 10%;
+          width: 5%;
+        }
+        .input-group, .form-check{
+            margin-top: 5%;
         }
     </style>
 </head>
@@ -134,15 +137,16 @@
         <form id="searchForm" action="/khuyen-mai/search" method="GET">
             <div class="row g-3">
                 <div class="col">
-                    <input type="text" id="textQuery" name="query" class="form-control" placeholder="Id Khuyen mai">
+                    <input required="true" type="text" id="textQuery" name="query" class="form-control" placeholder="Id Khuyen mai">
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">Tìm</button>
                 </div>
                 <div class="col-auto">
-                    <a href="/khuyen-mai" id="clear" class="btn btn-secondary">Clear</a>
+                    <button type="button" id="clear" class="btn btn-secondary">Clear</button>
                 </div>
                 <div class="col-auto">
+                    <a href="/khuyen-mai" id="clear" class="btn btn-secondary">All</a>
                 </div>
             </div>
         </form>
@@ -153,14 +157,43 @@
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                 <div class="form2 modal-content">
-                    <form id="form2" method="post" action="khuyen-mai/addHangSX" enctype="multipart/form-data">
+                    <form id="form2" method="post" action="/khuyen-mai/addKhuyenMai" enctype="multipart/form-data">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Thêm Hãng</h1>
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Thêm Khuyến Mại</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <input type="text" class="form-control" placeholder="Tên" name="tenHangSx">
-                            <input type="file" name="file" id="logoInput" accept="image/*">
+                            <div class="input-group ">
+                                <span class="input-group-text" id="inputGroup-sizing-lg">Thời gian bắt đầu</span>
+                                <input required="true" name="thoiGianBatDau" type="datetime-local" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                              </div>
+                              <div class="input-group ">
+                                <span class="input-group-text" id="inputGroup-sizing-lg">Thời gian kết thúc</span>
+                                <input required="true" name="thoiGianKetThuc" type="datetime-local" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                              </div>
+                              <div class="input-group ">
+                                <span class="input-group-text" id="inputGroup-sizing-lg">Code</span>
+                                <input required="true" name="code" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                              </div>
+                              <div class="input-group ">
+                                <span class="input-group-text" id="inputGroup-sizing-lg">Số tiền</span>
+                                <input required="true" name="soTienGiam" type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                              </div>
+                              <div class="input-group ">
+                                <span class="input-group-text" id="inputGroup-sizing-lg">Mô Tả</span>
+                                <input required="true" name="moTa" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                              </div>
+                              <div class="input-group ">
+                                <span class="input-group-text" id="inputGroup-sizing-lg">Số Lượng</span>
+                                <input required="true" name="soLuong" type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                              </div>
+                              <div class="form-check form-switch">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Trạng Thái</label>
+                                <input name="trangThai" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+                              </div>
+                              <div class="input-group ">
+                                <input type="file" name="file" id="logoInput" accept="image/*" required="true">
+                              </div>
                         </div>
                         <div class="modal-footer">
                             <a type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</a>
@@ -182,6 +215,9 @@
                 <th class="id">ID</th>
                 <th class="anh">Ảnh</th>
                 <th class="sotien">Số tiền Giảm</th>
+                <th class="hanhDong">Ngày Băt Đầu</th>
+                <th class="hanhDong">Ngày Kết Thúc</th>
+                <th class="hanhDong">Code</th>
                 <th class="trangThai">Trạng Thái</th>
                 <th class="hanhDong">Hành Động</th>
             </tr>
@@ -190,8 +226,11 @@
                 <td><%= index + 1 %></td>
                 <td><%= khuyenMai._id %></td>
                 <td><img class="img1" src="<%= khuyenMai.anh %>" alt=""></td>
-                <td><%= khuyenMai.soTienGiam.toLocaleString() %></td>
-                <td><%= khuyenMai.trangThai %></td>
+                <td style="color: red; font-size: 80%; font-weight: bold;"><%= khuyenMai.soTienGiam.toLocaleString() %>₫</td>
+                <td style="width: 10%;"><%= khuyenMai.thoiGianBatDau.toLocaleString() %></td>
+                <td><%= khuyenMai.thoiGianKetThuc.toLocaleString() %></td>
+                <td><%= khuyenMai.code %></td>
+                <td <% if (khuyenMai.trangThai === true) { %> style="color: black;" <% } else { %> style="color: red;" <% } %>><%= khuyenMai.trangThai %></td>
                 <td>
                     <table class="tb2">
                         <th class="th2">
@@ -247,7 +286,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous">
-    
+
     </script>
+    <script src="path/to/moment.js"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@ exports.home = async (req,res,next)=>{
         res.render('hang/home_hang',{title: "Quản lý hãng", listHang: listHang});
     }
     catch(error){
-        res.render('hang/home_hang',{title: "Quản lý hãngErrr", listHang: listHang});
+        res.render("Error/err",{msg: error});
     }
     
 }
@@ -22,8 +22,7 @@ exports.search = async (req,res,next)=>{
     }  
     }
     catch(error){
-        const listHang = await hang.find();
-        res.render('hang/home_hang',{title: "Quản lý hãng", listHang: listHang});
+        res.render("Error/err",{msg: msg});
     }
    
 }
