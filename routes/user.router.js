@@ -7,6 +7,8 @@ var userCtrl = require('../controllers/user.controller');
 
 // Vào trang home theo địa chỉ '/'
 router.get('/',userCtrl.home);
-
+router.get('/userActiveTrue',userCtrl.findUserTrue);
+router.get('/userActiveFalse',userCtrl.findUserFales);
+router.get('/queryUser',userCtrl.query);
 // Xuất router
 module.exports = router;

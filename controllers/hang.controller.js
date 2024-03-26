@@ -12,7 +12,7 @@ exports.home = async (req,res,next)=>{
 exports.search = async (req,res,next)=>{
     const queryValue = req.query.query;
     try{
-    if (queryValue.lenght == 0) {
+    if (queryValue.lenght === 0) {
         const listHang = await hang.find();
         res.render('hang/home_hang',{title: "Quản lý hãng", listHang: listHang});
     }
@@ -24,5 +24,4 @@ exports.search = async (req,res,next)=>{
     catch(error){
         res.render("Error/err",{msg: msg});
     }
-   
 }

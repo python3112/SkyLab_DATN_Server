@@ -15,7 +15,7 @@
   <%- include('../inc/header') %>
   <div class="d-flex flex-row"> 
   <%- include('../inc/sidebar') %>
-  <div class="content col-md-10 sm-10">
+  <div class="content col-md-10 sm-10"style="overflow: auto; height: 80vh">
     <form id="myForm">
       <div class="row g-3">
         <div class="col">
@@ -51,7 +51,7 @@
           <th scope="col" class="col-md-3 sm-3">Hành động</th>
         </tr>
       </thead>
-      <tbody class="table-group-divider">
+      <t class="table-group-divider">
         <% listSanPham.forEach((product, index)=> { %>
           <tr class="align-middle text-center">
             <th scope="row">

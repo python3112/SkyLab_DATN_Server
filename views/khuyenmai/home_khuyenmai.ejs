@@ -131,8 +131,7 @@
 <%- include('../inc/header') %>
 <div class="d-flex flex-row">
     <%- include('../inc/sidebar') %>
-    <div class="content col-md-10 sm-10">
-        <h2><%= title %></h2>
+    <div class="content col-md-10 sm-10" style="overflow: auto; height: 80vh;">
         <div class="top">
         <form id="searchForm" action="/khuyen-mai/search" method="GET">
             <div class="row g-3">
@@ -155,7 +154,7 @@
                 Thêm
             </button>
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="form2 modal-content">
                     <form id="form2" method="post" action="/khuyen-mai/addKhuyenMai" enctype="multipart/form-data">
                         <div class="modal-header">
