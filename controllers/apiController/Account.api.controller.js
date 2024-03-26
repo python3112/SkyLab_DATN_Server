@@ -11,7 +11,40 @@ exports.listAccounts = async (req, res, next) => {
         res.status(500).json({ message: error.message });
     }
 };
+// Hàm tạo đầy đủ một account
+exports.createAccount = async (req, res) => {
+    try {
+        // Lấy thông tin từ request body
+        const { taiKhoan, hoTen, matKhau, email, sdt, tenQuyen, diaChi } = req.body;
 
+        // Kiểm tra xem tài khoản đã tồn tại hay chưa
+        const existingAccount = await Account.findOne({ taiKhoan });
+        if (existingAccount) {
+            return res.status(400).json({ success: false, message: 'Tài khoản đã tồn tại. Vui lòng nhập tài khoản khác!' });
+        }
+
+        // Tạo mới một tài khoản
+        const newAccount = new Account({
+            taiKhoan,
+            hoTen,
+            matKhau,
+            email,
+            sdt,
+            tenQuyen,
+            trangThai : true,
+            diaChi
+        });
+
+        // Lưu tài khoản vào cơ sở dữ liệu
+        await newAccount.save();
+
+        // Trả về thông báo thành công
+        return res.status(201).json({ success: true, message: 'Tạo tài khoản thành công', account: newAccount });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
 // Lấy thông tin của một account dựa trên ID
 exports.getAccountById = async (req, res) => {
     try {

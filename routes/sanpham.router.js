@@ -7,6 +7,7 @@ var sanphamCtrl = require('../controllers/sanpham.controller');
 
 // Vào trang home theo địa chỉ '/'
 router.get('/',sanphamCtrl.home);
+router.get('/chi-tiet/:id',sanphamCtrl.chiTiet);
 
 // Xuất router
 module.exports = router;
