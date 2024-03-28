@@ -281,3 +281,21 @@ exports.laySoSaoTrungBinh = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+exports.laySoLanDanhGia = async (req, res) => {
+    try {
+        const idSanPham = req.params.id;
+
+        const danhGiaList = await DonHang.find({ idSanPham: idSanPham }).select('danhGia');
+
+        let soLuongDanhGia = 0;
+
+        danhGiaList.forEach(donHang => {
+            if (donHang.danhGia) {
+                soLuongDanhGia++;
+            }
+        });
+        res.json(soLuongDanhGia );
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

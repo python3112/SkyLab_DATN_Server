@@ -13,4 +13,5 @@ router.post('/add-trang-thai/:id',DonHangCtrl.themTrangThai);
 router.put('/editThanhToan/:id', DonHangCtrl.editThanhToan);
 router.get('/da-ban/:id',DonHangCtrl.laySoLuongDonHangDaGiaoHang);
 router.get('/sao/:id',DonHangCtrl.laySoSaoTrungBinh);
+router.get('/lan-danh-gia/:id',DonHangCtrl.laySoLanDanhGia);
 module.exports = router;
