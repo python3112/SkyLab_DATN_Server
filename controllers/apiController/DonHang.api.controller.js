@@ -235,3 +235,49 @@ async function sendFirebaseNotification(tieuDe, noiDung, to) {
         throw error;
     }
 }
+
+exports.laySoLuongDonHangDaGiaoHang = async (req, res) => {
+    try {
+        const idSanPham = req.params.id; // Lấy idSanPham từ request params
+        // Tìm các đơn hàng có idSanPham và trạng thái là "Đã giao hàng"
+        const soLuongDonHang = await DonHang.countDocuments({
+            idSanPham: idSanPham,
+            'trangThai': {
+                $elemMatch: {
+                    'trangThai': 'Đã giao hàng',
+                    'isNow': true
+                }
+            }
+        });
+        console.log(soLuongDonHang);
+        res.json(soLuongDonHang );
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+exports.laySoSaoTrungBinh = async (req, res) => {
+    try {
+        const idSanPham = req.params.id; // Lấy idSanPham từ request params
+
+        // Tìm tất cả các đánh giá của sản phẩm dựa trên idSanPham
+        const danhGiaList = await DonHang.find({ idSanPham: idSanPham }).select('danhGia');
+
+        let tongSoSao = 0;
+        let soLuongDanhGia = 0;
+
+        // Lặp qua danh sách đánh giá để tính tổng số sao và số lượng đánh giá
+        danhGiaList.forEach(donHang => {
+            if (donHang.danhGia && donHang.danhGia.soSao) {
+                tongSoSao += donHang.danhGia.soSao;
+                soLuongDanhGia++;
+            }
+        });
+
+        // Tính số sao trung bình
+        const soSaoTrungBinh = soLuongDanhGia > 0 ? (tongSoSao / soLuongDanhGia) : 0;
+
+        res.json(soSaoTrungBinh );
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
