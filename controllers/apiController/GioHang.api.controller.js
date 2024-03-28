@@ -87,7 +87,7 @@ exports.editSoLuongSanPham = async (req, res) => {
 // Xóa 
 exports.deleteGioHang = async (req, res) => {
     try {
-        const giohang = await GioHang.findByIdAndRemove(req.params.id);
+        const giohang = await GioHang.findOneAndDelete({_id: req.params.id});
 
         if (giohang) {
             return res.status(200).json({ success: true, message: 'Đã xóa giỏ hàng thành công' });
@@ -99,4 +99,3 @@ exports.deleteGioHang = async (req, res) => {
         return res.status(500).json({success: false, message: error.message });
     }
 };
-;

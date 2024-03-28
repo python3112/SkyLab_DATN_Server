@@ -249,7 +249,6 @@ exports.laySoLuongDonHangDaGiaoHang = async (req, res) => {
                 }
             }
         });
-        console.log(soLuongDonHang);
         res.json(soLuongDonHang );
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -294,7 +293,7 @@ exports.laySoLanDanhGia = async (req, res) => {
                 soLuongDanhGia++;
             }
         });
-        res.json(soLuongDanhGia );
+        res.json(soLuongDanhGia);
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
