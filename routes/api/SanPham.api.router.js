@@ -12,5 +12,5 @@ router.get('/:id', SanPhamCtrl.getSanPhamById);
 router.get('/cpu/:cpu', SanPhamCtrl.getSanPhamByCpu);
 router.post('/add',upload.any("image"), SanPhamCtrl.createSanPham);
 router.put('/edit/:id',upload.any("image"),SanPhamCtrl.updateSanPhamById);
-
+router.post('/search', SanPhamCtrl.searchSanPham);
 module.exports = router;

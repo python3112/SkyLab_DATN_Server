@@ -34,6 +34,7 @@ var routerApiChat = require('./routes/api/Chat.api.router');
 var routerApiDanhGia = require('./routes/api/DanhGia.api.router');
 var routerApiYeuThich = require('./routes/api/SanPhamYT.api.router');
 var routerApiThongBao = require('./routes/api/ThongBao.api.router');
+var routerApiDiaChi = require('./routes/api/DiaChi.api.router');
 
 var app = express();
 
@@ -73,6 +74,7 @@ app.use('/api/danhGia' , routerApiDanhGia);
 app.use('/api/chat' , routerApiChat);
 app.use('/api/yeuThich' , routerApiYeuThich);
 app.use('/api/thongBao' , routerApiThongBao);
+app.use('/api/diaChi' , routerApiDiaChi);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -163,3 +163,15 @@ exports.updateSanPhamById = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+// Tìm kiếm sản phẩm theo tên gần giống
+exports.searchSanPham = async (req, res) => {
+    try {
+        // Lấy tên sản phẩm từ request body
+        const { tenSanPham } = req.body;
+        // Tìm kiếm các sản phẩm có tên gần giống với tên được gửi lên
+        const sanPham = await SanPham.find({ tenSanPham: { $regex: tenSanPham, $options: 'i' } });
+        res.json(sanPham);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
