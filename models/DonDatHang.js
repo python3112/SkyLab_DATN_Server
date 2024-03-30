@@ -28,6 +28,7 @@ const donDatHangSchema = new mongoose.Schema({
     type: DanhGiaSchema,
   },
   soLuong: Number,
+  tienShip: Number,
   tongTien: Number,
   ghiChu: String,
   thanhToan: Boolean,

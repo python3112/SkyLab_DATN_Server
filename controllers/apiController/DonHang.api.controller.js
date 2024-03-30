@@ -109,16 +109,22 @@ exports.layDonHangDaHuy = async (req, res) => {
 };
 exports.addDonHang = async (req, res) => {
     try {
-        const { idSanPham, idAccount, idKhuyenMai, soLuong, tongTien, ghiChu, thanhToan } = req.body;
-
+        const { idSanPham, idAccount, idKhuyenMai, soLuong, tongTien, ghiChu, thanhToan,tienShip } = req.body;
+        let idKhuyenMaiValue;
+        if (idKhuyenMai) {
+            idKhuyenMaiValue = idKhuyenMai;
+        } else {
+            idKhuyenMaiValue = null; // Hoặc gán cho giá trị không xác định nếu phù hợp.
+        }
         const newDonHang = new DonHang({
             idSanPham,
             idAccount,
-            idKhuyenMai,
+            idKhuyenMaiValue,
             soLuong,
             tongTien,
             ghiChu,
-            thanhToan
+            thanhToan,
+            tienShip
         });
         const savedDonHang = await newDonHang.save();
         const tieuDe = 'Đặt hàng thành công';

@@ -236,12 +236,11 @@ exports.editAvatar = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 }
-
-// Thêm địa chỉ cho một account dựa trên ID
-exports.themDiaChi = async (req, res) => {
+  
+exports.suaDiaChi = async (req, res) => {
     try {
       const accountId = req.params.id;
-      const { tenDiaChi, diaChi, trangThai } = req.body;
+      const { idTinh, diaChi } = req.body;
   
       const account = await Account.findById(accountId);
   
@@ -249,37 +248,15 @@ exports.themDiaChi = async (req, res) => {
         return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
       }
   
-      const newDiaChi = { tenDiaChi, diaChi, trangThai };
-      account.diaChi = newDiaChi;
-  
-      await account.save();
-  
-      res.json({ success: true, message: 'Thêm địa chỉ thành công' });
-    } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  };
-  
-  exports.suaDiaChi = async (req, res) => {
-    try {
-      const accountId = req.params.id;
-      const { tenDiaChi, diaChi, trangThai } = req.body;
-  
-      const account = await Account.findById(accountId);
-  
-      if (!account) {
-        return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
-      }
-  
-      // Kiểm tra xem tài khoản có địa chỉ hay không
+      // Kiểm tra xem diaChi đã được khởi tạo hay chưa
       if (!account.diaChi) {
-        return res.status(404).json({ message: 'Tài khoản không có địa chỉ' });
+        // Nếu không, khởi tạo diaChi là một đối tượng mới
+        account.diaChi = {};
       }
   
-      // Cập nhật thông tin địa chỉ
-      account.diaChi.tenDiaChi = tenDiaChi;
+      // Gán giá trị cho các thuộc tính của diaChi
+      account.diaChi.idTinh = idTinh;
       account.diaChi.diaChi = diaChi;
-      account.diaChi.trangThai = trangThai;
   
       // Lưu thông tin tài khoản sau khi đã sửa địa chỉ
       await account.save();
@@ -289,3 +266,4 @@ exports.themDiaChi = async (req, res) => {
       res.status(500).json({ success: false, message: error.message });
     }
   };
+  
