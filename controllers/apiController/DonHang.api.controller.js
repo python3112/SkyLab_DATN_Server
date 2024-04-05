@@ -304,3 +304,62 @@ exports.laySoLanDanhGia = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+exports.laySoLuongDonHangChoXacNhan = async (req, res) => {
+    try {
+        const idAccount = req.params.id;
+        const trangThai = "Chờ xác nhận";
+        const donHangTheoIdVaTrangThai = await DonHang.find({
+            idAccount: idAccount,
+            'trangThai': {
+                $elemMatch: {
+                    'trangThai': trangThai,
+                    'isNow': true
+                }
+            }
+        });
+
+        res.json(donHangTheoIdVaTrangThai.length);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+exports.laySoLuongDonHangChoGiaoHang = async (req, res) => {
+    try {
+        const idAccount = req.params.id;
+        const trangThai = "Chờ giao hàng";
+        const donHangTheoIdVaTrangThai = await DonHang.find({
+            idAccount: idAccount,
+            'trangThai': {
+                $elemMatch: {
+                    'trangThai': trangThai,
+                    'isNow': true
+                }
+            }
+        });
+
+        res.json(donHangTheoIdVaTrangThai.length);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+exports.laySoLuongDonHangDangGiaoHang = async (req, res) => {
+    try {
+        const idAccount = req.params.id;
+        const trangThai = "Đang giao hàng";
+        const donHangTheoIdVaTrangThai = await DonHang.find({
+            idAccount: idAccount,
+            'trangThai': {
+                $elemMatch: {
+                    'trangThai': trangThai,
+                    'isNow': true
+                }
+            }
+        });
+
+        res.json(donHangTheoIdVaTrangThai.length);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

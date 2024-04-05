@@ -13,7 +13,6 @@ exports.home = async (req, res, next) => {
         
         // Khởi tạo filter object để lọc
         let filter = {}; 
-        console.log(req.query.status);
         if (req.query.status && req.query.status !== "Tất cả") {
             // Nếu có trạng thái được chọn và không phải là "Tất cả", thêm điều kiện lọc vào filter
             filter = {

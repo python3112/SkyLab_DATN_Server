@@ -25,3 +25,28 @@ exports.editDaXem = async (req, res, next) => {
         res.status(500).json({success: false, message: error.message });
     }
 };
+
+exports.xoaTheoIdAccount = async (req, res, next) => {
+    try {
+        const result = await ThongBao.deleteMany({ idAccount: req.params.id });
+        if (result.deletedCount > 0) {
+            return res.json({ success: true, message: "Đã xóa tất cả thông báo" });
+        } else {
+            return res.status(400).json({ success: false, message: "Không có thông báo nào để xóa" });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+exports.xoaTheoIdThongBao = async (req, res, next) => {
+    try {
+        const result = await ThongBao.deleteOne({ _id: req.params.id });
+        if (result.deletedCount > 0) {
+            return res.json({ success: true, message: "Đã xóa thông báo" });
+        } else {
+            return res.status(400).json({ success: false, message: "Không có thông báo nào để xóa" });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
