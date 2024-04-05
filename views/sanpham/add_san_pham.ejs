@@ -20,8 +20,8 @@
             <div class="mb-3">
                 <label for="idHangSx" class="form-label">Hãng Sản Xuất</label>
                 <select class="form-select" id="idHangSx" name="idHangSx">
-                    <% hangsx.forEach(function(hang) { %>
-                        <option value="<%= hang._id %>"><%= hang.tenHangSx %></option>
+                    <% listHangSx.forEach((hangSx, index) => { %>
+                        <option value="<%= hangSx.idHangSx %>"><%= hangSx.tenHangSx %></option>
                     <% }) %>
                 </select>
             </div>
