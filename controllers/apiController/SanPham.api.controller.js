@@ -1,98 +1,177 @@
-const SanPham = require('../../models/SanPham');
-const { validationResult } = require('express-validator');
-// Create
-exports.createSanPham = async (req, res, next) => {
-  try {
-    // Validate request body using express-validator
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ status: 400, msg: 'Validation failed', errors: errors.array() });
+const { SanPham } = require('../../models/SanPham');
+const { uploadImage, deleteImage, uploadImages } = require('../../middlewares/upload.image.firebase');
+const nameFolder = 'SanPham';
+
+// Lấy tất cả sản phẩm
+exports.getAllSanPham = async (req, res) => {
+    try {
+        const sanPham = await SanPham.find({ trangThai: true });
+        res.json(sanPham);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-
-    const newSanPham = new SanPham({
-      soLuong: req.body.soLuong,
-      trangThai: req.body.trangThai || true,
-      giaTien: req.body.giaTien,
-      weight: req.body.weight,
-      os: req.body.os,
-      cpu: req.body.cpu,
-      gpu: req.body.gpu,
-      display: req.body.display,
-      moTa: req.body.moTa,
-      anh: req.body.anh || [],
-    });
-
-    await newSanPham.save();
-    res.json({ status: 200, msg: "Thêm sản phẩm thành công" });
-  } catch (err) {
-    res.json({ status: 500, msg: err.message });
-  }
 };
-
-// Read all
-exports.listSanPham = async (req, res, next) => {
-  try {
-      // Validate request body using express-validator
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ status: 400, msg: 'Validation failed', errors: errors.array() });
+// Lấy sản phẩm theo id
+exports.getSanPhamById = async (req, res) => {
+    try {
+        const sanPham = await SanPham.findById(req.params.id);
+        res.json(sanPham);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-
-    const sanPhams = await SanPham.find().sort({ _id: -1 });
-    if (sanPhams.length > 0) {
-      res.json({ status: 200, msg: "Lấy dữ liệu sản phẩm thành công", data: sanPhams });
-    } else {
-      res.json({ status: 204, msg: "Không có dữ liệu sản phẩm", data: [] });
+};
+// Lấy sản phẩm theo hãng
+exports.getSanPhamByIdHang = async (req, res) => {
+    try {
+        const sanPham = await SanPham.find({ idHangSx: req.params.id });
+        res.json(sanPham);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-  } catch (err) {
-    res.json({ status: 500, msg: err.message, data: [] });
-  }
 };
-
-// Read by ID
-exports.getSanPhamById = async (req, res, next) => {
-  try {
-    const sanPham = await SanPham.findById(req.params.id);
-    if (sanPham) {
-      res.json({ status: 200, msg: "Lấy dữ liệu sản phẩm thành công", data: sanPham });
-    } else {
-      res.json({ status: 204, msg: "Không tìm thấy sản phẩm", data: null });
+exports.getSanPhamByCpu = async (req, res) => {
+    try {
+        const sanPham = await SanPham.find({ cpu: req.params.cpu });
+        res.json(sanPham);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-  } catch (err) {
-    res.json({ status: 500, msg: err.message, data: null });
-  }
+};
+// Tạo sản phẩm
+exports.createSanPham = async (req, res) => {
+    try {
+        const {idHangSx,soLuong,tenSanPham,giaTien,
+            cpu,soNhan,soLuongCPU,tocDoCPU,tocDoToiDa,boNhoDem,
+            ram,loaiRam,tocDoBusRam,hoTroRamToiDa,rom,
+            display,doPhanGiai,tanSoQuet,doPhuMau,congNgheManHinh,
+            moTa,mauSac,gpu,congNgheAmThanh,
+            congGiaoTiep,ketNoiKhongDay,webCam,tinhNangKhac,denBanPhim,
+            kichThuocKhoiLuong,chatLieu,
+            pin,congSuatSac,thoiDiemRaMat,baohanh,os,phuKien
+        } = req.body;
+        const files = req.files;
+        if (!files) {
+            return res.status(400).json({ message: 'Chưa có file upload' });
+        }
+        let imageUrlAnhSanPham;
+        let imageUrlAnh;
+        const fileAnh =[];
+        for (const file of files) { 
+            if (file.fieldname === 'anhSanPham') {
+                imageUrlAnhSanPham = await uploadImage(file, nameFolder);
+            } else if (file.fieldname === 'anh') {
+                fileAnh.push(file);
+            }
+            imageUrlAnh = await uploadImages(fileAnh, nameFolder);
+            // Xử lý các trường hoặc điều kiện khác nếu cần
+        }
+        //  Validate required fields
+        // if (!tenSanPham || !giaTien) {
+        //     return res.status(400).json({ message: "Tên sản phẩm và giá tiền là bắt buộc." });
+        // }
+
+        // Create new SanPham instance
+        // const imageUrl = await uploadImages(files, nameFolder);
+        const newSanPham = new SanPham({
+            idHangSx,soLuong,tenSanPham,giaTien,
+            trangThai:true,
+            anh: imageUrlAnh,
+            anhSanPham:imageUrlAnhSanPham,
+            cpu,soNhan,soLuongCPU,tocDoCPU,tocDoToiDa,boNhoDem,
+            ram,loaiRam,tocDoBusRam,hoTroRamToiDa,rom,
+            display,doPhanGiai,tanSoQuet,doPhuMau,congNgheManHinh,
+            moTa,mauSac,gpu,congNgheAmThanh,
+            congGiaoTiep,ketNoiKhongDay,webCam,tinhNangKhac,denBanPhim,
+            kichThuocKhoiLuong,chatLieu,
+            pin,congSuatSac,thoiDiemRaMat,baohanh,os,phuKien
+        });
+        const savedSanPham = await newSanPham.save();
+
+        res.status(201).json(savedSanPham);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
-// Update by ID
-exports.updateSanPham = async (req, res, next) => {
-  try {
-    const updatedData = {
-      soLuong: req.body.soLuong,
-      trangThai: req.body.trangThai || true,
-      giaTien: req.body.giaTien,
-      weight: req.body.weight,
-      os: req.body.os,
-      cpu: req.body.cpu,
-      gpu: req.body.gpu,
-      display: req.body.display,
-      moTa: req.body.moTa,
-      anh: req.body.anh || [],
-    };
-
-    await SanPham.updateOne({ _id: req.params.id }, updatedData);
-    res.json({ status: 200, msg: "Sửa thông tin sản phẩm thành công" });
-  } catch (err) {
-    res.json({ status: 500, msg: err.message });
-  }
+// Sửa thông tin sản phẩm theo id
+exports.updateSanPhamById = async (req, res) => {
+    try {
+        const {idHangSx,soLuong,tenSanPham,giaTien,trangThai,
+            cpu,soNhan,soLuongCPU,tocDoCPU,tocDoToiDa,boNhoDem,
+            ram,loaiRam,tocDoBusRam,hoTroRamToiDa,rom,
+            display,doPhanGiai,tanSoQuet,doPhuMau,congNgheManHinh,
+            moTa,mauSac,gpu,congNgheAmThanh,
+            congGiaoTiep,ketNoiKhongDay,webCam,tinhNangKhac,denBanPhim,
+            kichThuocKhoiLuong,chatLieu,
+            pin,congSuatSac,thoiDiemRaMat,baohanh,os,phuKien
+        } = req.body;
+        const files = req.files;
+        // Kiểm tra xem sản phẩm có tồn tại hay không
+        const existingSanPham = await SanPham.findById(req.params.id);
+        if (!existingSanPham) {
+            return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+        }
+        // Nếu có files được gửi lên, thì cập nhật ảnh mới
+        let imageUrl = [];
+        imageUrl = existingSanPham.anh;
+        if (files.length > 0) {
+            imageUrl = await uploadImages(files, nameFolder);
+        }
+        // Cập nhật thông tin sản phẩm
+        existingSanPham.idHangSx = idHangSx || existingSanPham.idHangSx;
+        existingSanPham.trangThai = trangThai || existingSanPham.trangThai;
+        existingSanPham.soLuong = soLuong || existingSanPham.soLuong;
+        existingSanPham.tenSanPham = tenSanPham || existingSanPham.tenSanPham;
+        existingSanPham.giaTien = giaTien || existingSanPham.giaTien;
+        existingSanPham.cpu = cpu || existingSanPham.cpu;
+        existingSanPham.soNhan = soNhan || existingSanPham.soNhan;
+        existingSanPham.soLuongCPU = soLuongCPU || existingSanPham.soLuongCPU;
+        existingSanPham.tocDoCPU = tocDoCPU || existingSanPham.tocDoCPU;
+        existingSanPham.tocDoToiDa = tocDoToiDa || existingSanPham.tocDoToiDa;
+        existingSanPham.boNhoDem = boNhoDem || existingSanPham.boNhoDem;
+        existingSanPham.ram = ram || existingSanPham.ram;
+        existingSanPham.loaiRam = loaiRam || existingSanPham.loaiRam;
+        existingSanPham.tocDoBusRam = tocDoBusRam || existingSanPham.tocDoBusRam;
+        existingSanPham.hoTroRamToiDa = hoTroRamToiDa || existingSanPham.hoTroRamToiDa;
+        existingSanPham.rom = rom || existingSanPham.rom;
+        existingSanPham.display = display || existingSanPham.display;
+        existingSanPham.doPhanGiai = doPhanGiai || existingSanPham.doPhanGiai;
+        existingSanPham.tanSoQuet = tanSoQuet || existingSanPham.tanSoQuet;
+        existingSanPham.doPhuMau = doPhuMau || existingSanPham.doPhuMau;
+        existingSanPham.moTa = moTa || existingSanPham.moTa;
+        existingSanPham.congNgheManHinh = congNgheManHinh || existingSanPham.congNgheManHinh;
+        existingSanPham.mauSac = mauSac || existingSanPham.mauSac;
+        existingSanPham.gpu = gpu || existingSanPham.gpu;
+        existingSanPham.congGiaoTiep = congGiaoTiep || existingSanPham.congGiaoTiep;
+        existingSanPham.ketNoiKhongDay = ketNoiKhongDay || existingSanPham.ketNoiKhongDay;
+        existingSanPham.congNgheAmThanh = congNgheAmThanh || existingSanPham.congNgheAmThanh;
+        existingSanPham.webCam = webCam || existingSanPham.webCam;
+        existingSanPham.tinhNangKhac = tinhNangKhac || existingSanPham.tinhNangKhac;
+        existingSanPham.denBanPhim = denBanPhim || existingSanPham.denBanPhim;
+        existingSanPham.kichThuocKhoiLuong = kichThuocKhoiLuong || existingSanPham.kichThuocKhoiLuong;
+        existingSanPham.chatLieu = chatLieu || existingSanPham.chatLieu;
+        existingSanPham.pin = pin || existingSanPham.pin;
+        existingSanPham.congSuatSac = congSuatSac || existingSanPham.congSuatSac;
+        existingSanPham.thoiDiemRaMat = thoiDiemRaMat || existingSanPham.thoiDiemRaMat;
+        existingSanPham.baohanh = baohanh || existingSanPham.baohanh;
+        existingSanPham.os = os || existingSanPham.os;
+        existingSanPham.phuKien = phuKien || existingSanPham.phuKien;
+        existingSanPham.anh = imageUrl || existingSanPham.anh;
+        const updatedSanPham = await existingSanPham.save();
+        res.json(updatedSanPham);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
-
-// Delete by ID
-exports.deleteSanPham = async (req, res, next) => {
-  try {
-    await SanPham.deleteOne({ _id: req.params.id });
-    res.json({ status: 200, msg: "Xóa sản phẩm thành công" });
-  } catch (err) {
-    res.json({ status: 500, msg: err.message });
-  }
+// Tìm kiếm sản phẩm theo tên gần giống
+exports.searchSanPham = async (req, res) => {
+    try {
+        // Lấy tên sản phẩm từ request body
+        const { tenSanPham } = req.body;
+        // Tìm kiếm các sản phẩm có tên gần giống với tên được gửi lên
+        const sanPham = await SanPham.find({ tenSanPham: { $regex: tenSanPham, $options: 'i' } });
+        res.json(sanPham);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
-

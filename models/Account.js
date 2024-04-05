@@ -1,16 +1,24 @@
-const db = require('./db');
+const mongoose = require('mongoose');
+const {DiaChiSchema} = require('./DiaChi'); // Import DiaChi model
 
-const accountSchema = new db.mongoose.Schema({
-  idTk: String,
-  nameTk: String,
-  passTk: String,
-  quyenTc: [{type : db.mongoose.Schema.Types.ObjectId , ref :'PhanQuyen'}],
-  avavta: String,
-  ttTaiKhoan: Boolean,
+const accountSchema = new mongoose.Schema({
+  taiKhoan: String,
+  hoTen: String,
+  matKhau: String,
+  email: String,
+  sdt: String,
+  tenQuyen: {
+    type: String,
+    enum: ['User', 'Admin'],
+    default: 'User',
+  },
+  avatar: String,
+  trangThai: Boolean,
+  diaChi: DiaChiSchema, 
 }, {
-  collection:'Account_table'
+  collection: 'Account_table',
 });
 
-const Account = db.mongoose.model('Account', accountSchema);
+const Account = mongoose.model('Account', accountSchema);
 
-module.exports = {Account};
+module.exports = Account;

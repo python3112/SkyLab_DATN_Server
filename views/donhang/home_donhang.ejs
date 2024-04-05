@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='../stylesheets/style_header.css' />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+  <%- include('../inc/header') %>
+    <div class="d-flex flex-row">
+      <%- include('../inc/sidebar') %>
+        <div class="content col-md-10 sm-10" style="overflow: auto; height: 80vh">
+          <form id="myForm">
+            <div class="row g-3">
+              <div class="btn-group col col-xl-2 col-lg-2 col-md-2 col-sm-12">
+                <select id="statusDropdown" class="form-select">
+                  <option value="Tất cả" <%= status === 'Tất cả' ? 'selected' : '' %>>Tất cả</option>
+                  <option value="Chờ xác nhận" <%= status === 'Chờ xác nhận' ? 'selected' : '' %>>Chờ xác nhận</option>
+                  <option value="Chờ giao hàng" <%= status === 'Chờ giao hàng' ? 'selected' : '' %>>Chờ giao hàng</option>
+                  <option value="Đang giao hàng" <%= status === 'Đang giao hàng' ? 'selected' : '' %>>Đang giao hàng</option>
+                  <option value="Đã giao hàng" <%= status === 'Đã giao hàng' ? 'selected' : '' %>>Đã giao hàng</option>
+                  <option value="Đã hủy" <%= status === 'Đã hủy' ? 'selected' : '' %>>Đã hủy</option>
+                </select>
+              </div>
+
+
+              <div class="col col-xl-2 col-lg-2 col-md-2 col-sm-12">
+                <input type="text" id="iddh" name="iddh" class="form-control" placeholder="ID đơn hàng">
+              </div>
+              <div class="col col-xl-3 col-lg-3 col-md-3 col-sm-12">
+                <input type="text" id="hoTen" name="hoTen" class="form-control" placeholder="Họ tên khách hàng">
+              </div>
+              <div class="col col-xl-2 col-lg-2 col-md-2 col-sm-12">
+                <input type="text" id="sdt" name="sdt" class="form-control" placeholder="Số điện thoại">
+              </div>
+              <div class="col-auto col-xl-1 col-lg-1 col-md-1 col-sm-4">
+                <button type="button" class="btn btn-primary">Tìm</button>
+              </div>
+              <div class="col-auto col-xl-1 col-lg-1 col-md-1 col-sm-4">
+                <button type="button" class="btn btn-secondary">Clear</button>
+              </div>
+              <div class="col-auto col-xl-1 col-lg-1 col-md-1 col-sm-4">
+                <button type="button" class="btn btn-success">Thêm</button>
+              </div>
+            </div>
+          </form>
+          <table class="table table-bordered table-hover mt-3">
+            <thead>
+              <tr class="align-middle text-center">
+                <th scope="col" class="col-xl-0.5 col-lg-0.5 col-md-0.5 col-sm-0.5">STT</th>
+                <th scope="col" class="col-xl-2 col-lg-2 col-md-2 col-sm-2">Khách hàng</th>
+                <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Sản phẩm</th>
+                <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Thời gian</th>
+                <th scope="col" class="col-xl-2 col-lg-2 col-md-2 col-sm-2">Trạng thái</th>
+                <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Tổng tiền</th>
+                <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Hành động</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <% listDonHang.forEach((donHang, index)=> { %>
+                <% const trangThai=donHang.trangThai.find(tt=> tt.isNow == true) %>
+                  <tr class="align-middle text-center">
+                    <th scope="row">
+                      <%= sttStart + index %>
+                    </th>
+                    <td>
+                      <% const account=listAccount.find(acc=> acc._id.toString() === donHang.idAccount.toString()); %>
+                        <%= account && account.taiKhoan ? account.taiKhoan : "" %>
+                    </td>
+                    <td>
+                      <% const sanPham=listSanPham.find(sp=> sp._id.toString() === donHang.idSanPham.toString()); %>
+                        <%= sanPham.tenSanPham.substring(0, 30)%>
+                          <%= sanPham.tenSanPham.length> 30 ? '...' : '' %>
+                    </td>
+                    <td class="time-cell">
+                      <%= trangThai ? trangThai.thoiGian : "ok" %>
+                    </td>
+                    <td>
+                      <%= trangThai ? trangThai.trangThai : "ok" %>
+                    </td>
+                    <td class="text-danger fw-bold total-cell">
+                      <%= donHang.tongTien %>
+                    </td>
+                    <td>
+                      <a href="/don-hang/chi-tiet/<%= donHang._id %> " class="btn btn-primary icon-btn ms-2 me-2">Chi
+                        tiết</a>
+                    </td>
+                  </tr>
+                  <% }); %>
+            </tbody>
+          </table>
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+                <% if (currentPage > 1) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage - 1 %><%= status ? '&status=' + encodeURIComponent(status) : '' %>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                <% } %>
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %><%= status ? '&status=' + encodeURIComponent(status) : '' %>">
+                            <%= i %>
+                        </a>
+                    </li>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage + 1 %><%= status ? '&status=' + encodeURIComponent(status) : '' %>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+        </div>
+    </div>
+    <%- include('../inc/footer') %>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+      <script>
+        // Function to format date as hh:mm dd/mm/yyyy
+        function formatDate(dateString) {
+          const date = new Date(dateString);
+          const hours = String(date.getHours()).padStart(2, '0');
+          const minutes = String(date.getMinutes()).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const year = date.getFullYear();
+          return `${hours}:${minutes} ${day}/${month}/${year}`;
+        }
+
+        // Call formatDate function for each timestamp in the table
+        document.addEventListener("DOMContentLoaded", function () {
+          const timeCells = document.querySelectorAll(".time-cell");
+          timeCells.forEach(cell => {
+            const timestamp = cell.textContent.trim();
+            cell.textContent = formatDate(timestamp);
+          });
+        });
+      </script>
+      <script>
+        // Function to format currency
+        function formatCurrency(amount) {
+          return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₫";
+        }
+
+        // Call formatCurrency function for each total amount in the table
+        document.addEventListener("DOMContentLoaded", function () {
+          const totalCells = document.querySelectorAll(".total-cell");
+          totalCells.forEach(cell => {
+            const amount = parseFloat(cell.textContent.trim());
+            cell.textContent = formatCurrency(amount);
+          });
+        });
+      </script>
+
+      <script>
+        document.getElementById('statusDropdown').addEventListener('change', function () {
+          const selectedStatus = this.value;
+          let url = '/don-hang/'; // Địa chỉ mặc định
+          if (selectedStatus) {
+            url = '/don-hang/?status=' + encodeURIComponent(selectedStatus);
+          }
+          window.location.href = url;
+        });
+      </script>
+
+
+</body>
+
+</html>
