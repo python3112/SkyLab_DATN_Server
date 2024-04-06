@@ -77,6 +77,8 @@ exports.getAccountById = async (req, res) => {
             taiKhoan :  taiKhoan,
             matKhau :  matKhau,
             trangThai  : true, 
+            avatar:'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'
+           
         });
         await newAccount.save();
         // Trả về thành công
