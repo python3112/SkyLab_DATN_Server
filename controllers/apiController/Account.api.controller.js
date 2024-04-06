@@ -76,7 +76,7 @@ exports.getAccountById = async (req, res) => {
             tenQuyen  : "User",
             taiKhoan :  taiKhoan,
             matKhau :  matKhau,
-            trangThai  : true
+            trangThai  : true, 
         });
         await newAccount.save();
         // Trả về thành công

@@ -43,6 +43,7 @@ exports.CreateConverSation = async (req, res) => {
                 Nguoigui: req.params.id,
                 NguoiNhan:"",
                 ThuHoi: false,
+                id:newMessageKey,
                 ngay: moment(Date.now()).format('DD-MM-YYYY HH:mm:ss')
             });
             return res.json(newMessageKey);
