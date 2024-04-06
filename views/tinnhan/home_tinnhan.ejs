@@ -111,14 +111,14 @@
     }
   </style>
 </head>
-<script type="module"  src="/middlewares/firebase.config.js"></script>
-<script >
+<script type="module" src="/middlewares/firebase.config.js"></script>
+<script>
   console.log('2')
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-analytics.js";
   import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js"
-  
+
 
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
@@ -149,10 +149,11 @@
     const data = snapshot.val();
     console.log(data)
 
-    
-    
+
+
   });
 </script>
+
 <body>
   <%- include('../inc/header') %>
     <div class="d-flex flex-row">
@@ -183,27 +184,33 @@
 
 
             <div class="list_chat" style="max-height: max-content; overflow-y: auto;">
-              <% list.forEach(account => { %>
-                <div class="item_chat" style="display: flex; align-items: center; border-bottom: 1px solid black;" onclick="">
-                  <% if(account.avatar == null){ %>
-                      <img style="border-radius: 30px;  margin-left: 10px;" width="50" height="50" src="https://cdn-icons-png.flaticon.com/128/3135/3135715.png">
-                  <% } else { %>
-                      <img style="border-radius: 30px;  margin-left: 10px;" width="50" height="50" src="<%= account.avatar %>">
-                  <% } %>
-                  <div style="margin-left: 10px; margin-top: 10px;">
-                      <p ><%= account.taiKhoan %></p>
-                      <% listmess.forEach(message => { %>
-                      <% if(message.idAccount === account._id) %>
-                      <strong><%= message.content %></strong>
-                      <% }); %>
-                  </div>
-                  
-              </div>
-            
-            <% }); %>
-               
-            
              
+                      <div class="item_chat" style="display: flex; align-items: center; border-bottom: 1px solid black;"
+                        onclick="">
+                       
+                         
+                          
+                            <img style="border-radius: 30px;  margin-left: 10px;" width="50" height="50"
+                              src="https://cdn-icons-png.flaticon.com/128/3135/3135715.png">
+                           
+                              <div style="margin-left: 10px; margin-top: 10px;">
+                                <p>
+                                  
+                                </p>
+                                
+                                   
+                              </div>
+
+                      </div>
+
+                    
+
+
+
+
+
+
+
 
             </div>
           </div>
@@ -256,7 +263,7 @@
         }
       </script>
 
-     
+
 
 
 
