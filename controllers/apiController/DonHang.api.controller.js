@@ -293,7 +293,7 @@ exports.laySoLuongDonHangDaGiaoHang = async (req, res) => {
     try {
         const idSanPham = req.params.id; // Lấy idSanPham từ request params
         // Tìm các đơn hàng có idSanPham và trạng thái là "Đã giao hàng"
-        const soLuongDonHang = await DonHang.countDocuments({
+        const donHangs = await DonHang.find({
             idSanPham: idSanPham,
             'trangThai': {
                 $elemMatch: {
@@ -302,7 +302,15 @@ exports.laySoLuongDonHangDaGiaoHang = async (req, res) => {
                 }
             }
         });
-        res.json(soLuongDonHang );
+
+        let tongSoSanPham = 0;
+
+        // Lặp qua từng đơn hàng đã giao để tính tổng số sản phẩm
+        donHangs.forEach(donHang => {
+            tongSoSanPham += donHang.soLuong;
+        });
+
+        res.json(tongSoSanPham);
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

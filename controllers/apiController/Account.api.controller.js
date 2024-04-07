@@ -148,6 +148,37 @@ exports.editMatKhau = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+// Cập nhật họ tên, số điện thoại và email của một account dựa trên ID
+exports.editAccountInfo = async (req, res) => {
+    try {
+        const { hoTen, sdt, email } = req.body;
+        const accountId = req.params.id;
+
+        const account = await Account.findById(accountId);
+
+        if (!account) {
+            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+        }
+
+        // Cập nhật thông tin mới
+        if (hoTen) {
+            account.hoTen = hoTen;
+        }
+        if (sdt) {
+            account.sdt = sdt;
+        }
+        if (email) {
+            account.email = email;
+        }
+
+        // Lưu thông tin tài khoản sau khi đã cập nhật
+        await account.save();
+
+        res.json({ success: true, message: 'Cập nhật thông tin tài khoản thành công!' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 
 // Cập nhật số điện thoại của một account dựa trên ID
 exports.editSdt = async (req, res) => {
