@@ -72,6 +72,8 @@ exports.createSanPham = async (req, res) => {
 
         // Create new SanPham instance
         // const imageUrl = await uploadImages(files, nameFolder);
+        console.log(req.body); 
+        console.log(req.files);
         const newSanPham = new SanPham({
             idHangSx,soLuong,tenSanPham,giaTien,
             trangThai:true,

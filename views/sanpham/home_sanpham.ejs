@@ -34,7 +34,7 @@
           <button type="button" class="btn btn-secondary">Clear</button>
         </div>
         <div class="col-auto">
-          <button type="button" class="btn btn-success">Thêm</button>
+          <button type="button" id="addProductButton" class="btn btn-success">Thêm</button>
         </div>
       </div>
     </form>
@@ -120,6 +120,9 @@
             const amount = parseFloat(cell.textContent.trim());
             cell.textContent = formatCurrency(amount);
           });
+        });
+        document.getElementById('addProductButton').addEventListener('click', function() {
+            window.location.href = '/san-pham/add';
         });
       </script>
 </body>
