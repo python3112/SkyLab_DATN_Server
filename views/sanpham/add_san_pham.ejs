@@ -1,120 +1,343 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>
-          <%= title %>
-        </title>
-        <link rel='stylesheet' href='../stylesheets/style_header.css' />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-      </head>
+
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link rel='stylesheet' href='../stylesheets/style_header.css' />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
 <body>
     <%- include('../inc/header') %>
-    <div class="d-flex flex-row">
-    <%- include('../inc/sidebar') %>
+        <div class="d-flex flex-row">
+            <%- include('../inc/sidebar') %>
 
-    <div class="container my-5">
-        <h2>Thêm sản phẩm mới</h2>
-        <form id="addProductForm" method="POST" action="/san-pham/add" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="idHangSx" class="form-label">Hãng Sản Xuất</label>
-                <select class="form-select" id="idHangSx" name="idHangSx">
-                    <% listHangSx.forEach((hangSx, index) => { %>
-                        <option value="<%= hangSx.idHangSx %>"><%= hangSx.tenHangSx %></option>
-                    <% }) %>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="soLuong" class="form-label">Số Lượng</label>
-                <input type="number" class="form-control" id="soLuong" name="soLuong">
-            </div>
-            <div class="mb-3">
-                <label for="trangThai" class="form-label">Trạng Thái</label>
-                <select class="form-select" id="trangThai" name="trangThai">
-                    <option value="true">Kích hoạt</option>
-                    <option value="false">Không kích hoạt</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="giaTien" class="form-label">Giá Tiền</label>
-                <input type="text" class="form-control" id="giaTien" name="giaTien">
-            </div>
-            <div class="mb-3">
-                <label for="tenSanPham" class="form-label">Tên Sản Phẩm</label>
-                <input type="text" class="form-control" id="tenSanPham" name="tenSanPham">
-            </div>
-            
-            <div class="mb-3">
-                <label for="anhSanPham" class="form-label">Ảnh Sản Phẩm (Ảnh Chính)</label>
-                <input type="file" class="form-control" id="anhSanPham" name="anhSanPham">
-            </div>
-            
-            <div class="mb-3">
-                <label for="anh" class="form-label">Ảnh Sản Phẩm (Ảnh Phụ)</label>
-                <input type="file" class="form-control" id="anh" name="anh" multiple>
-            </div>
-            
-            <div class="mb-3">
-                <label for="ram" class="form-label">RAM</label>
-                <input type="text" class="form-control" id="ram" name="ram">
-            </div>
-            
-            <div class="mb-3">
-                <label for="loaiRam" class="form-label">Loại RAM</label>
-                <input type="text" class="form-control" id="loaiRam" name="loaiRam">
-            </div>
-            
-            <div class="mb-3">
-                <label for="tocDoBusRam" class="form-label">Tốc Độ Bus RAM</label>
-                <input type="text" class="form-control" id="tocDoBusRam" name="tocDoBusRam">
-            </div>
-            
-            <div class="mb-3">
-                <label for="hoTroRamToiDa" class="form-label">Hỗ Trợ RAM Tối Đa</label>
-                <input type="text" class="form-control" id="hoTroRamToiDa" name="hoTroRamToiDa">
-            </div>
-            
-            <div class="mb-3">
-                <label for="rom" class="form-label">ROM</label>
-                <input type="text" class="form-control" id="rom" name="rom">
-            </div>
-            
-            <!-- Các trường khác tương tự -->
-            
-            <div class="mb-3">
-                <label for="moTa" class="form-label">Mô Tả</label>
-                <textarea class="form-control" id="moTa" name="moTa" rows="3"></textarea>
-            </div>
-            
-            <div class="mb-3">
-                <label for="mauSac" class="form-label">Màu Sắc</label>
-                <input type="text" class="form-control" id="mauSac" name="mauSac">
-            </div>
-            
-            <div class="mb-3">
-                <label for="gpu" class="form-label">GPU</label>
-                <input type="text" class="form-control" id="gpu" name="gpu">
-            </div>            
-            <div class="mb-3">
-                <label for="soNhan" class="form-label">Số Nhân CPU</label>
-                <input type="number" class="form-control" id="soNhan" name="soNhan">
-            </div>
-            <div class="mb-3">
-                <label for="soLuongCPU" class="form-label">Số Lượng CPU</label>
-                <input type="number" class="form-control" id="soLuongCPU" name="soLuongCPU">
-            </div>
-            <div class="mb-3">
-                <label for="tocDoCPU" class="form-label">Tốc Độ CPU</label>
-                <input type="text" class="form-control" id="tocDoCPU" name="tocDoCPU">
-            </div>
-            <!-- Tiếp tục với các trường dữ liệu khác tương tự -->
-            <button type="submit" class="btn btn-primary">Thêm Sản Phẩm</button>
-        </form>
-        
-    </div>
+                <div class="container my-5">
+                    <h2>Thêm sản phẩm mới</h2>
+                    <form id="addProductForm" method="POST" action="/san-pham/add" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="idHangSx" class="form-label">Hãng Sản Xuất</label>
+                            <select class="form-select" id="idHangSx" name="idHangSx">
+                                <% listHangSx.forEach((hangSx, index)=> { %>
+                                    <option value="<%= hangSx._id %>">
+                                        <%= hangSx.tenHangSx %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="soLuong" class="form-label">Số Lượng</label>
+                            <input type="number" class="form-control" id="soLuong" name="soLuong" min="1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="tenSanPham" class="form-label">Tên Sản Phẩm</label>
+                            <input type="text" class="form-control" id="tenSanPham" name="tenSanPham">
+                        </div>
+                        <div class="mb-3">
+                            <label for="trangThai" class="form-label">Trạng Thái</label>
+                            <select class="form-select" id="trangThai" name="trangThai">
+                                <option value="true">Kích hoạt</option>
+                                <option value="false">Không kích hoạt</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="giaTien" class="form-label">Giá Tiền</label>
+                            <input type="number" class="form-control" id="giaTien" name="giaTien" min="0" step="any">
+                        </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+                        <div class="mb-3">
+                            <label for="anhSanPham" class="form-label">Ảnh Sản Phẩm (Ảnh Chính)</label>
+                            <input type="file" class="form-control" id="anhSanPham" name="anhSanPham">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="anh" class="form-label">Ảnh Sản Phẩm (Ảnh Phụ)</label>
+                            <input type="file" class="form-control" id="anh" name="anh" multiple>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cpu" class="form-label">CPU</label>
+                            <input type="text" class="form-control" id="cpu" name="cpu"
+                                placeholder="VD: Intel Core i7, AMD Ryzen 7">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="soNhan" class="form-label">Số Nhân</label>
+                            <input type="number" class="form-control" id="soNhan" name="soNhan" placeholder="VD: 4, 8">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="soLuongCPU" class="form-label">Số Lượng CPU</label>
+                            <input type="number" class="form-control" id="soLuongCPU" name="soLuongCPU"
+                                placeholder="VD: 1">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tocDoCPU" class="form-label">Tốc Độ CPU</label>
+                            <input type="text" class="form-control" id="tocDoCPU" name="tocDoCPU"
+                                placeholder="VD: 2.5GHz">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tocDoToiDa" class="form-label">Tốc Độ Tối Đa</label>
+                            <input type="text" class="form-control" id="tocDoToiDa" name="tocDoToiDa"
+                                placeholder="VD: 4.5GHz">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="boNhoDem" class="form-label">Bộ Nhớ Đệm</label>
+                            <input type="text" class="form-control" id="boNhoDem" name="boNhoDem"
+                                placeholder="VD: 12MB">
+                        </div>
+                        <div class="mb-3">
+                            <label for="ram" class="form-label">RAM</label>
+                            <input type="text" class="form-control" id="ram" name="ram">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="loaiRam" class="form-label">Loại RAM</label>
+                            <input type="text" class="form-control" id="loaiRam" name="loaiRam">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tocDoBusRam" class="form-label">Tốc Độ Bus RAM</label>
+                            <input type="text" class="form-control" id="tocDoBusRam" name="tocDoBusRam">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="hoTroRamToiDa" class="form-label">Hỗ Trợ RAM Tối Đa</label>
+                            <input type="text" class="form-control" id="hoTroRamToiDa" name="hoTroRamToiDa">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="rom" class="form-label">ROM</label>
+                            <input type="text" class="form-control" id="rom" name="rom">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="display" class="form-label">Loại Màn Hình (Kích cỡ)</label>
+                            <input type="text" class="form-control" id="display" name="display"
+                                placeholder="VD: LED, OLED, 16 inc, 21 inc">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="doPhanGiai" class="form-label">Độ Phân Giải</label>
+                            <input type="text" class="form-control" id="doPhanGiai" name="doPhanGiai"
+                                placeholder="VD: 1920x1080">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tanSoQuet" class="form-label">Tần Số Quét</label>
+                            <input type="text" class="form-control" id="tanSoQuet" name="tanSoQuet"
+                                placeholder="VD: 60Hz, 120Hz">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="doPhuMau" class="form-label">Độ Phủ Màu</label>
+                            <input type="text" class="form-control" id="doPhuMau" name="doPhuMau"
+                                placeholder="VD: 100% sRGB">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="congNgheManHinh" class="form-label">Công Nghệ Màn Hình</label>
+                            <input type="text" class="form-control" id="congNgheManHinh" name="congNgheManHinh"
+                                placeholder="VD: IPS, TN">
+                        </div>
+                        <div class="mb-3">
+                            <label for="moTa" class="form-label">Mô Tả</label>
+                            <textarea class="form-control" id="moTa" name="moTa" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mauSac" class="form-label">Màu Sắc</label>
+                            <input type="text" class="form-control" id="mauSac" name="mauSac">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="gpu" class="form-label">GPU</label>
+                            <input type="text" class="form-control" id="gpu" name="gpu">
+                        </div>
+                        <div class="mb-3">
+                            <label for="congNgheAmThanh" class="form-label">Công Nghệ Âm Thanh</label>
+                            <input type="text" class="form-control" id="congNgheAmThanh" name="congNgheAmThanh"
+                                placeholder="VD: Dolby Audio, Hi-Res Audio">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="congGiaoTiep" class="form-label">Cổng Giao Tiếp</label>
+                            <input type="text" class="form-control" id="congGiaoTiep" name="congGiaoTiep"
+                                placeholder="VD: USB-C, HDMI, LAN">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="ketNoiKhongDay" class="form-label">Kết Nối Không Dây</label>
+                            <input type="text" class="form-control" id="ketNoiKhongDay" name="ketNoiKhongDay"
+                                placeholder="VD: Wi-Fi 6, Bluetooth 5.0">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="webCam" class="form-label">Webcam</label>
+                            <input type="text" class="form-control" id="webCam" name="webCam" placeholder="VD: HD 720p">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tinhNangKhac" class="form-label">Tính Năng Khác</label>
+                            <input type="text" class="form-control" id="tinhNangKhac" name="tinhNangKhac"
+                                placeholder="VD: Vân tay, RGB Keyboard">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="denBanPhim" class="form-label">Đèn Bàn Phím</label>
+                            <input type="text" class="form-control" id="denBanPhim" name="denBanPhim"
+                                placeholder="VD: Có, Không">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="kichThuocKhoiLuong" class="form-label">Kích Thước & Khối Lượng</label>
+                            <input type="text" class="form-control" id="kichThuocKhoiLuong" name="kichThuocKhoiLuong"
+                                placeholder="VD: 350 x 250 x 20 mm, 1.5kg">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="chatLieu" class="form-label">Chất Liệu</label>
+                            <input type="text" class="form-control" id="chatLieu" name="chatLieu"
+                                placeholder="VD: Nhôm, Nhựa">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="pin" class="form-label">Pin</label>
+                            <input type="text" class="form-control" id="pin" name="pin" placeholder="VD: 56Wh">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="congSuatSac" class="form-label">Công Suất Sạc</label>
+                            <input type="text" class="form-control" id="congSuatSac" name="congSuatSac"
+                                placeholder="VD: 65W">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="thoiDiemRaMat" class="form-label">Thời Điểm Ra Mắt</label>
+                            <input type="text" class="form-control" id="thoiDiemRaMat" name="thoiDiemRaMat"
+                                placeholder="VD: Quý II/2022">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="baohanh" class="form-label">Bảo Hành</label>
+                            <input type="text" class="form-control" id="baohanh" name="baohanh"
+                                placeholder="VD: 24 tháng">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="os" class="form-label">Hệ Điều Hành</label>
+                            <input type="text" class="form-control" id="os" name="os" placeholder="VD: Windows 10 Home">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phuKien" class="form-label">Phụ Kiện</label>
+                            <input type="text" class="form-control" id="phuKien" name="phuKien"
+                                placeholder="VD: Sạc, Dây cáp">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Thêm Sản Phẩm</button>
+                    </form>
+
+                </div>
+
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+                    crossorigin="anonymous"></script>
+                <script>
+                    document.getElementById('addProductForm').addEventListener('submit', async function (event) {
+                        // Prevent the form from submitting the traditional way
+                        event.preventDefault();
+
+                        const soLuong = document.getElementById('soLuong').value;
+                        const giaTien = document.getElementById('giaTien').value;
+                        const tenSanPham = document.getElementById('tenSanPham').value;
+                        const cpu = document.getElementById('cpu').value;
+                        const gpu = document.getElementById('gpu').value;
+                        const kichThuocManHinh = document.getElementById('display').value;
+                        const ram = document.getElementById('ram').value;
+                        const rom = document.getElementById('rom').value;
+                        const moTa = document.getElementById('moTa').value;
+                        const anhSanPham = document.getElementById('anhSanPham').files.length;
+                        const anhSlide = document.getElementById('anh').files.length;
+
+                        // Validations
+                        let errorMessage = '';
+
+                        if (!tenSanPham.trim()) {
+                            errorMessage += 'Tên sản phẩm không được để trống.\n';
+                        }
+                        if (soLuong <= 0) {
+                            errorMessage += 'Số lượng phải lớn hơn 0.\n';
+                        }
+                        if (giaTien <= 0) {
+                            errorMessage += 'Giá tiền phải lớn hơn 0.\n';
+                        }
+                        if (!cpu.trim()) {
+                            errorMessage += 'CPU không được để trống.\n';
+                        }
+                        if (!gpu.trim()) {
+                            errorMessage += 'GPU không được để trống.\n';
+                        }
+                        if (!kichThuocManHinh.trim()) {
+                            errorMessage += 'Kích thước màn hình không được để trống.\n';
+                        }
+                        if (!ram.trim()) {
+                            errorMessage += 'RAM không được để trống.\n';
+                        }
+                        if (!rom.trim()) {
+                            errorMessage += 'ROM không được để trống.\n';
+                        }
+                        if (!moTa.trim()) {
+                            errorMessage += 'Mô tả sản phẩm không được để trống.\n';
+                        }
+                        if (anhSanPham === 0) {
+                            errorMessage += 'Bạn phải chọn ít nhất một ảnh sản phẩm chính.\n';
+                        }
+                        if (anhSlide === 0) {
+                            errorMessage += 'Bạn phải chọn ít nhất một ảnh cho slide.\n';
+                        }
+
+                        // Show error message if validation fails
+                        if (errorMessage) {
+                            alert(errorMessage);
+                            return; // Stop the function if there is an error
+                        }
+
+                        const formData = new FormData(event.target);
+                        // Log ra nội dung của formData nếu cần
+                        // formData.forEach((value, key) => {
+                        //     console.log(`${key}: ${value}`);
+                        // });
+                        try {
+                            const response = await fetch('/api/sanPham/add', {
+                                method: 'POST',
+                                body: formData, // formData tự động đóng gói tất cả dữ liệu form, bao gồm cả files
+                            });
+
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+
+                            const data = await response.json();
+                            console.log('Success:', data);
+
+                            // Hiển thị thông báo thành công và/hoặc chuyển hướng người dùng
+                            alert('Thêm sản phẩm thành công!');
+                            window.location.href = '/san-pham'; // Chuyển hướng 
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('Có lỗi xảy ra, vui lòng thử lại.'); // Hiển thị thông báo lỗi
+                        }
+                    });
+                </script>
 
 </body>
+
 </html>
