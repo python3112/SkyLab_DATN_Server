@@ -57,8 +57,8 @@ exports.postHangSxView = async (req, res) => {
   try {
     const { tenHangSx } = req.body;
     const file = req.file;
-    let trangThai = false;
-
+    let checkStatus = req.body.trangThai
+    let trangThai = (checkStatus === "on") ? true : false;
     if (!file) {
       return res.status(400).json({ message: 'Chưa có file upload' });
     }

@@ -16,4 +16,5 @@ router.post('/addHangSX',  upload.single('file'), hangCtrlApi.postHangSxView);
 router.get('/addHangSX', (res,req,next)=>{
     req.redirect('/', hangCtrl.home)
 })
+router.post('/update/:id', upload.single('logoFile'), hangCtrl.update)
 module.exports = router;
