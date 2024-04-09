@@ -76,6 +76,7 @@ app.use('/api/yeuThich' , routerApiYeuThich);
 app.use('/api/thongBao' , routerApiThongBao);
 app.use('/api/diaChi' , routerApiDiaChi);
 
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

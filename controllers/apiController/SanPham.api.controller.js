@@ -23,7 +23,7 @@ exports.getSanPhamById = async (req, res) => {
 // Lấy sản phẩm theo hãng
 exports.getSanPhamByIdHang = async (req, res) => {
     try {
-        const sanPham = await SanPham.find({ idHangSx: req.params.id });
+        const sanPham = await SanPham.find({ idHangSx: req.params.id,trangThai:true });
         res.json(sanPham);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -31,7 +31,7 @@ exports.getSanPhamByIdHang = async (req, res) => {
 };
 exports.getSanPhamByCpu = async (req, res) => {
     try {
-        const sanPham = await SanPham.find({ cpu: req.params.cpu });
+        const sanPham = await SanPham.find({ cpu: req.params.cpu,trangThai:true });
         res.json(sanPham);
     } catch (error) {
         res.status(500).json({ message: error.message });
