@@ -13,7 +13,17 @@ exports.GetAllDonHang = async (req, res, next) => {
         res.status(500).json({ message: error.message });
     }
 }
-
+exports.getByID = async (req, res) => {
+    try {
+        const donHang = await DonHang.findById(req.params.id);
+        if (!donHang) {
+            return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+        }
+        res.json(donHang);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+  };
 exports.layDonHangChoXacNhan = async (req, res) => {
     try {
         const idAccount = req.params.id;
