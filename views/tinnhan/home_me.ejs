@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hello</title>
+</head>
+
+<body>
+    !DOCTYPE html>
+    <html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>APP IOT</title>
+        <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+
+
+
+    </head>
+
+    <body>
+        <script type="module">
+            import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js'
+            // If you enabled Analytics in your project, add the Firebase SDK for Google Analytics
+            import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-analytics.js'
+
+            // Add Firebase products that you want to use
+            import { getAuth } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js'
+            import { getDatabase, ref, push, set, onValue } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js'
+
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyAQTaVbsAvnb1KWVl1HlhoOum8YwcbEbZE",
+                authDomain: "skylap-md03.firebaseapp.com",
+                databaseURL: "https://skylap-md03-default-rtdb.asia-southeast1.firebasedatabase.app",
+                projectId: "skylap-md03",
+                storageBucket: "skylap-md03.appspot.com",
+                messagingSenderId: "206926809191",
+                appId: "1:206926809191:web:e8dc6a3da11ea129b4ecc2",
+                measurementId: "G-TSY3SXB2F5"
+            };
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const database = getDatabase(app);
+            const data = ref(database, '/Chat');
+            onValue(data, (snapshot) => {
+                const data = snapshot.val();
+                console.log(data)
+            });
+
+        </script>
+    </body>
+
+
+    </html>
+
+
+</body>
+
+</html>

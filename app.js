@@ -7,6 +7,7 @@ var dotenv = require('dotenv');
 dotenv.config();
 
 
+
 var connectDB = require('./models/Database');
 
 // Web
@@ -44,6 +45,9 @@ connectDB();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.engine("html" , require('ejs').renderFile);
+
+
 
 
 app.use(logger('dev'));

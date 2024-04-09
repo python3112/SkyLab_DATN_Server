@@ -30,3 +30,16 @@ exports.add = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+exports.edit = async (req, res) => {
+    try {
+        const product = await SanPham.findById(req.params.id);
+        const listHangSx = await Hangsx.find({ trangThai: true });
+        res.render('sanpham/sua_san_pham', {
+            title: "Chỉnh sửa sản phẩm",
+            product: product,
+            listHangSx: listHangSx
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
