@@ -10,6 +10,7 @@ dotenv.config();
 var connectDB = require('./models/Database');
 
 // Web
+var loginRoute = require('./routes/login.router')
 var homeRoute= require('./routes/home.router');
 var userRoute= require('./routes/user.router');
 var hangRoute= require('./routes/hang.router');
@@ -52,7 +53,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Web
-app.use('/', homeRoute);
+app.use('/', loginRoute)
+app.use('/home', homeRoute);
 app.use('/user', userRoute);
 app.use('/hang', hangRoute);
 app.use('/san-pham', sanphamRoute);
