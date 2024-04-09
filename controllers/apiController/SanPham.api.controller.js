@@ -177,3 +177,16 @@ exports.searchSanPham = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+exports.toggleProductStatus = async (req, res) => {
+    try {
+      const product = await SanPham.findById(req.params.id);
+      if (!product) {
+        return res.status(404).json({ message: 'Sản phẩm không tồn tại.' });
+      }
+      product.trangThai = !product.trangThai; // Toggle the status
+      await product.save();
+      res.status(200).json({ message: 'Trạng thái sản phẩm đã được cập nhật.', product });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
