@@ -1,46 +1,49 @@
 const DonHang = require('../models/DonDatHang');
-const {SanPham} = require('../models/SanPham'); 
-const Account = require('../models/Account'); 
-const  {ThongBao}= require('../models/ThongBao'); 
+const { SanPham } = require('../models/SanPham');
+const Account = require('../models/Account');
+const { ThongBao } = require('../models/ThongBao');
 const axios = require('axios');
 
 exports.home = async (req, res, next) => {
     try {
-        const listdonhang = await DonHang.find();
-        const listSanPham = [];
-        const listAccount = [];
-
-        for (const donhang of listdonhang) {
-            const sanPham = await SanPham.findById(donhang.idSanPham);
-            const account = await Account.findById(donhang.idAccount);
-            if (sanPham) {
-                listSanPham.push(sanPham);
-            }
-            if (account) {
-                listAccount.push(account);
-            }
-        }
-
-        res.render('donhang/home_donhang', { title: "Quản lý đơn hàng", listDonHang: listdonhang, listSanPham: listSanPham,listAccount:listAccount });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
-exports.layChoXacNhan = async (req, res, next) => {
-    try {
-        const listdonhang = await DonHang.find({
-            'trangThai': {
-                $elemMatch: {
-                    'trangThai': 'Chờ xác nhận',
-                    'isNow': true
+        let listDonHang;
+        const page = parseInt(req.query.page) || 1;
+        const perPage = 10;
+        const skip = (page - 1) * perPage;
+        
+        // Khởi tạo filter object để lọc
+        let filter = {}; 
+        if (req.query.status && req.query.status !== "Tất cả") {
+            // Nếu có trạng thái được chọn và không phải là "Tất cả", thêm điều kiện lọc vào filter
+            filter = {
+                "trangThai": {
+                    $elemMatch: { // Tìm các phần tử trong mảng trạng thái thỏa mãn các điều kiện sau:
+                        "trangThai": req.query.status, // Trạng thái phải là trạng thái được truyền vào
+                        "isNow": true // Và trạng thái isNow phải là true
+                    }
                 }
-            }
+            };
+        }
+        
+        // Lấy số lượng đơn hàng đã lọc
+        const totalFilteredDonHang = await DonHang.countDocuments(filter);
+        const totalPages = Math.ceil(totalFilteredDonHang / perPage);
+
+        listDonHang = await DonHang.find(filter).skip(skip).limit(perPage);
+
+        // Sắp xếp lại mảng listDonHang theo thời gian của trạng thái isNow gần nhất
+        listDonHang.sort((a, b) => {
+            const timeA = a.trangThai.find(tt => tt.isNow)?.thoiGian || 0;
+            const timeB = b.trangThai.find(tt => tt.isNow)?.thoiGian || 0;
+            return new Date(timeB) - new Date(timeA);
         });
 
+        const sttStart = (page - 1) * perPage + 1;
+
         const listSanPham = [];
         const listAccount = [];
 
-        for (const donhang of listdonhang) {
+        for (const donhang of listDonHang) {
             const sanPham = await SanPham.findById(donhang.idSanPham);
             const account = await Account.findById(donhang.idAccount);
             if (sanPham) {
@@ -51,131 +54,20 @@ exports.layChoXacNhan = async (req, res, next) => {
             }
         }
 
-        res.render('donhang/home_donhang', { title: "Quản lý đơn hàng", listDonHang: listdonhang, listSanPham: listSanPham,listAccount:listAccount });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
-exports.layChoGiaoHang = async (req, res, next) => {
-    try {
-        const listdonhang = await DonHang.find({
-            'trangThai': {
-                $elemMatch: {
-                    'trangThai': "Chờ giao hàng",
-                    'isNow': true
-                }
-            }
+        res.render('donhang/home_donhang', {
+            title: "Quản lý đơn hàng",
+            sttStart: sttStart,
+            totalPages: totalPages,
+            currentPage: page,
+            listDonHang: listDonHang,
+            listSanPham: listSanPham,
+            listAccount: listAccount,
+            status: req.query.status // Chuyển thêm tham số trạng thái để giữ trạng thái khi chuyển trang
         });
-
-        const listSanPham = [];
-        const listAccount = [];
-
-        for (const donhang of listdonhang) {
-            const sanPham = await SanPham.findById(donhang.idSanPham);
-            const account = await Account.findById(donhang.idAccount);
-            if (sanPham) {
-                listSanPham.push(sanPham);
-            }
-            if (account) {
-                listAccount.push(account);
-            }
-        }
-
-        res.render('donhang/home_donhang', { title: "Quản lý đơn hàng", listDonHang: listdonhang, listSanPham: listSanPham,listAccount:listAccount });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
-exports.layDangGiaoHang = async (req, res, next) => {
-    try {
-        const listdonhang = await DonHang.find({
-            'trangThai': {
-                $elemMatch: {
-                    'trangThai': "Đang giao hàng",
-                    'isNow': true
-                }
-            }
-        });
-
-        const listSanPham = [];
-        const listAccount = [];
-
-        for (const donhang of listdonhang) {
-            const sanPham = await SanPham.findById(donhang.idSanPham);
-            const account = await Account.findById(donhang.idAccount);
-            if (sanPham) {
-                listSanPham.push(sanPham);
-            }
-            if (account) {
-                listAccount.push(account);
-            }
-        }
-
-        res.render('donhang/home_donhang', { title: "Quản lý đơn hàng", listDonHang: listdonhang, listSanPham: listSanPham,listAccount:listAccount });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
-exports.layDaGiaoHang = async (req, res, next) => {
-    try {
-        const listdonhang = await DonHang.find({
-            'trangThai': {
-                $elemMatch: {
-                    'trangThai': 'Đã giao hàng',
-                    'isNow': true
-                }
-            }
-        });
-
-        const listSanPham = [];
-        const listAccount = [];
-
-        for (const donhang of listdonhang) {
-            const sanPham = await SanPham.findById(donhang.idSanPham);
-            const account = await Account.findById(donhang.idAccount);
-            if (sanPham) {
-                listSanPham.push(sanPham);
-            }
-            if (account) {
-                listAccount.push(account);
-            }
-        }
-
-        res.render('donhang/home_donhang', { title: "Quản lý đơn hàng", listDonHang: listdonhang, listSanPham: listSanPham,listAccount:listAccount });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
-exports.layDaHuy = async (req, res, next) => {
-    try {
-        const listdonhang = await DonHang.find({
-            'trangThai': {
-                $elemMatch: {
-                    'trangThai': 'Đã hủy',
-                    'isNow': true
-                }
-            }
-        });
-
-        const listSanPham = [];
-        const listAccount = [];
-
-        for (const donhang of listdonhang) {
-            const sanPham = await SanPham.findById(donhang.idSanPham);
-            const account = await Account.findById(donhang.idAccount);
-            if (sanPham) {
-                listSanPham.push(sanPham);
-            }
-            if (account) {
-                listAccount.push(account);
-            }
-        }
-
-        res.render('donhang/home_donhang', { title: "Quản lý đơn hàng", listDonHang: listdonhang, listSanPham: listSanPham,listAccount:listAccount });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
+};
 exports.chitiet = async (req, res, next) => {
     try {
         // Lấy idDonhang từ request
@@ -183,7 +75,7 @@ exports.chitiet = async (req, res, next) => {
 
         // Tìm đơn hàng theo idDonhang
         const donhang = await DonHang.findById(id);
-        const ttNow = donhang.trangThai.find(tt=> tt.isNow == true);
+        const ttNow = donhang.trangThai.find(tt => tt.isNow == true);
         if (!donhang) {
             return res.status(404).json({ message: "Đơn hàng không tồn tại" });
         }
@@ -202,7 +94,7 @@ exports.chitiet = async (req, res, next) => {
         }
 
         // Render trang với thông tin đơn hàng, sản phẩm và tài khoản
-        res.render('donhang/chitiet_donhang', { title: "Thông tin đơn hàng", donhang: donhang, sanPham: sanPham, account: account,ttNow:ttNow });
+        res.render('donhang/chitiet_donhang', { title: "Thông tin đơn hàng", donhang: donhang, sanPham: sanPham, account: account, ttNow: ttNow });
     } catch (error) {
         // Xử lý lỗi nếu có
         res.status(500).json({ message: error.message });
@@ -212,7 +104,7 @@ exports.chitiet = async (req, res, next) => {
 exports.themTrangThaiPost = async (req, res) => {
     try {
         const donHangId = req.params.id;
-        const trangThai = req.query.trangThai; 
+        const trangThai = req.query.trangThai;
         const donHang = await DonHang.findById(donHangId);
 
         if (!donHang) {
@@ -235,7 +127,7 @@ exports.themTrangThaiPost = async (req, res) => {
         const newDH = { trangThai, isNow: true };
         donHang.trangThai.push(newDH);
         await donHang.save();
-        switch(trangThai) {
+        switch (trangThai) {
             case "Chờ giao hàng":
                 const tieuDe1 = 'Đơn hàng đang chờ giao';
                 const noiDung1 = 'Đơn hàng của bạn hiện đang chờ giao, vui lòng kiên nhẫn đợi.';
@@ -243,13 +135,13 @@ exports.themTrangThaiPost = async (req, res) => {
                 await sendFirebaseNotification(tieuDe1, noiDung1, to1);
                 const newThongBao = new ThongBao({
                     idDonHang: donHang._id,
-                    idSanPham:donHang.idSanPham,
+                    idSanPham: donHang.idSanPham,
                     idAccount: donHang.idAccount,
                     tieuDe: "Đơn hàng đang chờ giao",
                     noiDung: "Đơn hàng của bạn hiện đang chờ giao, vui lòng kiên nhẫn đợi nhé!",
                     daXem: false,
-                  });
-                  await newThongBao.save();
+                });
+                await newThongBao.save();
                 break;
             case "Đang giao hàng":
                 const tieuDe2 = 'Đơn hàng đang được giao';
@@ -258,13 +150,13 @@ exports.themTrangThaiPost = async (req, res) => {
                 await sendFirebaseNotification(tieuDe2, noiDung2, to2);
                 const newThongBao2 = new ThongBao({
                     idDonHang: donHang._id,
-                    idSanPham:donHang.idSanPham,
+                    idSanPham: donHang.idSanPham,
                     idAccount: donHang.idAccount,
                     tieuDe: "Đơn hàng đang được giao",
                     noiDung: "Đơn hàng của bạn đang được giao, vui lòng kiên nhẫn đợi nhé!",
                     daXem: false,
-                  });
-                  await newThongBao2.save();
+                });
+                await newThongBao2.save();
                 break;
             case "Đã hủy":
                 const tieuDe4 = 'Đơn hàng đã bị hủy';
@@ -273,13 +165,13 @@ exports.themTrangThaiPost = async (req, res) => {
                 await sendFirebaseNotification(tieuDe4, noiDung4, to4);
                 const newThongBao3 = new ThongBao({
                     idDonHang: donHang._id,
-                    idSanPham:donHang.idSanPham,
+                    idSanPham: donHang.idSanPham,
                     idAccount: donHang.idAccount,
                     tieuDe: "Đơn hàng đã bị hủy",
                     noiDung: "Đơn hàng đã bị hủy bởi shop, hãy đặt lại đơn hàng khác nhé",
                     daXem: false,
-                  });
-                  await newThongBao3.save();
+                });
+                await newThongBao3.save();
                 break;
             default:
                 break;

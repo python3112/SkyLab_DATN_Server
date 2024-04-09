@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 const DiaChiSchema = new mongoose.Schema({
-  tenDiaChi: String,
   diaChi: String,
-  trangThai: Boolean,
-
+  idTinh: String,
 },{
   collection:'DiaChi_Table'
 });

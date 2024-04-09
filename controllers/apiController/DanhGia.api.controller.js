@@ -31,12 +31,27 @@ exports.getChuaDanhGia = async (req, res, next) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+exports.getSoLuongChuaDanhGia = async (req, res, next) => {
+    try {
+        const idAccount = req.params.id;
+        const donHangChuaDanhGia = await DonHang.find({
+            'idAccount': idAccount,
+            'danhGia': { '$exists': false },
+            'trangThai.isNow': true,
+            'trangThai.trangThai': 'Đã giao hàng'
+        });
+
+        const soLuongDonHangChuaDanhGia = donHangChuaDanhGia.length;
+        res.json(soLuongDonHangChuaDanhGia);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 
 exports.themDanhGia = async (req, res) => {
     try {
         const donHangID = req.params.id;
         const { soSao, noiDung } = req.body;
-
         const donHang = await DonHang.findById(donHangID);
 
         if (!donHang) {

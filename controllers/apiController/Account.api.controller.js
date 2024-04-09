@@ -76,7 +76,9 @@ exports.getAccountById = async (req, res) => {
             tenQuyen  : "User",
             taiKhoan :  taiKhoan,
             matKhau :  matKhau,
-            trangThai  : true
+            trangThai  : true, 
+            avatar:'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'
+           
         });
         await newAccount.save();
         // Trả về thành công
@@ -142,6 +144,37 @@ exports.editMatKhau = async (req, res) => {
         await account.save();
 
         res.json({ success: true, message: 'Cập nhật mật khẩu thành công' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+// Cập nhật họ tên, số điện thoại và email của một account dựa trên ID
+exports.editAccountInfo = async (req, res) => {
+    try {
+        const { hoTen, sdt, email } = req.body;
+        const accountId = req.params.id;
+
+        const account = await Account.findById(accountId);
+
+        if (!account) {
+            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+        }
+
+        // Cập nhật thông tin mới
+        if (hoTen) {
+            account.hoTen = hoTen;
+        }
+        if (sdt) {
+            account.sdt = sdt;
+        }
+        if (email) {
+            account.email = email;
+        }
+
+        // Lưu thông tin tài khoản sau khi đã cập nhật
+        await account.save();
+
+        res.json({ success: true, message: 'Cập nhật thông tin tài khoản thành công!' });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -236,12 +269,11 @@ exports.editAvatar = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 }
-
-// Thêm địa chỉ cho một account dựa trên ID
-exports.themDiaChi = async (req, res) => {
+  
+exports.suaDiaChi = async (req, res) => {
     try {
       const accountId = req.params.id;
-      const { tenDiaChi, diaChi, trangThai } = req.body;
+      const { idTinh, diaChi } = req.body;
   
       const account = await Account.findById(accountId);
   
@@ -249,37 +281,15 @@ exports.themDiaChi = async (req, res) => {
         return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
       }
   
-      const newDiaChi = { tenDiaChi, diaChi, trangThai };
-      account.diaChi = newDiaChi;
-  
-      await account.save();
-  
-      res.json({ success: true, message: 'Thêm địa chỉ thành công' });
-    } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  };
-  
-  exports.suaDiaChi = async (req, res) => {
-    try {
-      const accountId = req.params.id;
-      const { tenDiaChi, diaChi, trangThai } = req.body;
-  
-      const account = await Account.findById(accountId);
-  
-      if (!account) {
-        return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
-      }
-  
-      // Kiểm tra xem tài khoản có địa chỉ hay không
+      // Kiểm tra xem diaChi đã được khởi tạo hay chưa
       if (!account.diaChi) {
-        return res.status(404).json({ message: 'Tài khoản không có địa chỉ' });
+        // Nếu không, khởi tạo diaChi là một đối tượng mới
+        account.diaChi = {};
       }
   
-      // Cập nhật thông tin địa chỉ
-      account.diaChi.tenDiaChi = tenDiaChi;
+      // Gán giá trị cho các thuộc tính của diaChi
+      account.diaChi.idTinh = idTinh;
       account.diaChi.diaChi = diaChi;
-      account.diaChi.trangThai = trangThai;
   
       // Lưu thông tin tài khoản sau khi đã sửa địa chỉ
       await account.save();
@@ -289,3 +299,4 @@ exports.themDiaChi = async (req, res) => {
       res.status(500).json({ success: false, message: error.message });
     }
   };
+  

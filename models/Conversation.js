@@ -6,6 +6,7 @@ const ChatSchema = new mongoose.Schema({
       NguoiNhan: {
         type: String,
       },
+    
 
 }, {
     collection: 'Chat_table',

@@ -15,22 +15,18 @@
   <%- include('../inc/header') %>
     <div class="d-flex flex-row">
       <%- include('../inc/sidebar') %>
-        <div class="content col-md-10 sm-10"style="overflow: auto; height: 80vh">
+        <div class="content col-md-10 sm-10" style="overflow: auto; height: 80vh">
           <form id="myForm">
             <div class="row g-3">
               <div class="btn-group col col-xl-2 col-lg-2 col-md-2 col-sm-12">
-                <button id="dropdownMenuButton" class="btn btn-secondary btn-sm dropdown-toggle" type="button"
-                  data-bs-toggle="dropdown" aria-expanded="false">
-                  Tất cả
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="/don-hang/">Tất cả</a></li>
-                  <li><a class="dropdown-item" href="/don-hang/cho-xac-nhan">Chờ xác nhận</a></li>
-                  <li><a class="dropdown-item" href="/don-hang/cho-giao-hang">Chờ giao hàng</a></li>
-                  <li><a class="dropdown-item" href="/don-hang/dang-giao-hang">Đang giao hàng</a></li>
-                  <li><a class="dropdown-item" href="/don-hang/da-giao-hang">Đã giao hàng</a></li>
-                  <li><a class="dropdown-item" href="/don-hang/da-huy">Đã hủy</a></li>
-                </ul>
+                <select id="statusDropdown" class="form-select">
+                  <option value="Tất cả" <%= status === 'Tất cả' ? 'selected' : '' %>>Tất cả</option>
+                  <option value="Chờ xác nhận" <%= status === 'Chờ xác nhận' ? 'selected' : '' %>>Chờ xác nhận</option>
+                  <option value="Chờ giao hàng" <%= status === 'Chờ giao hàng' ? 'selected' : '' %>>Chờ giao hàng</option>
+                  <option value="Đang giao hàng" <%= status === 'Đang giao hàng' ? 'selected' : '' %>>Đang giao hàng</option>
+                  <option value="Đã giao hàng" <%= status === 'Đã giao hàng' ? 'selected' : '' %>>Đã giao hàng</option>
+                  <option value="Đã hủy" <%= status === 'Đã hủy' ? 'selected' : '' %>>Đã hủy</option>
+                </select>
               </div>
 
 
@@ -71,11 +67,11 @@
                 <% const trangThai=donHang.trangThai.find(tt=> tt.isNow == true) %>
                   <tr class="align-middle text-center">
                     <th scope="row">
-                      <%= index + 1 %>
+                      <%= sttStart + index %>
                     </th>
                     <td>
-                      <% const account = listAccount.find(acc => acc._id.toString() === donHang.idAccount.toString()); %>
-                      <%= account && account.taiKhoan ? account.taiKhoan : "" %>
+                      <% const account=listAccount.find(acc=> acc._id.toString() === donHang.idAccount.toString()); %>
+                        <%= account && account.taiKhoan ? account.taiKhoan : "" %>
                     </td>
                     <td>
                       <% const sanPham=listSanPham.find(sp=> sp._id.toString() === donHang.idSanPham.toString()); %>
@@ -101,21 +97,29 @@
           </table>
           <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-end">
-              <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-                </a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                </a>
-              </li>
+                <% if (currentPage > 1) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage - 1 %><%= status ? '&status=' + encodeURIComponent(status) : '' %>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                <% } %>
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %><%= status ? '&status=' + encodeURIComponent(status) : '' %>">
+                            <%= i %>
+                        </a>
+                    </li>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage + 1 %><%= status ? '&status=' + encodeURIComponent(status) : '' %>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                <% } %>
             </ul>
-          </nav>
+        </nav>
         </div>
     </div>
     <%- include('../inc/footer') %>
@@ -160,10 +164,16 @@
       </script>
 
       <script>
-        function changeButtonText(text) {
-          document.getElementById('dropdownMenuButton').innerText = text;
-        }
+        document.getElementById('statusDropdown').addEventListener('change', function () {
+          const selectedStatus = this.value;
+          let url = '/don-hang/'; // Địa chỉ mặc định
+          if (selectedStatus) {
+            url = '/don-hang/?status=' + encodeURIComponent(selectedStatus);
+          }
+          window.location.href = url;
+        });
       </script>
+
 
 </body>
 
