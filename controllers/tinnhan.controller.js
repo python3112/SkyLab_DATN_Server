@@ -1,11 +1,12 @@
 const { realtimeDatabase } = require('../middlewares/firebase.config');
+
 const Account = require('../models/Account');
 
 
 
 
 exports.home = async (req, res, next) => {
-    try {
+    try { 
         var listAccounts = [];
         var lisMess = [];
         realtimeDatabase.ref('/Chat').once('value', async (snapshot) => {
@@ -20,19 +21,20 @@ exports.home = async (req, res, next) => {
                 if (check.exists()) {
                     const messArray = Object.values(check.val());    
                     lisMess.push(messArray.at(messArray.length - 1))
-
+                   
                 }
 
 
             }
-            console.log(lisMess)
-
+            console.log(  "lismess : "+ lisMess)
+            console.log(  "lisacount : "+ listAccounts)
             
-            await res.render('tinnhan/home_tinnhan', { title: 'màn hình nhắn tin' , listAccounts :  listAccounts , listMess :lisMess });
-        });
-      
-       
 
+            await res.render('tinnhan/home_tinnhan', { title: 'màn hình nhắn tin' , listAccounts :  listAccounts , listMess :lisMess });
+      
+           
+        });
+            
     } catch (error) {
         console.log(error)
     }
