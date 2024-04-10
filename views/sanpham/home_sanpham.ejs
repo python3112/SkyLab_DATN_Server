@@ -78,7 +78,9 @@
             <td>
               <a href="/san-pham/chi-tiet/<%= product._id %>" class="btn btn-primary icon-btn ms-2 me-2">Chi tiết</a>
               <a href="/san-pham/edit/<%= product._id %>" class="btn btn-info icon-btn me-2">Sửa</a>
-              <a class="btn btn-danger icon-btn me-2">Ẩn</a>
+              <button class="btn btn-toggle-status <%= product.trangThai ? 'btn-success':'btn-danger'  %>" data-id="<%= product._id %>" data-status="<%= product.trangThai %>">
+                <%= product.trangThai ? 'Hiển thị':'Ẩn' %>
+              </button>
             </td>
           </tr>
           <% }); %>
@@ -125,6 +127,29 @@
             window.location.href = '/san-pham/add';
         });
       </script>
+      <!-- // Toggle status -->
+      <script>
+        document.querySelectorAll('.btn-toggle-status').forEach(button => {
+          button.addEventListener('click', function(e) {
+            const productId = this.getAttribute('data-id');
+            const productStatus = this.getAttribute('data-status');
+      
+            fetch(`/api/sanPham/toggle-status/${productId}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              // Không cần body nếu bạn chỉ toggle trạng thái
+            })
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+              // Cập nhật UI hoặc reload page để phản ánh thay đổi
+              location.reload();
+            })
+            .catch(error => console.error('Error:', error));
+          });
+        });
+      </script>
+      
 </body>
 
 </html>

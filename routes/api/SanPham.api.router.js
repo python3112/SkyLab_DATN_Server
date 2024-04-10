@@ -14,4 +14,5 @@ router.get('/filter', SanPhamCtrl.filterSanPham);
 router.post('/add',upload.any("image"), SanPhamCtrl.createSanPham);
 router.put('/edit/:id',upload.any("image"),SanPhamCtrl.updateSanPhamById);
 router.post('/search', SanPhamCtrl.searchSanPham);
+router.patch('/toggle-status/:id', SanPhamCtrl.toggleProductStatus);
 module.exports = router;
