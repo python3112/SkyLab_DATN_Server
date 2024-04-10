@@ -10,7 +10,17 @@ exports.getAllKhuyenMai = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
+exports.getByID = async (req, res) => {
+    try {
+        const khuyenMai = await KhuyenMai.findById(req.params.id);
+        if (!khuyenMai) {
+            return res.status(404).json({ message: 'Không tìm thấy khuyến mãi' });
+        }
+        res.json(khuyenMai);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+  };
 exports.getAll = async (req, res) => {
     try {
         const khuyenMai = await KhuyenMai.find();

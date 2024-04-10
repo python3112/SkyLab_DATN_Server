@@ -7,9 +7,11 @@ var dotenv = require('dotenv');
 dotenv.config();
 
 
+
 var connectDB = require('./models/Database');
 
 // Web
+var loginRoute = require('./routes/login.router')
 var homeRoute= require('./routes/home.router');
 var userRoute= require('./routes/user.router');
 var hangRoute= require('./routes/hang.router');
@@ -43,6 +45,9 @@ connectDB();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.engine("html" , require('ejs').renderFile);
+
+
 
 
 app.use(logger('dev'));
@@ -52,7 +57,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Web
-app.use('/', homeRoute);
+app.use('/', loginRoute)
+app.use('/home', homeRoute);
 app.use('/user', userRoute);
 app.use('/hang', hangRoute);
 app.use('/san-pham', sanphamRoute);

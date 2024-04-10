@@ -7,6 +7,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 router.get('/', KhuyenMaiCtrl.getAllKhuyenMai);
+router.get('/get-by-id/:id', KhuyenMaiCtrl.getByID);
 router.get('/get-all', KhuyenMaiCtrl.getAll);
 router.post('/add', upload.single('image'), KhuyenMaiCtrl.addKhuyenMai);
 module.exports = router;

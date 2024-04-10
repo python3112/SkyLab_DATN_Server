@@ -3,6 +3,7 @@ var router = express.Router();
 const DonHangCtrl = require('../../controllers/apiController/DonHang.api.controller');
 
 router.get('/', DonHangCtrl.GetAllDonHang);
+router.get('/get-by-id/:id', DonHangCtrl.getByID);
 router.get('/cho-xac-nhan/:id', DonHangCtrl.layDonHangChoXacNhan);
 router.get('/cho-giao-hang/:id', DonHangCtrl.layDonHangChoGiaoHang);
 router.get('/dang-giao-hang/:id', DonHangCtrl.layDonHangDangGiaoHang); 

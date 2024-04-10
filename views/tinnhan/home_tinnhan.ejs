@@ -14,21 +14,23 @@
     .message-container {
       width: 100%;
       display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-
     }
 
     /* phần csss tìm kiếm và check  */
     .search_and_check {
-      width: 20%;
+      width: 25%;
       height: 100%;
-
+      margin-top: 10px;
+      margin-left: 10px;
+      margin-right: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 
     }
 
     .search_mess {
-      width: 100%;
+      width: 95%;
+      margin-left: 2.5%;
+      height: 40px;
       margin-top: 10px;
       border-radius: 10px;
       border: 1px solid black;
@@ -36,10 +38,9 @@
     }
 
     .search_mess input:focus {
+
       outline: none;
-      /* Bỏ viền */
       border: none;
-      /* Bỏ border */
     }
 
     .btn_search {
@@ -75,20 +76,86 @@
 
     }
 
+
     .item_chat {
-      width: 100%;
+      width: 95%;
       margin-top: 10px;
-      flex-direction: row;
+      align-self: center;
+      margin-left: 2.5%;
+      display: flex;
+      align-items: center;
+      border-radius: 15px;
+      border: 1px solid #ddd;
+      /* Thêm đường viền để tạo độ sâu */
+      padding: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      /* Shadow mềm mại */
+      transition: box-shadow 0.3s ease;
+    }
+
+    .item_chat:hover {
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .item_chat:focus {
+      padding: 20px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .item_chat_contentMess {
+      font-size: 12px;
+      margin-left: 5px;
     }
 
     /* ////////// ////// */
 
-
-    .message_index {
-      width: 79%;
+    /* ///// chat .chat_frame */
+    .chat_frame {
+      width: 70%;
       border-radius: 10px;
-      height: 1000px;
+      flex-direction: column;
+      height: 750px;
+      margin-top: 20px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
+
+    .header_chat_frame {
+      margin-top: 10px;
+      margin-left: 20px;
+      width: 100%;
+      height: 10%;
+      border-bottom: 1px solid black;
+
+    }
+
+    .name_user_Chatframe {
+      margin-left: 10px;
+      font-size: 20px;
+    }
+
+    .body_chat_frame {
+      width: 95%;
+      margin-left: 2.5%;
+      height: 80%;
+    }
+
+    .bottom_chat_frame {
+      width: 90%;
+      margin-left: 2.5%;
+    }
+
+    .message_wrapper {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      /* Khoảng cách giữa các tin nhắn */
+    }
+
+
+
+    /* ///////////////////////// */
 
     .message {
       border-radius: 10px;
@@ -105,54 +172,156 @@
 
     .highlighted {
       border: 1px solid black;
-
       box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+      transition: box-shadow 0.3s ease;
       /* Thiết lập viền cho các nút được chọn */
     }
+
+    .left-message {
+      width: fit-content;
+      padding: 10px;
+      color: white;
+      background-color: #ccc;
+      /* Màu xám */
+      max-width: 400px;
+      margin-left: 10px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+
+    }
+
+    .right-message {
+      padding: 10px;
+      background-color: #3cb371;
+      /* Màu xanh */
+      max-width: 300px;
+    }
+
+    .avata {
+      border-radius: 50px;
+      margin-top: 30px;
+      width: 50px;
+      height: 50px;
+    }
   </style>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Gọi hàm highlightButton khi DOM đã được tải
+      highlightButton('btn_all');
+
+
+    });
+    function highlightButton(buttonId) {
+      var buttons = document.querySelectorAll('.check_chat button');
+      // Chọn tất cả các nút trong phần check_chat
+
+      buttons.forEach(function (btn) {
+        btn.classList.remove('highlighted'); // Loại bỏ lớp 'highlighted' từ tất cả các nút
+      });
+      var button = document.querySelector('.' + buttonId);
+      button.classList.add('highlighted');  // Thêm lớp 'highlighted' vào nút được nhấn
+    }
+
+    function item_chatOnclick(srcImg, nameAcc, idChat, idAccount) {
+      var imgAvata = document.getElementById('img_avata_user_Chatframe');
+      var nameUser = document.getElementById('name_user_Chatframe');
+      if (srcImg == "") {
+
+      } else {
+        imgAvata.src = srcImg;
+      }
+      nameUser.innerHTML = nameAcc;
+      window.data_ChatFrame(idChat, idAccount, srcImg)
+    }
+
+
+  </script>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js'
+    // If you enabled Analytics in your project, add the Firebase SDK for Google Analytics
+    import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-analytics.js'
+
+    // Add Firebase products that you want to use
+    import { getAuth } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js'
+    import { getDatabase, ref, push, set, onValue, equalTo, orderByChild, orderByKey, query } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js'
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQTaVbsAvnb1KWVl1HlhoOum8YwcbEbZE",
+      authDomain: "skylap-md03.firebaseapp.com",
+      databaseURL: "https://skylap-md03-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "skylap-md03",
+      storageBucket: "skylap-md03.appspot.com",
+      messagingSenderId: "206926809191",
+      appId: "1:206926809191:web:e8dc6a3da11ea129b4ecc2",
+      measurementId: "G-TSY3SXB2F5"
+    };
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const data = ref(database, '/Chat');
+
+    window.data_ChatFrame = function (idChat, idAccount, srcImg) {
+      const body_chat_frame = document.getElementById('body_chat_frame');
+      const dataMess = ref(database, '/messages');
+      const querymess = query(dataMess, orderByChild('idChat'), equalTo(idChat))
+      onValue(querymess, (snapshot) => {
+        const messagesArray = snapshot.val(); // Lấy giá trị trả về từ snapshot
+        if (messagesArray) {
+          body_chat_frame.removeChild(body_chat_frame.firstChild);
+          const messageContainer = document.createElement('div');
+          messageContainer.classList.add('item_message_frame');
+          const messages = Object.values(messagesArray);
+          messages.forEach(message => {
+            console.log(message);
+            const messageWrapper = document.createElement('div');
+            messageWrapper.classList.add('message_wrapper') // Tạo một div mới để bao gồm mỗi cặp img và message
+            const messageElement = document.createElement('div');
+            const imgElement = document.createElement('img');
+            messageElement.innerText = message.content;
+            if (message.idAccount === idAccount) {
+              if (srcImg === "") {
+                imgElement.classList.add('avata');
+                messageElement.classList.add('left-message');
+                imgElement.src = 'https://cdn-icons-png.flaticon.com/128/3135/3135715.png';
+              } else {
+                imgElement.classList.add('avata');
+                messageElement.classList.add('left-message');
+                imgElement.src = srcImg;
+              }
+            } else {
+              imgElement.classList.add('avata_admin');
+              messageElement.classList.add('right-message');
+              imgElement.src = 'https://cdn-icons-png.flaticon.com/128/6024/6024190.png';
+            }
+            messageWrapper.appendChild(imgElement); // Thêm img vào div mới
+            messageWrapper.appendChild(messageElement); // Thêm message vào div mới
+            messageContainer.appendChild(messageWrapper); // Thêm div mới vào container chứa tin nhắn
+          });
+          body_chat_frame.appendChild(messageContainer);
+        } else {
+          console.log('No messages found');
+        }
+      });
+    }
+
+
+
+
+
+  </script>
+
 </head>
-<script type="module" src="/middlewares/firebase.config.js"></script>
-<script>
-  console.log('2')
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-analytics.js";
-  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js"
-
-
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyAQTaVbsAvnb1KWVl1HlhoOum8YwcbEbZE",
-    authDomain: "skylap-md03.firebaseapp.com",
-    databaseURL: "https://skylap-md03-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "skylap-md03",
-    storageBucket: "skylap-md03.appspot.com",
-    messagingSenderId: "206926809191",
-    appId: "1:206926809191:web:e8dc6a3da11ea129b4ecc2",
-    measurementId: "G-TSY3SXB2F5"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const database = getDatabase(app);
-
-  // Reference to your database node
-  const dbRef = ref(database, 'Chat').on();
-
-  // Listen for changes in the database
-  onValue(dbRef, (snapshot) => {
-    const data = snapshot.val();
-    console.log(data)
-
-
-
-  });
-</script>
 
 <body>
   <%- include('../inc/header') %>
@@ -163,11 +332,9 @@
 
           <div class="search_and_check">
             <div class="search_mess">
-
-
               <button class="btn_search" type="button">
-                <img class="icon_btn" width="100%" height="100%"
-                  src="https://cdn-icons-png.flaticon.com/128/954/954591.png" alt="search_mess" srcset="">
+                <img class="icon_btn" width="40" height="40" src="https://cdn-icons-png.flaticon.com/128/954/954591.png"
+                  alt="search_mess" srcset="">
               </button>
               <input placeholder="Tìm Kiếm " style="border: white; height: 30px; width: 75%; " type="text">
 
@@ -183,90 +350,74 @@
             <!-- /////////////////////// -->
 
 
-            <div class="list_chat" style="max-height: max-content; overflow-y: auto;">
-             
-                      <div class="item_chat" style="display: flex; align-items: center; border-bottom: 1px solid black;"
-                        onclick="">
-                       
-                         
-                          
-                            <img style="border-radius: 30px;  margin-left: 10px;" width="50" height="50"
-                              src="https://cdn-icons-png.flaticon.com/128/3135/3135715.png">
-                           
-                              <div style="margin-left: 10px; margin-top: 10px;">
-                                <p>
-                                  
-                                </p>
-                                
-                                   
-                              </div>
+            <div class="list_chat" style="max-height: max-content; width: 100%; overflow-x: auto;">
+              <% if (listAccounts==null) { %>
 
-                      </div>
+                <% } else { %>
+                  <% listAccounts.forEach(account=> { %>
+                    <% listMess.forEach(message=> { %>
+                      <% if (account) { %>
+                        <% if (message.idAccount == account._id ) { %>
+                          <div class="item_chat"
+                            onclick="item_chatOnclick('<%= account.avatar %>', '<%= account.taiKhoan %>', '<%= message.idChat %>' ,'<%= account._id %>'  )">
+                            <% if (account.avatar) { %>
+                              <img style="border-radius: 30px; margin-left: 10px;" width="50" height="50"
+                                src="<%= account.avatar %>">
+                              <% } else { %>
+                                <img style="border-radius: 30px; margin-left: 10px;" width="50" height="50"
+                                  src="https://cdn-icons-png.flaticon.com/128/3135/3135715.png">
+                                <% } %>
+                                  <div style="margin-left: 10px; margin-top: 5px;">
+                                    <% if (account.taiKhoan) { %>
+                                      <p>
+                                        <%= account.taiKhoan %>
+                                      </p>
+                                      <% } %>
+                                        <% if (message.idAccount==account._id) { %>
+                                          <strong class="item_chat_contentMess">
+                                            <%= message.content %>
+                                          </strong>
+                                          <% } %>
 
-                    
+                                  </div>
+                          </div>
+                          <% } %>
+                            <% } %>
+                              <% }); %>
+                                <% }); %>
+                                  <% } %>
 
 
-
-
-
-
-
-
-            </div>
-          </div>
-
-          <div class="message_index">
-            <div class="header" style="padding: 20px; height: 7%;">
-              <img style="border-radius: 30px; margin-left: 20px; margin-right: 20px; " width="50px" height="50px"
-                src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAJQA9gMBEQACEQEDEQH/xAAcAAACAwEBAQEAAAAAAAAAAAAEBQIDBgEABwj/xABEEAACAQMCAgcFBgQDBgcBAAABAgMABBEFIRIxBhMiQVFhcRQygZGhI0JSYrHBFdHh8DOC8SQlQ1NykhYmNERzssMH/8QAGgEAAwEBAQEAAAAAAAAAAAAAAQIDBAAFBv/EAD4RAAICAQMBBAcHAgUDBQEAAAECAAMRBBIhMRMiQVEFYXGBkaHBFDJCsdHh8CMzBhVS0vEkcpJDU2KCwhb/2gAMAwEAAhEDEQA/AMWr17e7ifNkSXHXbp2Jziohp22SWnzBiTWYrjAX4iuPM6dFw/4vgNq4ATsmSE7ndnY555POiAICTL4b6eMg9Yxx3E0DWp8IVtdfGNLPXLhU4GkBPiy5qRpwciVGpJ4MYQ9IInPDKm4H3e80uywR+2U9YfDqVnKgbr1Q94bbFHBz0jBlIzmXx3ls5wlxCx8pAf3riDCGXzhAYHGCCPLelPEMqajBxPRzPEwKNjFcRCGxGFvdiY5U8Lrz86mRKBsxjBeA7Ps1TKyoeXtLgZ50uI2ZFb4xHYGuNeZwsxCVvo3AHF2u/NIa5QWAzjTI3fQ2mHcJW0i+OTRCwbpUbhkOwNHaIN5HSUT3Uj5zmmFYilzAmnljOUZh+9U2AxN7CCXN/M/ZkJwKdalEm1rHgwdrlimBy9abYIO0MGkHGc5xTjiIWzKwnDnizv50cwASdt1UcgZxkjlmlbJEouAeYZPcwFgVPDtggVJUPjLs6+E+VceOVNmedtzOdac0YdssV8/6VwMXEvg+0kSPftMBypy2BmcqbjiW39pJaSsjBiByfGMj0rksDDML1lGIMGzTgyeJINTZgxJq1HMUiXIwFdFPHSdV+1Ri44lySENgY+NdOBIGJ13LHfejBuMlb3ElvJxwOY2/LSkAwhiDkR9putNNMYrtkBf3CBjB86kV29JpS7d1jYnbmD6UJXMiCQdiRXcQZhkN0fvZ9aQr5SitDEunK4U5pCsfdJdcHG/ZNdjEO6VO7x7rvR4i5MnHfLylbhPjQKwh5cs4O/ECPEGu2xg8mLk4wd6XbG3ytpgxwRijtnb8zoVe/ehzCMSqaCJxsaIJzOZQYBLakE4O1V3SRWUtakfeoBxDsM4sRHPnRJEYKZx4Gc7c6G4QlCZ0aNeTbqm3oaX7RWvEP2Z2nygtSiZsTnFTTsSxW8K6DEKiGVBVzkbnerBVMkSVMtd2dSSxbAwMmhtx0E4uT1MF4j37GunTvFRzOxJK1HMUiXI21ODJkT3H2hRzOxxLVkw1dFxLOLNGJicJ3roMTqtg5roY407UZouz76eDGkKiWSw+MdW11FcLlDh+9SdxU8yw5hAlK7HcV2IQ+OstR8HiVseVKRKBpb12feA9aGIcz3WcXumuxOzmcJDbNXTpTIGU5U4NMMRTmQN7coeYPqK7aDF3sJdBfh2xL2T491AriOLAYWsw34WHwNLiPmSE7dxBPnXECMCZFpyP8SMY8qG2NvkJLhPA1wQzjYJS17HyOPXFN2Zg7YS+zvLTiJkwzZ27WBUrK3PSWqur8ZqbHU7cxBVVVI55NeZZUwPM9FLFI4n5zdNsryr0wZ4eZBRvTTj0lgGK6LJISOXLvpgYpxDVcBRitKtxM5XnMrk4W3pWjKTIBaXEbMsWLwo7DFLiTCMBk0ekGQZwc64QSfhTRZMV0WSX/poEwy6Lg4+37tLzjEbgHMPtZkOUIXPMbUrAjmURwY+0OXTVaX220eRuHsSI3CQf3rLaHwMGbaCmTuEeac+gyxFbxpYpFycju8u/NT3Xr65ZU07DniX3GmWkiK+lzNPxd2KZNQ2e/wAQPplx/TM5H0fvpOPhiIVfe/lT/aKx4yf2VzFrW8kTENkHwNVDBukiUIPM5bSpc3i2ayIZmzhWpGfaMx0G47fGF31mbYorOjlh93u8qCWB+RHtq2QCWM91WBmciBywuynGfhTZibSZQlxc2hHV/ENyo4B6wAlekLj1aKTsyAoRzNDbjpKLZmXpfpIcKxx+bkaBEYMMy0kYz3V0aUuiPy50QYpGRA5YeeKoGkivlKuulhOA21NsBndoy+Mw6JFO/YmQju7q8hLlx3+PnNrads905+U69jLEheRGUePdVEuVjhTIWVun3hByjZ8RVxzEBnlQlgoHvHAPnQJ2jJjYycQ6S3Fu6wzXEYkJwyhvd9TWJfSG8E1rwPGVOlI6nnykJIpEPbRh3DPfW6vUJYODMz1lDzIpVVbI4kjCVAquZOXpCXGAOdBiBOCEnie9ifO42NKLBH7NpY9kwQcPKh2nM41nwnhCI93G+KJbMGAOspfflT4k8zgOKaCSDkMGHPvoEZgBxH1ncxOqEKcnYjwrG6EGejXYjAYjIrCwyAeIDceNICwlSFk7XVJ9NkD2jYZd1zRNav1nC56+kOs+lurC4keWYMHGCmAF+FTbT1jpHr1VhPMHk1ljJwT4Kkbg5xRWrA4MDWgnvSaSWpk9pt0In7wTkY8vCkO4cEyoFedyw+N4tRK9bMUkAILDbFT7yGXCpZ1iPUHngk4IrksAeZANaEO4czJaoU8Suyv+JjFcgMzHAYYFN3h0kVYdDCb21dicA4qquIrrk8RbNZunIVUOJNqj4T0FvK2xzSswjIjeMIDSwnhYnh+dKGzKMpEIjUSjijJz31xOJwXMkQyjtjNMDAVlZhV+6n3ztmZ8tS1mbhMatg7bGvINqCbwh8obaSXmnESfaRgbtxRc/nv8ai6029MH3xlZkPOYeNTimUCeGKRv+ZIOryPEkc6QJZX918Dy6/nObs7Byo/nsk55bKOeMwQN1DR9qT3sN5gZGPOqK9rqQ5wfVEaitTkDiZuSTrJmZRgMdlDchWmtdqgSTec23/hpoej1hqEImlS7gWV37lY8x5YqKW94joZSyjuhhB4dFmMYIVgAO+tdVm3xmR6C3QS+HSpEftLhfOr9qMSa6c55jaPTAIgQfKs5tJOJq7AYlbRcJKnBxREGMcGcmISIELuPGmC5MnYQo4i6ZlK9vn5VdBiYn24yYG4GTirzOZWaMOZ6ughdrdCMcJpGTMrXZt6xmlySnGDkd/lUCvM1K/GZ0TBzzoHiDcDPOW+6Dn0oAiE9MiDS8Z5k586qpEz2ZPMlb3Mi8mIoMgMau1hCGu5RiRGwRzXNJsHSX7dusg03WniJPF3mu2YgNhbmCyRuTtvTgjpJNnrHOja28BWG+j6yIDHHntCpWJ4rNdFvg01KW1vdRCWB0ZCOfh61AWEHmbOzU9ILcWSqNl+NOHzEKAQCW33wQPnVA0QrKBGY2ypINMTmIFxDo5Ulwsib45ilOR0jjBl/VQYHaFJvMcIJ8xGl6ouSY5scsxSdZ+hP6V4630kZ+mPpNfZtmSF09qvBPa8IHvCRgv0I/agEV+VPwj7io7wl8d1plyQGQJkbvlCo88Bs/SgVurHd5+P6Qhqm4/SK9SksjLi1lMilt3MZUD0zvWqgMeXGPfM1zV9FOYKYoBIOrlB/FtjNadzcnEykjpPqXR/WbOy01LJzL7NIiRskzqyqSAMqQSB6ZFeHm3tGbr18J6qPUFGI7lW0DtxssSgklZVCj0B7/hV67XK8iMyLABbRyAThV6tgcMvJvICrJc2ArdZBqwTmUYGCFHZzWjdJFYumgPXtuGAP3TWhLFKzKynM7d2o9lyBT1vhottfdmfmtpAW22znNbA4M8x62EoKnmfpvVMyODICNnOEUsfIZri6gZJjpWz/AHRn2Q230DU7lBJHbFYydmdgv6nNebf6Z0NBw9gz6sn8hN1PorWW/dT48Q6HolqBZWae0QfmdtvktYG/xPoRwAx936max6A1Z64HvhL9GbviXgvQmN2xbMwII8yKz2f4jT8NZ95A/WaE9DHGHf4CEroUEarm7k4sd9s29Q//AKK0n+0Mf9wlx6IrA+/8pJdKMjBTK6b83i2/WnPp8L+DPv8A2+s7/Ks/j+Uhc6G7ElbyzI7hkofrtT0f4hrJxYjAfGSu9EsRlWB+UHk0K8i3Nux78phgfiDXqVeltJZwtg/L85if0dcnJUypYBw5xhj3GtobymXs/OVCArkoNu+mzF2kcyWVGNuXOl5j+2DXBJJ4e+qKPOIx8pbp2qXGnyB4n4UAPECdqSytWHMem1kOBHV70vtbfTY7iRGmkJwOBhg+dYyrIZu7VcRRqnS8QNaTWtuJLSdckMMON8Hb5+W1NvMBaOI7y0ubVLiGeMxye6S2M+XrVQwgyJZxAeI86aLnynePyphGnzg2V7asrjrI+2W6qQNHwnxypxz/ANK8AX1uCmevv+mZu2MpyB9IWmvz2y4voriTjYEKXRkIHljJ9M0h0SuM1kD4j6/SU+1FR3+Yzmk07WSltDbMGVeLjhjAcnx2PZ9MEedZ0q1NGX35Hken7+35Q2WVWnAEy1/avb3LxzLIT+Zd/LlXr02B0BGJ51q4PM9ZqYplZY1YZHEHGxHhTWqHXGcRFODG3Ye6aSK36qFz/hK5OPQn+96kqstWGbJHjKAZfOMCb67hS/tvaNOfruzwvC5y2y8wR6cqw0Ma22tN7jcuVgmnteWoWS3bBRsgMcrvz2NbCAx5kgGA4ltzqdy9wWlRCDziVeEevrRFYK8QPY3lCo7OO4jea266NiccMqZHzzWZ9elPFpHtH6Si6c2coJcdKllg4Hcg/kTP64FZH9P0K3cGfbx+8r/l7sOTKB0dkdj1jlExzJGT8Bmuf/EihcqvPv8Az4ir6IBOGPE9H0TtlmZppFkTuUocj1PFj6Vmt/xPa1eEXDeo/TH1hT0JQHyeRGUGl2Vqqjq8AgnccKjH999eVd6Q1F+dxno1aeqod0CQhvrJlmEEzXHVbMIlLcPy2qD6S8YLjGeef3lBfXnI8IBNqjOri3WFPzFuvdf8idn5uKuNCqn+oT+Q+J+gMm2pJyAP57P3lmna1bSccV/IspZhhuEdhV5ceCUHf35qlmnIA7MfufVnBkktGTn+fSBa1fWOmpHL7RA8MwyoEJckd55jb0rVoNGdUG3NtK/nFv1HZ4xyDLerhKZS7O3IwFuH6j96ytuU4I/L+fKUBVhkGcBuc5ivbg+QX9y5/Sh3fFR/PcJ3PgZBrnUIzg3J+MiZ+QjP60cU/wCn8/8AdO7/AJ/z4QmK4LRkXkDXWTs7BV4R4e6tEX31nNVm34n6mK1VbDFi5nuo02dGLMYHBwEjk6z9q31endZVgMoYezbMzejaH5U4g0+h7jqLqF2YZEb5VvlvXp0/4koI/qIV+Y/numSz0TZ+Ag/KL7nSbqFGLwkheZUggfKvUo9LaO492we/j85js0F1YyV+HMzOuiRI8K/ADsdtzn9a0XPu4Ez1oQ3ImduUlRRxSFwPdU93L5c6iQBLg5g4n4iF5ADlXQ4nutYArxHqzzWmzOxNHovSqe2dYL/M1uo2YDtqO71pxZjrF2ma+x1G31CHrbOTrVBwdsEfCrqQYuYju+munzwCO0gnaUDsxkDB8sYOa+Jr9EXI25mGJ7tmrRxhFlL3Ml1axXTabcxu3ZUxJjG+MFSMHfy5VoRRWxTeMev+ZkzkjJHMdabc2TwiSa6toTG/BJ19t1bK23PBx8qx6hLVYDaTkZGGzmWRl/FwfZHN6LW6CZKXMiKOAAB+ID+/Gs9F9y5B4B8/CF60bnrCrbSbS+SOc6XCAow/HEq/L+taqO3ckI5PvOIrJV4rzA9X6PWS3IDWksW/O1ZSrfDJ/at7XW6ZcuwI9cmaK3PdBEJtNPSwuFlsVmlcDYSgIoPnvv8ACsdvpWvGOv8APZLJpCDkRqU9qYiWKJDgZCZxnyrzW9L6jnZiXGkXqTK7bSoon4wpOBgGQ5x6Vmt1mpsGGbEsmnpXkCFssYHaYt4qKxnzmgZ6CUXV7DboDNMkK8gZGAxTqllp7oJgJVfvGKJ+lOixj7TVYGOcYV81qT0ZrH6VmTbVUL+IRFddOZuuaOCyXh5LJ1+/PnjGPnX0Gn/w3WFD2Oc+WP3nn2ekHL7ET35+mITYmS4tLuc3Md5qPGIYmu/cwe4LyzzNT1FddNioBtQAk468ec45Iz1bpz0jSe2iiiWwmhHslmnW3Zj7InkI7KAd478eleetrs3ag95uB6gPGNtCjbjgdfWYr1G3mQsHAJQIHAQNiRhkRRR7KCBjLEHnVqrVbocZz8B1LN19gBiFSo9n5nwHhEE7yojySPwCM8JcMOyRzBkYEZ8kWt6BWO1ep6ez/tH/AOjMzEhc/wA+P6CLr1hPEGkEhiG/GSUB/wAzks3wArdTlDgfDg/IYA+chZhh3v58eY16P65qFlZrbw3KrCCSgY88nnyz9aw63R02Wb2HP8/nSaNPcyJtB4hx16/ZiJ75Ez+HjP8A+wrN9iq/Ch+X+wyovfPUfz3yyPVrluV4hPj1b5+k1IdOo/D8x/sh7ZvP+fGSF7qGNnj4R9425P1Z2pRRUP8An9hH7Szw/L95Nb+8l7LajGGHcVUfoppTVWPwH+e8Qixz+KQuri/Ns8UN4JOLYpbq2/qQqY+LCnrSrdl1+OP1P5GK7sRgH4f8fUTO3l7f2sUkaX6Lk/aRW23/AHFds+rGvXpr07sGKZ8ifoP2mN7LEGA3w+sWXWoT3dvwlCzAYEjoBgeWP3NblqRTwfdmZWudhgiLLm461Y4uFcrzfkWPnzqyjnMG7cOkruY1GWBw3co3+vfTqxxzOIAnEIRAWWpuxJ4nATgmVGB7yfHlXBiYNsMs9RubBnazmK8fvAGtCN5RGHnNFadJdLsUI0vSWZyc4VQMnxNfLWaC+w5usnsC5R90Qg9JukVwP9ntLO2A3DzN/M1IaDRocuxJ9X7Ru3vPCjEM0iG2LtLr2p2txOeUUD5588hef7VPUPYBt0yEL5kfrGWpG5tYExzbtpVoVezt9VUIdhEs/B8jtvWJvtNgIsZefPbmWWulD3QfnCZNVtp5etng1PixjhETEY9AKVK7q02Ky49soChOWUn3T0mqaS8sUlybqFoSSpmjljG4xvjY/GgKtSFKpg7uvQ/DOce6HfXnJBGPbDoL7TL/AP8ATXdrLlSo4ZMnBrM1eoqHeUiWFiWdDn3wty3s7QxN1alSMp2Svp4VLtWLAnmOa1nLcvGHDu78TcXafJHdgZ7qNlgcg46CcEx0M5MssqkQ3UsTePArD9BXIawe8ufeYGRyODFj6GlvidUW/vXfee5GSg39xT2c423+JNej9tWw7fuJ5D6nrMh05B3Y3H1n6SK6DFrEbpfRPEOHAa4RZJT+ZTusf+QCm+1Npm/pt/45A9/ifeYvZbuWExbaFf20zwX+mXlxFGX6rq3RVYE55jfc43Br3j6QqfBNoXPXg5/TrMTC7cSwJ+H/ADH1laPZWovtRt7WztLYCVbSLtSyOBzYknfNebbal1proYsW43HwHjgCVrRgu5wABzjz9sf2Usk9va+0grJfXXXcEn4FGcD4BfnXmXMFdwnRRj54/X4TUmSAT48yEsLrGJiS0nHPcEn8eOFfkP0rls723/tHunbCBnx5P0inUdOhiknmkUSx6ZaxpBAeRlYZLEd53rbRexCoDjeSSfUPCZXq5J67cAe2JLzRpIHuJJZFaS2QPeXsy8YRiM8EanbO/Ot1erDAKo4Y4VRxn1sfKZnp2ZJ8Op+gEUp1s8haMzFSMnrX7b+ZHJR61uJVOGI9w493iZEbj1lcMqkZBUg7buoH0AoumP8Agn6mBWEvEyjnIP8AuQ/qDUWrJ8PkR+kfd6/yhEV4kY7LRsfONR/9VWptTkcj5n6kxxYJL+IStyZQPDrJh9OsI+lcKQOv5L+mZ3aHz/P9YuuJHZmYRO5Y4wkJf5gnH0rSiKPED34/KIxMEmuXg4Fe3dpB7glIwp8Qg2HxrTVUH6Nx6vH39ZCxiuM/SL5JZGcSHJzzwefwrYiqBgdJLOZRcFmfmS2MkGiqx5BDlgCm2Pe5iuMIGZJ0HcBUCeYQIE7kEg7b86qI4EvhnAG5CtQyR0iMsOksru0biaNlXOcKykE+YB/WsoeuzOPy/abGUjkRnYa01vhJdPs+Li3meJVC/IZ+tZrdB2hyrn2fziVRz0IA9sbwdI5kHZ1TSo1AzwFZic+HOsLaBScMjH192UF5/wBQlsGvzTkCTWtHiYnl7GW/Wlt0Kp92tj/9sQi05++PhLhq5YlV6RaMxzsHssft61I6XxNLf+UJtP8ArHwhtpeaw/Ys/wCDXqjmLWcxE/AGovVpx/c3KfWMiMtlp+7g+w4lF4+q9YG1XovDcW+NiMNInnxAA09a0bcVXkH3gfCc3a/jryPnKoNZ02A8MV7rGmMP+FKDIq/BqZtJc/VVf1jj8pwtRfEr8/zjCHpBbMo/81RAH/mWeDWZtC4/9A/+UoNSv/uQkanp7qXn6XgKOYjVUI+hNINPavTT/HMJvr8bJ6x6WaBp9uyxTz3M7SPj3pGk7RAbJ5ZABwOWae70dqbGHQAAeQA46Y9XT3RE1dSjj9Y86P3F5fRm5voepLsDHFjdV8T5msWrFSEV1nOPH1zRUXILNxmFWeppeanc2kWJIoUBZjuFYk11lOyhWb7xz8IoYlyB4T15aWWvWQJWN+BzwOBntA45+B5GuqZ6LNoOPA+/+cQWIli5MhbWqT3dvqPWHEcJiWMHKqSdz67YqVpeutqiPHk/z4xgAxDg+6U2ss4huWu13W5cAD8JP8jXWqpcbD4D8oayQO95/WX39jFe28qCTqpJGXLgA7rup3oUXtXgkZHPznWVBhj+cTOatZT3dzBYCK4eJ7g3M0rqQjtj3dhjnXpae5aka4kAgYA8R6xMN1ZawVgcdfbKrPovqFzbAXUVvwqjS9WCcSSnkrjvA7hyqj+ka1bKE56Z8h6vbFGldhhh/wA+uVroMQ1JYdSiRovuGYZ4jjb0HltROvPZE1EhvVCNN38MIRrHRfT9OtBcSWjzFjgCzsg2Dz32O1DT+kNRY+0Pgf8AyaGzTVqvI+AiC10zQ7gss9yLF1PO5gVFPxxW+zU6ysbkG8eok/KZlqrJ8vaJG+6LPDcvDBZ3koU7TKAqP5qc7imr9KDbudgPVkkj28QHS4PAMS6hYNZSFJmiV9vsppiW8tl3rdRf2wyoPtA/WQsTacfnApxd26CRrL2dOQkEZXf/AKjW8UEDLZmUurd3iBy3Mkuztk/i76ZVA6RsSoHLMpGSVCgneq9RmNmVuGQ4DDiHfmu6wiTHFntEk+lRYDwjCCzbvRWOJxY+KmnGPLeS1giWSGyDmRyuJZCSMeIFZBp3YZL4HqEuHUZAXmcnlE0LBoIIJCV4cPwgAc9qoibEwSYzNk5MgjQ9QUklt+tL549z2cHbHqfpXZXb65wb/UZEexcWPaIz+LCMP2oBgDzO3IZ5YrcyKeuhMWQWUtgnxFcCCfVJsAek4loxbjVsRjJ4geXPHj30+1ScE8Rdg2w206R63YLwW9/crH+CRuL5A7Vhv0GlsblRHWy6vnMdaf05mWPg1S0gvRnmVCn51593ohM5qJX8pZdaRw4yI1h6RdE7lesu9IlgHisQdSfhWVtDrqzhLM/KXGopPLLCotS6BEdZ9kueQa3OfoDUzp/SY8fnKC3Swi36W9FLCNjbx9sMwVYIMEjJwc7cxg0j+jNa5AY5HHU+rn5wjVUqOJ1tX13pNmLSbU6dYn37mfY4/X5fOu7DTaTm0728hEN113CcDzMjBc7fwLoyWkYke16id8eOD493lXOoH/U6r3LOXn+lV7zNDfXVr0Z6P5UjhjTq4UPN2xWKlH1V/PicmXtIprgGmRvpfRn2p52RQOvki4Adyc4HfVrmGo1JUDrx8PGIi9nVuJlsmsxw3am+CW6TxBkZ5BhvnjBxioDTM6f0+8QccAyvahWw3Ahdnf291bo8UqzRNIY+NTsSD/So2UPW21hg+Ur2gYAiENI6mQwhDIpwqu2BxdwOPGkQY+9mA58IxjbsjiGD3jOd6U4zxOwZORUkGGAPdvRBxBiVpCkbZXiH+bau4hyZdsBuoYc98URgHpEIDdZU84QYIWPPcKUkeUdUHhFV/ZWt5l5bK1Z3GC7QqWx6kVWvU2JwrED2wNSh6iDrplrwFGt4iuMcOBjHpVjr9UeljY9pifZqc52D5RPe9DtF1DIW1WJ+5om4T8a01el9VV1bI9clZo6X8MTIa30Eu7bMmmyC5QZ7DdlseXcfpXu6T07VZxcMH5frMNvo915TmY65ililMUqMkgOCrDBB9K91WV13KeJg24ODLYwyYDKOIHcd4qLY8IYLPtIezggZxTL0lMcSsni586aDEYE2Qbie4uZB3gLw/rWP+sfASxInBPp4b7O2d/8Aql5/KgVt8T8pwI8BJiVdzHpykHnkE0u3zeAE+UtjmMfPTUIP4ozSlAfxwgnykjd2f/udMVV8VZl/Wh2dnVXhLDxEnEmkXB7M1xak8i4Dr9KDNevOA3ynA1n1Q+PQJJl4oLiC7T8jYb5f1pBr1BxYpEcJ74lurZ7aWWOVGXgbG6kDlnnW1TuUMOh8ZB0wSI90A31zGyLq9tZxR44Ip91cnwrztUK0IJQsT5Sun3NwGxNAundIFQt/DNHv0+6UAU4+lecb9MeN7KZrCW+QMnBadJWYLa6Hplm34mUEj9aVrNFjv2s3qhCX+CARmvRbWtVK/wAd1lupHvQ244VPl6VAa/T1f2KufM8mP9mtb+6/EYT6poXROzEMJQuoJEEOGdj5nu9TWdNPqddZuP8AxLNZVQuFiHTIL7pjqov9RRorGE5ig7vQfz7636iyr0fX2NXLHxmepG1D736R10tulmksdFgcGW4kDS4+6g/qPp51i0NRUNqG6ASuocMy1iA33FcdIXuEmCw2CJH1ZXPETnPpzFVqKrpwhHLZPWJZzcW8F4h8mn24mFxCrxSv20AchFkH5c49azLqH2lGOR09ePbKdmN2RKV1OXT7uVdSEs7TxhlNvCcErsRzOCNt6qNOLVBq42nxPn9Ivamsnd4+Ud6LqianYxXER55yM+FYNTQaLChEtXYHXIjUMSedQBlJLOfD5106D3XW9S4hmVHI2Y74PpTJjcM8ic3TiZa512Kxsmg1K9C3sOPtimBL44Ar0k0ZtcNUvdPh5TIbyiYY8xjoWvWWuxcVrxKw5o+23j51n1Ois0x73SVpvWwcQnULVpYW6sR9eB2OPl6VGmwK3PSVYZESwXs0EzMrKxGzR8YI2+NbXqV1wZJWwcxj7ULrDRDs47Z4geE+FZjUU6y4fdEHSDSI9Q4pVhV7lR7r8mr0tHq2qO3PExarTB+8Os+fX0EayfbRzrI7cEcUQG9fSVPkZBGPMzyQuDgwQWhjmuJr2BurhHCIyxTjPh41ZrgQAh5jHK4BEDvHjdg0USx93Ao2FOgPRjFzDFvbUEi101Se7iJc5rManP33+kpuz90S+O41Nx9jaCMeKxAYpdlA6t84cOZ1o9WPaL4/zAUu7T9MQ7WnCurjH2jMe4KwNcDp/KDDT3tuoQ/48ZK94dc0ezpb7ph3OOskl1pt12biDqnP349vpQ7O9OVOZ25W6ybWAhX2jT71Xx3cXC1cLi522rO7PjKmQuZL657V48jMBxb4bJ5ZPwrTRsCFE4HWcQTyes9pOnHVNSithJ1fHnLHkp8KlZd2NZfGcRK69z4mjn6H63pz8Nndybd6FkH0Jry19J6a0ZdfjNh0zqe6TOIemNuRGLq48iXzRz6ObkgTsagdDL30/pZfssd3fyKp2wZTv8v51MXaCrlFh2XPwxjjRugkMJ6/UZjMV3PEMKD4nff4msmo9L2ONlQxLV6QDluYbrfS+y0lPYtHjW7vc8I4fcX1Pf6Cpab0dZce0t4X5w3aoJ3E5MC0Wxaxgutd1YlrtlLux5Dv2+lPqru2ZdNT06SdS9nmx+srhW4j6OXl5dYFxduZDvuMkBQPgKZip1SovRf4YBu2Et4zTTyAaY0j7FBxb/X968tB/Vx5za/ABgr/AGfG27dlnTh7R4gNwPM1decA+yKDOaELeJpJreUmK6brEIxg5G4oarewCsOV4iVqFJOeDHkUu2O/zPOsBWXz5y9ZQe+lIhnGKnvNCdEWvaPbX0YlI6uePdJAAfgR3it+k1TUnb+EyVtSsM+MRXmmLpd3Dd2r+zKvbkQDYEDO2O7yr0E1BuRq3GfKY3r7M7h1mysrxLq1inR8rIgbYZrxbazW5U+E31vuUGJeklgzg3ULycQxlY13z47b1u0d2Dsb+fGTtTPSJtIu5tPnk66J2GMvhW3+ZrZqa1tUY+kmj7DzH6vFdQiaFg0T7g99edtKNtPWag2RmZbpTpxi/wB42QUyKe0GGQD+IeAr1/R+oz/SfpMGrpx31mBka6l4luyzFAW6xm4hg+dfQKta/c+E8w8xdKTkBQc99aFHnOjMX2quOGCPqh+WMLWPsaB945lt7nicMGpzn7aZgfzPijvoXoPlB3z4zn8NuDzuYyfN6Hbp5fKdtPnIGyu0YCOQMfyPmmFqEcxSCOkmt/fWhxLxcPhIoYUDVU/SducQ619g1bsTIIbj7rA4DeVQs7WjleRKKUs4PBlGoaVdWKM5y8a78X4fE1anUrb3ZOytlM9pjFmEbdpW+8F3zVl4O3zi1Mdxk2xAxVJXFwrHGSACPD15VJhztI4hc4biPbHp9rcaR2gijuHHZHWIeIjwyCM151nojTEl84E1V6uzEOHTTpGDgaXCMj70ZP71D/LNJj75+P7Sv2i3/TOHpP0wuBwxw20P5lgGQPiTQ+w6BOpJ98BvvPQTh03pJrYA1DUJ3iJ91DhflsKI1Gj039tRmHsrreGMf6V0c03Q4TcXJXIGXeQ7fOvO1Gtu1TbFlk061CLr3VH6S3iadpqkaergzzEEdZj7o8q01UDRobbfv+Akmbtm2jpDekrjrNN0qHaSaVZGXOcIp2+ZH0qWjUgPc3gMe8yl2chI7v5o7fSLiSdgFED+XcRWGlS1wUeYmixgFOYBbTltAjvBluGJZMjO+ACfpmruuNQU9ZiA5TMtaeCCRY3XEU3aAG2D5frSFXIJB5EoNpwDGSFgx7XHFjnjtCsxAPHjGKkeyFJIhAxyPI9xqJUwgiSEqeXyobTDIyHIyoT0xREBme6SDNsHkGwlUkjuHEM/SvR0R7+BIXjK5Mpjtxp0SXloJZbWRB18Ic5THNk3235iqM5uPZvgMOhx+ckq7RkTQQXEc9skkDrJC4yrcROR615zqyuQw5mxcEZEyWsWk2mXDywIXgc5TMhOD4c816+nsW9QDwR7JmsUryIPpWsTrdhpVLQOe0vESF8xneq6jSqyHHWLXYc+qaS7ktY48GWA8Q2DsBn1z3V5lauT0mklcT5rq+m3FlfGe8tXEJztnjiI/Lg/rX0+nvR02qeR8ffPGtrZWJIxM1c3CSSkKoCgADG21ekgKjmQIPhGIh1W47TMIV9eGsuaVHHMthj1nDp6Zzc6igbw4s0O2P4UnbPMzosdNOAdQ7R/NQ7a7/TDsHnLW0RgnFa3QOe/i/lS/ahnDrB2fkZSDcWrLHeoXiJ79/iKfuvyhwYpHg0jcWJLl7HMincADf8A1pkt4w84oTyI20bVoeM22to7g/8AEkHEV8Nu8Vl1NBPfpPMvW/GHjPUdIlSRdR0ciVWOSuey3jWfT6vB2W8GO1QU7lmf1COO9uGKK0U/NopO70PhXqI+RnrIugYwSCSezu1brHSWM5BHMUzgMuDIqpQzbRdNrORR7RpEsjgYZ4k7Jrwm9FOD3bAPbNy6kY5EIHTuzQcNvpFxxdwAAqX+U2HlrBKfagOglT9L9XuMpY6UIs/elJOP0px6N06c2WZgOpsP3VkYtD1nXpVn1q5fqV5RKeBR8KZtXp9MNtI58/GKKns++Y6vbnTOilgVRV60jEcQ95z6dwrFXXdrbcnpKsy0rgdYu6K2F1c38mr6mWMsmeEN90eH9/zrRrra0rFNfQRdOrEl26znTrUHLQaRbuC0xDTcPMLnYfHnXejKQM3v4Qal8nYPGNrh0s+jlwZQuEt2UL4HhwB8zWVAbNSAPOWJ21RRPOy6bpDnOWYKfPK1rRQbLIOcIZodEvC1zPBIMhOFlGfEf0rztTUAob2zTW2SR7J6TUjba77GygxzoGj8iOfzxXCgPp+08uslvAt2xwHzyUAViwZWe4/Fc+dHEaC3EAuoXiI94HYNVUs7Ng0DLuGJmdM1E6PqD6ZqEymAn7OQgb16d9Hb1C2sczGGNbbW6RjLa3WlzG80j7SFt5rNjs48U8DWYWJevZ38EdD+srtZe8kLsr7TekFs8Sglk/xbaUYZT6fvUrabtK24/GOti2iQbSrBAVjt2AxjZiab7RYeph7NR4Tz6dbSW3VSR8UYOQshzXdtYrbgZ2xSMGVXdnFPaNA8YMIH/b5imqtZXDA8zmQMu09J8413QzFeCOUwwgjiSUcpB/OvpNLqwybuvq8p5FtLI2IAml310MzzlR375qpvqT7ogCsZcuiWqDM0247y+KX7VYeghFS+MkmlWUgxHMCOWzigdRaOoh7MeErfTrmwfrLOU5HgaZb0s4eDaV6QqzuodQVra74Y5jyJGMn9jUrKmqO5OkYEPwYOVudEuhIgLR+JGzjwNUymoXHjFwazHHVaf0gj/wBnfq7oDIjb3hjwPfWTNulPP3fPwlQFt6QCGbWOjkzcLN1R97bK/EVdlo1Y9cCl642Os6RrluDq0fs88Y7MkanPw/lWYabUad/6JyJQujjvTPamxGSp3X8WxwfL5HFeqvIG6Z3G5cy/RNZl06I20Not0GPFgqcjxIrNqdKtp3lsQpYV4xHEHSuOLHtOiEd+QD+4rE/o/d92yWF2OqwwdPLdMdTpMmR4f6VL/KX/ABWR/tQ8FlM/SvX9UPVWNqtsp+/IuT8zTroNLTzYcxWutbgDEI0bozLJdLd6hK80vMs+TjyH97VO/Xqq9nXwIyUn7zRxrvSC10C36uIRvdHZIs5IHifAVk0ujfUtuPSVsuFYx4xD0Vsri+1CTUb7PXTZbLDl/f7Vu11qV19knQSNNZZtzdYd01vWma20eDIeYhpQvco5VH0dTsBvbw6RtQ2SKx4znSF/Z9P0u3HDxNMGH5QP9aGlHaPY3qlLTt2L64y0u44NWVFIHHbAnbvDY/es96Zp9/0l0OLD7BAulAmi6TabOjEK2AMbZwDt/fjV9EVbS2L/ADwme8EXgzT28rPFk868p1AM0g5liTycJVwvlvSlVhBM5HcESYYbHuBrigxCDFfSHSLbUImVsq57SsOYNa9JqHqbiRurDjBma0vWdR0G6Wz1QmWzPuSkch4g/tXpajS06pN9fBmZLLKjtbpHupaemo8F/YTiK6AylxHyI8GxzrDVc1Wa7BkTS1e/vr1g8HSI2sotdfR7eQe5Pv1Unxqj6EWDfp+fMeIgFxHdsEObXtKKAx6hbMh7jKuR/Ss/2K/PKH4Snap5yqfpNpCDH8Stc+UgP0p10GoP4TF+0V+cTXvSjRHwkkq3ABzjquIDz3rbVoNSvTj3yTailvXMmIdUvd5pBBGeSrXq7qa+gyZhCs0tj0CH/ivI5PPalbVt4RhSPGSk6PwEZjZlPcd9qUaxvGA0jwlPDqWnAdoXEQPLG+KfNNvqMGHWSZLbVgzwfZXKjeM4ya4F6eDyISFs6dZCG+IzaaqhZQMB8EkD96Jq3d+mAMejyq60toVW5sXMie8uDv8AA0yagHuvOKY5EY6b0h6yIWmrIZFBwJcdpfWs9ujwd9PHqjpZnhpbfdHorhRNYS8UcnJkG3ypa9Yyd2wQmrPSK2025hhlWWABYSFkbu7Xun416CN2ib08IgXHdk9IuHtr+CVSjOSVZWIwR4eVRuQPWVk6yVfE3gvOjc2QLqBD5kbV4Jq1a8YM9HdUfGDy3vRa0UlruKQ9wTLH5CnFWtc4wRAWpHUwKXpno9mP9gspJT3tJ2B+5+lXX0XqLP7jY+ckdQg+6IsvOl+raoOqsLcQK22YgSfmeVaK/R2np5c59sRr7HHdEloXRue4n624PWSk5IOSB8e+u1WtVRtXgQ1UZOWmsv7606OWBM2DIR2UX75ryqqbNXZx0mp3WpZmei0E+oaq+pXZLvKxf4fy7vSvS1zpVUKl6CZtOpLbjG3Snhm1PSkc5xx4HdWTRZWqz3S1h3WLL7HL9JWwM8Fonu+tTtP/AEvPnKD+8fZK+mtwIbnTXx95mPd95P7zTejU3V2fzwMnqmw6mPbOYdSCxwfwg5xWGxMGXGDzAdW6QWGnPwTzhG225tj0FXo0dtoyok3uVOpitum+mISBJKT/APEf1NaR6KuPh85P7UgnoOm2lyMVeSRM7EtHn9M0W9FXqMgfOEaqs8Q920vXrN4IJYpl71VskH9RUQL9M+4riOdlowpmdSbUOit5iQmawY8xyA/Y16BWnXJxw0zjfQfVNdb3Ona3Z9nhuYXGGRgNj+1eQ9d2mfyImtSto84un6JaMCX9kOD90GtC+kdR0LRPs9eeRIx9F9MUg+zJ8zRPpC7zjDTp5QyHRLFR9nboP8pqJ1dh6mcaV8BMPq95LaRZhCg42JGcV7lNSsRmee7ERBLqV5ICTO48l2r0F09YGcSO8yEeo3kb9m5k5fioNRWRyIN7L0mj0S/nvo2W44W4cbgYJrBfSqciaEsJHMD1mJbSaO4t8xyEnJWn0zFwVaJaMDIjCaJL/S45rhRxlM5XbfxqIJrswsr95cmJNKvJre9ECENEWwVbcVsvRWXdIoSDiH61aQmGWYLwvHnhI/eo6dzvC+Bj2KOsE0XVLuxKG3kwrE8SHcGq3UJaO8OkCuV6Q7VdbvL+HEvVqOMA9WuOIDcZ8cd1T01K0ghfGO7lsExDdsUllIPIitoUDiRt5bPnGcelQtCkhkm4mUE9oeHpWbtmzHCDElFpcBcqzSMByy1I2ocDidsGYxt9Ls0wVhHF+I7ms5vduplAgml0uwgLhOEhfKvNvtbGZpVBGet3L6RpE01oF4kTIDDIrPpKxqbcWR7GKLxPl6zy6tqq+3SNITuTn6elfSgCmvCDE81SXbmfStAhRLNGUYOO6vnNS5ZjmelWoCxBrUzydKrSAnsRoMY885rfpkA0pPmZEnN4HqjqzkI1OGQABmtWBIHg4x+tY3G6og+Bmlf7g9kB/wD6AobT7KVt3WU4Pyq/otiGcez6yGrGdsKguXTTzIoAYQFs78wKnsDW8+cOSE4mB0yMajPcT3mZJAc5PeTvXt2salCr0mCsbiSY7tNPtmgDGJc+QFYje5OMzWKlxKbqxtlIHUoQfEVRLX84DWsW3Vuti0dxaO8UgcAFTyrSj9plH5Ezsu05E1mg6jNq+mye3LHJw9k9n3h515OqqWi0bOJtrcuMGZvVXk0HWP8Adk0kQKhuHiyB5elepp1XVU/1RmZLM1v3ZudF1C41DTo55yAxYqQuwO3OvD1OnSqwhZvSxmXmM/dXjBOSOXdWQ9JUGWCQog4aRlE7M//Z"
-                alt="" srcset="">
-              <strong>Nguyễn văn a </strong>
-
-            </div>
-            <div class="body" style="height: 95%;">
 
             </div>
           </div>
+          <div id="chat_frame" class="chat_frame">
+            <div id="header_chat_frame" class="header_chat_frame">
+              <img id="img_avata_user_Chatframe" src="https://cdn-icons-png.flaticon.com/128/3135/3135715.png"
+                width="70" height="70" alt="" srcset="">
+              <strong id="name_user_Chatframe" class="name_user_Chatframe">Vũ Huy Hoàng</strong>
+            </div>
+            <div id="body_chat_frame" class="body_chat_frame">
+            </div>
+            <div id="bottom_chat_frame" class="bottom_chat_frame">
+
+            </div>
+
+          </div>
+
+
         </div>
 
-        <!-- main content -->
 
 
 
 
     </div>
 
+
+
     <%- include('../inc/footer') %>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-
-      <script>
-        console.log('1');
-        document.addEventListener('DOMContentLoaded', function () {
-          // Gọi hàm highlightButton khi DOM đã được tải
-          highlightButton('btn_all');
-        });
-        function highlightButton(buttonId) {
-          var buttons = document.querySelectorAll('.check_chat button');
-          // Chọn tất cả các nút trong phần check_chat
-
-          buttons.forEach(function (btn) {
-            btn.classList.remove('highlighted'); // Loại bỏ lớp 'highlighted' từ tất cả các nút
-          });
-          var button = document.querySelector('.' + buttonId);
-          button.classList.add('highlighted');  // Thêm lớp 'highlighted' vào nút được nhấn
-        }
-      </script>
-
-
-
-
-
 </body>
+
 
 </html>

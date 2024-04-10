@@ -1,4 +1,6 @@
 const hang = require("../models/Hangsx");
+const  {uploadImage, deleteImage} = require('../middlewares/upload.image.firebase');
+const nameFolder = 'HangSx';
 exports.home = async (req,res,next)=>{
     try{
         const listHang = await hang.find();
@@ -22,6 +24,27 @@ exports.search = async (req,res,next)=>{
     }  
     }
     catch(error){
-        res.render("Error/err",{msg: msg});
+        res.render("Error/err",{msg: error});
     }
 }
+exports.update = async (req, res, next)=>{
+    let id = req.params.id;
+    const hangOld = await hang.findById(id)
+    const file = req.file;
+    if (file){
+        await deleteImage(hangOld.imageLogo);
+        hangOld.imageLogo = await uploadImage(file, nameFolder)
+    }
+    let trangThai = req.body.trangThai === 'True' ? true : false;
+    console.log(trangThai)
+    hangOld.trangThai = trangThai;
+    hangOld.tenHangSx = req.body.tenHangSx;
+    console.log(hangOld)
+    try{
+        await hangOld.save();
+        res.redirect('/hang')
+    }
+    catch(error){
+        res.render("Error/err",{msg: error});
+    }
+  }  
