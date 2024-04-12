@@ -9,7 +9,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="../stylesheets/sidebar.css">
   <style>
     .message-container {
       width: 100%;
@@ -19,7 +20,7 @@
     /* phần csss tìm kiếm và check  */
     .search_and_check {
       width: 25%;
-      height: 100%;
+      height: 99%;
       margin-top: 10px;
       margin-left: 10px;
       margin-right: 10px;
@@ -41,6 +42,7 @@
 
       outline: none;
       border: none;
+     
     }
 
     .btn_search {
@@ -92,6 +94,7 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       /* Shadow mềm mại */
       transition: box-shadow 0.3s ease;
+     
     }
 
     .item_chat:hover {
@@ -99,20 +102,27 @@
     }
 
     .item_chat:focus {
-      padding: 20px;
+      padding: 10px;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
 
     .item_chat_contentMess {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+      width: 80%;
       font-size: 12px;
       margin-left: 5px;
+      
+
     }
 
     /* ////////// ////// */
 
     /* ///// chat .chat_frame */
     .chat_frame {
-      width: 70%;
+      width: 73%;
       border-radius: 10px;
       flex-direction: column;
       height: 750px;
@@ -137,7 +147,9 @@
     .body_chat_frame {
       width: 95%;
       margin-left: 2.5%;
-      height: 80%;
+      max-height: 80%;
+      overflow-y: scroll;
+      list-style-type: none
     }
 
     .bottom_chat_frame {
@@ -330,7 +342,7 @@
         <div class="message-container">
 
 
-          <div class="search_and_check">
+          <div class="search_and_check" >
             <div class="search_mess">
               <button class="btn_search" type="button">
                 <img class="icon_btn" width="40" height="40" src="https://cdn-icons-png.flaticon.com/128/954/954591.png"
@@ -350,14 +362,14 @@
             <!-- /////////////////////// -->
 
 
-            <div class="list_chat" style="max-height: max-content; width: 100%; overflow-x: auto;">
+            <div class="list_chat" style="max-height: max-content; width: 100%; overflow-y: scroll;  overflow-x: unset;">
               <% if (listAccounts==null) { %>
 
                 <% } else { %>
                   <% listAccounts.forEach(account=> { %>
                     <% listMess.forEach(message=> { %>
                       <% if (account) { %>
-                        <% if (message.idAccount == account._id ) { %>
+                        <% if (message.idAccount==account._id ) { %>
                           <div class="item_chat"
                             onclick="item_chatOnclick('<%= account.avatar %>', '<%= account.taiKhoan %>', '<%= message.idChat %>' ,'<%= account._id %>'  )">
                             <% if (account.avatar) { %>
@@ -367,16 +379,16 @@
                                 <img style="border-radius: 30px; margin-left: 10px;" width="50" height="50"
                                   src="https://cdn-icons-png.flaticon.com/128/3135/3135715.png">
                                 <% } %>
-                                  <div style="margin-left: 10px; margin-top: 5px;">
+                                  <div  style="margin-left: 10px; margin-top: 5px; width: 90%;">
                                     <% if (account.taiKhoan) { %>
-                                      <p>
+                                      <p style="margin-left: 5px; font-weight: bolder;">
                                         <%= account.taiKhoan %>
                                       </p>
                                       <% } %>
                                         <% if (message.idAccount==account._id) { %>
-                                          <strong class="item_chat_contentMess">
-                                            <%= message.content %>
-                                          </strong>
+                                          <p class="item_chat_contentMess">
+                                            Tin Nhắn : <%= message.content %>
+                                          </p>
                                           <% } %>
 
                                   </div>

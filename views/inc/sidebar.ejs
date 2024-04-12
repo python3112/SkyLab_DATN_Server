@@ -1,30 +1,86 @@
-<div class="sidebar col-md-2 sm-2">
-    <nav>
-      <ul>
-        <li><a href="/"><i class="material-icons" style="color: black;">home</i><span>Home</span></a></li>
-        <li><a href="/hang"><i class="material-icons" style="color: black;">category</i><span>Hãng</span></a></li>
-        <li><a href="/san-pham"><i class="material-icons" style="color: black;">laptop</i><span>Sản phẩm</span></a></li>
-        <li><a href="/user"><i class="material-icons" style="color: black;">person</i><span>Người dùng</span></a></li>
-        <li><a href="/don-hang"><i class="material-icons" style="color: black;">receipt</i><span>Đơn hàng</span></a></li>
-        <li><a href="/khuyen-mai"><i class="material-icons" style="color: black;">local_offer</i><span>Khuyến mãi</span></a></li>
-        <li><a href="#"><i class="material-icons" style="color: black;">insert_chart</i><span>Thống kê</span></a></li>
-        <ul id="submenu" style="display: none;">
-          <li><a href="#">Thống kê sản phẩm</a></li>
-          <li><a href="#">Thống kê người dùng</a></li>
-          <li><a href="#">Thống kê doanh thu</a></li>
+<aside id="sidebar" class="js-sidebar">
+    <!-- Content For Sidebar -->
+    <div class="h-500">
+        <div class="sidebar-logo" style="justify-content: space-around;">
+            <img width="50" height="40" src="images/Logo.png" alt="" srcset="">
+            <a href="#">Skylap Admin </a>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="sidebar-header">
+                Admin Elements
+            </li>
+            <li class="sidebar-item">
+                <a href="/home" class="sidebar-link">
+                    <i class="fa-solid fa-home pe-2"></i>
+                    Home
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/hang" class="sidebar-link">
+                    <i class="fas fa-building pe-2"></i>
+                    Hãng
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/san-pham" class="sidebar-link">
+                    <i class="fa-solid fa-laptop pe-2"></i>
+                    Sản phẩm
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/user" class="sidebar-link">
+                    <i class="fa-solid fa-users pe-2"></i>
+                    Người dùng
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/don-hang" class="sidebar-link">
+                    <i class="fa-solid fa-clipboard-check pe-2"></i>
+                    Đơn hàng
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/khuyen-mai" class="sidebar-link">
+                    <i class="fa-solid fa-ticket pe-2"></i>
+                    Khuyến mãi
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link collapsed" data-bs-target="#posts" data-bs-toggle="collapse"
+                    aria-expanded="false"><i class="fa-solid fa-sliders pe-2"></i>
+                    Thống kê
+                </a>
+                <ul id="posts" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link">Post 1</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link">Post 2</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link">Post 3</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="sidebar-item">
+                <a href="/tin-nhan" class="sidebar-link">
+                    <i class="fa-solid fa-message"></i>
+                    Tin Nhắn
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a href="/thong-bao" class="sidebar-link">
+                    <i class="fa-solid fa-bell"></i>
+                    Thông Báo
+                </a>
+            </li>
+
+
+
+
+
         </ul>
-        <li><a href="/tin-nhan"><i class="material-icons" style="color: black;">message</i><span>Tin nhắn</span></a></li>
-        <li><a href="/thong-bao"><i class="material-icons" style="color: black;">notifications</i><span>Thông báo</span></a></li>
-      </ul>
-    </nav>
-  </div>
-  <script>
-    // Lắng nghe sự kiện khi người dùng nhấp vào mục "Thống kê"
-    document.querySelector('.sidebar ul li:nth-child(7) a').addEventListener('click', function(event) {
-      // Ngăn chặn hành vi mặc định của thẻ <a> để không chuyển hướng trang
-      event.preventDefault();
-      // Hiển thị hoặc ẩn danh sách submenu khi nhấp vào mục "Thống kê"
-      var submenu = document.getElementById('submenu');
-      submenu.style.display = (submenu.style.display === 'block') ? 'none' : 'block';
-    });
-  </script>
+    </div>
+</aside>

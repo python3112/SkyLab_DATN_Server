@@ -3,10 +3,10 @@ var router = express.Router();
 
 // Đường dẫn tới home.controller.js
 var userCtrl = require('../controllers/user.controller');
-
+var checkLogin = require('../middlewares/validation');
 
 // Vào trang home theo địa chỉ '/'
-router.get('/',userCtrl.home);
+router.get('/',checkLogin.checkLogin,userCtrl.home);
 router.get('/userActiveTrue',userCtrl.findUserTrue);
 router.get('/userActiveFalse',userCtrl.findUserFales);
 router.get('/queryUser',userCtrl.query);
