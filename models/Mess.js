@@ -18,8 +18,6 @@ const messageSchema = new mongoose.Schema({
     default: Date.now,
   },
 
-}, {
-  collection: 'Message_table',
 });
 
 const Message = mongoose.model('Message', messageSchema);
