@@ -14,6 +14,16 @@ exports.getThongBaoByIdAccount = async (req, res, next) => {
 };
 exports.editDaXem = async (req, res, next) => {
     try {
+        const thongBao = await ThongBao.findById(req.params.id);
+        thongBao.daXem = true;
+        await thongBao.save();
+        res.json({ success: true});
+    } catch (error) {
+        res.status(500).json({success: false, message: error.message });
+    }
+};
+exports.editDaXemAll = async (req, res, next) => {
+    try {
         const thongBaoList = await ThongBao.find({ idAccount: req.params.id });
 
         thongBaoList.forEach(async (thongBao) => {
@@ -24,8 +34,7 @@ exports.editDaXem = async (req, res, next) => {
     } catch (error) {
         res.status(500).json({success: false, message: error.message });
     }
-};
-
+}; 
 exports.xoaTheoIdAccount = async (req, res, next) => {
     try {
         const result = await ThongBao.deleteMany({ idAccount: req.params.id });
