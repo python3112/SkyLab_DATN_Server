@@ -49,7 +49,7 @@ app.set('view engine', 'ejs');
 app.engine("html" , require('ejs').renderFile);
 app.use(session({
   secret:'nhNNGHSNFGH83sdf23435Fdzgsfnksjdfh9', // chuỗi ký tự đặc biệt để Session mã hóa, tự viết
-  resave:true,
+  resave:false,
   saveUninitialized:true
   }));
 

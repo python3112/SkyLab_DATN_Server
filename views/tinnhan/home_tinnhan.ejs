@@ -283,14 +283,15 @@
 
 
     });
-    
-    function handleKeyPress(event) {
-    // Kiểm tra xem phím ấn là "Enter" và không phải là một ký tự nâng cao (như Ctrl, Shift, Alt)
-    if (event.key === "Enter" && !event.shiftKey && !event.ctrlKey && !event.altKey) {
-        sendMessage();
+
+
+    function handleKeyPress(event, idUser) {
+      // Kiểm tra xem phím ấn là "Enter" và không phải là một ký tự nâng cao (như Ctrl, Shift, Alt)
+      if (event.key === "Enter" && !event.shiftKey && !event.ctrlKey && !event.altKey) {
+        sendMessage(idUser);
         event.preventDefault(); // Ngăn chặn hành động mặc định của phím "Enter" (như xuống dòng trong textarea)
+      }
     }
-}
     function highlightButton(buttonId) {
       var buttons = document.querySelectorAll('.check_chat button');
       // Chọn tất cả các nút trong phần check_chat
@@ -319,7 +320,7 @@
 
     }
 
-    function sendMessage() {
+    function sendMessage(idUser) {
       const inputElement = document.getElementById('message_admin')
       const inputValue = inputElement.value;
       const id = localStorage.getItem('selectedChatId');
@@ -327,7 +328,7 @@
         return;
       } else {
         if (inputValue) {
-          window.sendMess(id, inputValue)
+          window.sendMess(id, inputValue, idUser)
         } else {
           return;
         }
@@ -414,7 +415,31 @@
       });
     }
 
-    window.sendMess = function (idChat, content) {
+    function formartTime() {
+      var currentTimeMillis = Date.now();
+
+      // Tạo một đối tượng Date từ số miligiây
+      var currentTime = new Date(currentTimeMillis);
+
+      // Chuyển múi giờ từ UTC sang múi giờ Việt Nam (GMT+7)
+      var vietnamTime = new Date(currentTime.getTime()); // Thêm 7 giờ (7*60*60*1000 miligiây)
+
+      // Lấy ngày, tháng, năm
+      var day = vietnamTime.getDate();
+      var month = vietnamTime.getMonth() + 1; // Lưu ý: Tháng bắt đầu từ 0
+      var year = vietnamTime.getFullYear();
+
+      // Lấy giờ, phút, giây
+      var hours = vietnamTime.getHours();
+      var minutes = vietnamTime.getMinutes();
+      var seconds = vietnamTime.getSeconds();
+
+      // Định dạng lại chuỗi ngày-tháng-năm giờ-phút-giây
+      var formattedDateTime = `${day < 10 ? '0' : ''}${day}-${month < 10 ? '0' : ''}${month}-${year} ${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      return formattedDateTime
+    }
+
+    window.sendMess = function (idChat, content, idUser) {
 
       const dataMess = ref(database, '/messages');
       const newMessageRef = push(dataMess);
@@ -427,8 +452,8 @@
         content: content,
         id: messageId,
         idChat: idChat,
-        idAccount: '',
-        thoiGian: Date.now()
+        idAccount: idUser.toString(),
+        thoiGian: formartTime()
         // Gán id chat cho tin nhắn
       }).then(() => {
         console.log("Tin nhắn đã được gửi thành công.");
@@ -525,8 +550,9 @@
               </div>
               <div id="bottom_chat_frame" class="bottom_chat_frame">
                 <div class="input-group mb-3">
-                  <input type="text" class="form-control " onkeypress="handleKeyPress(event)" id="message_admin" placeholder="Trả lời tin nhắn người dùng "
-                    aria-label="Recipient's username" aria-describedby="button-addon2">
+                  <input type="text" class="form-control " onkeypress="handleKeyPress(event ,'<%= user._id %>')"
+                    id="message_admin" placeholder="Trả lời tin nhắn người dùng " aria-label="Recipient's username"
+                    aria-describedby="button-addon2">
                   <button class="btn btn-outline-secondary" type="button" onclick="sendMessage()"
                     id="button-addon2">Send</button>
                 </div>

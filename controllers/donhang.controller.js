@@ -6,6 +6,7 @@ const axios = require('axios');
 
 exports.home = async (req, res, next) => {
     try {
+        const user = req.session.Account;
         let listDonHang;
         const page = parseInt(req.query.page) || 1;
         const perPage = 10;
@@ -62,7 +63,8 @@ exports.home = async (req, res, next) => {
             listDonHang: listDonHang,
             listSanPham: listSanPham,
             listAccount: listAccount,
-            status: req.query.status // Chuyển thêm tham số trạng thái để giữ trạng thái khi chuyển trang
+            status: req.query.status,
+            user : user // Chuyển thêm tham số trạng thái để giữ trạng thái khi chuyển trang
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
