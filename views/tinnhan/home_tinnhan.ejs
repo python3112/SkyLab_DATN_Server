@@ -416,27 +416,27 @@
     }
 
     function formartTime() {
-      var milliseconds = Date.now();
+      var currentTimeMillis = Date.now();
 
       // Tạo một đối tượng Date từ số miligiây
-      var date = new Date(milliseconds);
+      var currentTime = new Date(currentTimeMillis);
 
-      // Chuyển đổi múi giờ sang múi giờ Việt Nam (GMT+7)
-      date.setHours(date.getHours() + 7);
+      // Chuyển múi giờ từ UTC sang múi giờ Việt Nam (GMT+7)
+      var vietnamTime = new Date(currentTime.getTime()); // Thêm 7 giờ (7*60*60*1000 miligiây)
 
       // Lấy ngày, tháng, năm
-      var day = date.getDate();
-      var month = date.getMonth() + 1; // Lưu ý: Tháng bắt đầu từ 0
-      var year = date.getFullYear();
+      var day = vietnamTime.getDate();
+      var month = vietnamTime.getMonth() + 1; // Lưu ý: Tháng bắt đầu từ 0
+      var year = vietnamTime.getFullYear();
 
       // Lấy giờ, phút, giây
-      var hours = date.getHours();
-      var minutes = date.getMinutes();
-      var seconds = date.getSeconds();
+      var hours = vietnamTime.getHours();
+      var minutes = vietnamTime.getMinutes();
+      var seconds = vietnamTime.getSeconds();
 
       // Định dạng lại chuỗi ngày-tháng-năm giờ-phút-giây
-      var formattedDate = `${day < 10 ? '0' : ''}${day}-${month < 10 ? '0' : ''}${month}-${year} ${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    return formattedDate;
+      var formattedDateTime = `${day < 10 ? '0' : ''}${day}-${month < 10 ? '0' : ''}${month}-${year} ${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      return formattedDateTime
     }
 
     window.sendMess = function (idChat, content, idUser) {
