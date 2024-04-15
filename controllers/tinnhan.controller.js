@@ -7,6 +7,8 @@ const Account = require('../models/Account');
 
 exports.home = async (req, res, next) => {
     try { 
+        const user = req.session.Account;
+        
         var listAccounts = [];
         var lisMess = [];
         realtimeDatabase.ref('/Chat').once('value', async (snapshot) => {
@@ -26,11 +28,10 @@ exports.home = async (req, res, next) => {
 
 
             }
-            console.log(  "lismess : "+ lisMess)
-            console.log(  "lisacount : "+ listAccounts)
+          
             
 
-            await res.render('tinnhan/home_tinnhan', { title: 'màn hình nhắn tin' , listAccounts :  listAccounts , listMess :lisMess });
+            await res.render('tinnhan/home_tinnhan', { title: 'màn hình nhắn tin' , listAccounts :  listAccounts , listMess :lisMess  , user : user});
       
            
         });

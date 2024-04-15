@@ -3,8 +3,9 @@ const Hangsx = require('../models/Hangsx');
 
 exports.home =async (req,res,next)=>{
     try {
+        const user = req.session.Account;
         const sanPham = await SanPham.find();
-        res.render('sanpham/home_sanpham',{title: "Quản lý sản phẩm",listSanPham: sanPham});
+        res.render('sanpham/home_sanpham',{title: "Quản lý sản phẩm",listSanPham: sanPham , user :  user});
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
