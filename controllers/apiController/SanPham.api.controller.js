@@ -63,30 +63,21 @@ exports.createSanPham = async (req, res) => {
                 fileAnh.push(file);
             }
             imageUrlAnh = await uploadImages(fileAnh, nameFolder);
-            // Xử lý các trường hoặc điều kiện khác nếu cần
         }
-        //  Validate required fields
-        // if (!tenSanPham || !giaTien) {
-        //     return res.status(400).json({ message: "Tên sản phẩm và giá tiền là bắt buộc." });
-        // }
-
-        // Create new SanPham instance
-        // const imageUrl = await uploadImages(files, nameFolder);
-        console.log(req.body); 
-        console.log(req.files);
         const newSanPham = new SanPham({
-            idHangSx, soLuong, tenSanPham, giaTien,
+            idHangSx, tenSanPham,
             trangThai: true,
             anh: imageUrlAnh,
             anhSanPham: imageUrlAnhSanPham,
             cpu, soNhan, soLuongCPU, tocDoCPU, tocDoToiDa, boNhoDem,
-            ram, loaiRam, tocDoBusRam, hoTroRamToiDa, rom,
+            loaiRam, tocDoBusRam, hoTroRamToiDa,
             display, doPhanGiai, tanSoQuet, doPhuMau, congNgheManHinh,
             moTa, mauSac, gpu, congNgheAmThanh,
             congGiaoTiep, ketNoiKhongDay, webCam, tinhNangKhac, denBanPhim,
             kichThuocKhoiLuong, chatLieu,
             pin, congSuatSac, thoiDiemRaMat, baohanh, os, phuKien
         });
+        newSanPham.bienThe = {ram,rom,soLuong,giaTien}
         const savedSanPham = await newSanPham.save();
 
         res.status(201).json(savedSanPham);

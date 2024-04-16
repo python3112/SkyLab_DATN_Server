@@ -47,12 +47,11 @@
           <tr class="align-middle text-center">
             <th scope="col" class="col-md-0.5 sm-0.5">STT</th>
             <th scope="col" class="col-md-1 sm-1">Ảnh</th>
-            <th scope="col" class="col-md-3.5 sm-3.5">Tên laptop</th>
-            <th scope="col" class="col-md-1 sm-1">CPU</th>
-            <th scope="col" class="col-md-1 sm-1">GPU</th>
-            <th scope="col" class="col-md-1 sm-1">Số lượng</th>
-            <th scope="col" class="col-md-1 sm-1">Giá</th>
-            <th scope="col" class="col-md-3 sm-3">Hành động</th>
+            <th scope="col" class="col-md-3 sm-3">Tên laptop</th>
+            <th scope="col" class="col-md-1.5 sm-1.5">CPU</th>
+            <th scope="col" class="col-md-1.5 sm-1.5">GPU</th>
+            <th scope="col" class="col-md-1.5 sm-1.5">Trạng thái</th>
+            <th scope="col" class="col-md-3.5 sm-3.5">Hành động</th>
           </tr>
         </thead>
         <t class="table-group-divider">
@@ -74,16 +73,13 @@
                 <%= product.gpu %>
               </td>
               <td>
-                <%= product.soLuong %>
-              </td>
-              <td class="text-danger fw-bold total-cell">
-                <%= product.giaTien %>
+                <%= product.trangThai %>
               </td>
               <td>
                 <a href="/san-pham/chi-tiet/<%= product._id %>" class="btn btn-primary icon-btn ms-2 me-2">Chi tiết</a>
                 <a href="/san-pham/edit/<%= product._id %>" class="btn btn-info icon-btn me-2">Sửa</a>
-                <button class="btn btn-toggle-status <%= product.trangThai ? 'btn-success':'btn-danger'  %>" data-id="<%= product._id %>" data-status="<%= product.trangThai %>">
-                  <%= product.trangThai ? 'Hiển thị':'Ẩn' %>
+                <button class="btn btn-toggle-status <%= product.trangThai ? 'btn-danger':'btn-success'  %>" data-id="<%= product._id %>" data-status="<%= product.trangThai %>">
+                  <%= product.trangThai ? 'Ẩn':'Hiện thị' %>
                 </button>
               </td>
             </tr>
