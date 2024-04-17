@@ -76,10 +76,12 @@ exports.getAccountById = async (req, res) => {
         //     return res.status(400).json({ success: false, message: 'Số điện thoại đã tồn tại' });
         // }
         // Tạo tài khoản mới
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(matKhau, saltRounds);
         const newAccount = new Account({
             tenQuyen  : "User",
             taiKhoan :  taiKhoan,
-            matKhau :  matKhau,
+            matKhau :  hashedPassword,
             trangThai  : true, 
             avatar:'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'
            
