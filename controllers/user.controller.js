@@ -1,8 +1,9 @@
 const userModel = require('../models/Account');
 exports.home = async (req,res,next)=>{
     try{
+        const user = req.session.Account;
         let listUser = await userModel.find();
-        res.render('user/home_user',{title:"Quản lý người dùng", listUser: listUser})
+        res.render('user/home_user',{title:"Quản lý người dùng", listUser: listUser , user :  user})
     }
     catch(error){
         res.render('Error/err',{msg: error})
@@ -12,7 +13,7 @@ exports.findUserTrue = async (req, res, next) =>{
     try{
         let listUser = [];
         listUser = await userModel.find({trangThai: true})
-        res.render('user/home_user',{title:"Người dùng còn hoạt động", listUser: listUser})
+        res.render('user/home_user',{title:"Người dùng còn hoạt động", listUser: listUser })
     }
     catch(error){
         res.render('Error/err',{msg: error}) 

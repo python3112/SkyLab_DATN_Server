@@ -1,14 +1,17 @@
 const mongoose = require('mongoose');
-
+const bienTheSchema = new mongoose.Schema({
+  ram: String,
+  rom: String,
+  soLuong: Number,
+  giaTien: Number
+});
 const sanPhamSchema = new mongoose.Schema({
   idHangSx: { type: mongoose.Schema.Types.ObjectId, ref: 'Hangsx' },
-  soLuong: Number,
   tenSanPham:String,
   trangThai: Boolean,
-  giaTien: Number,
   anhSanPham:String,
   anh: [String],
-  
+  bienThe: [bienTheSchema],
 
   cpu: String,
   soNhan:Number,
@@ -17,11 +20,9 @@ const sanPhamSchema = new mongoose.Schema({
   tocDoToiDa:String,
   boNhoDem:String,
 
-  ram: String,
   loaiRam:String,
   tocDoBusRam:String,
   hoTroRamToiDa: String,
-  rom: String,
 
   display: String,
   doPhanGiai: String,

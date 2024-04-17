@@ -9,7 +9,9 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
+  <script src="https://kit.fontawesome.com/ae360af17e.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="../stylesheets/sidebar.css">
   <style>
     .message-container {
       width: 100%;
@@ -19,7 +21,7 @@
     /* phần csss tìm kiếm và check  */
     .search_and_check {
       width: 25%;
-      height: 100%;
+      height: 99%;
       margin-top: 10px;
       margin-left: 10px;
       margin-right: 10px;
@@ -33,7 +35,7 @@
       height: 40px;
       margin-top: 10px;
       border-radius: 10px;
-      border: 1px solid black;
+
 
     }
 
@@ -41,6 +43,7 @@
 
       outline: none;
       border: none;
+
     }
 
     .btn_search {
@@ -80,6 +83,7 @@
     .item_chat {
       width: 95%;
       margin-top: 10px;
+      background-color: white;
       align-self: center;
       margin-left: 2.5%;
       display: flex;
@@ -92,6 +96,7 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       /* Shadow mềm mại */
       transition: box-shadow 0.3s ease;
+
     }
 
     .item_chat:hover {
@@ -99,25 +104,33 @@
     }
 
     .item_chat:focus {
-      padding: 20px;
+      padding: 10px;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
 
     .item_chat_contentMess {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+      width: 80%;
       font-size: 12px;
       margin-left: 5px;
+
+
     }
 
     /* ////////// ////// */
 
     /* ///// chat .chat_frame */
     .chat_frame {
-      width: 70%;
+      width: 73%;
       border-radius: 10px;
       flex-direction: column;
-      height: 750px;
+      height: 600px;
       margin-top: 20px;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      background-color: white;
     }
 
     .header_chat_frame {
@@ -138,11 +151,38 @@
       width: 95%;
       margin-left: 2.5%;
       height: 80%;
+      max-height: 80%;
+      overflow-y: scroll;
+      list-style-type: none
     }
 
     .bottom_chat_frame {
-      width: 90%;
-      margin-left: 2.5%;
+      width: 100%;
+      /* Đảm bảo rằng phần bottom_chat_frame có chiều rộng 100% của chat_frame */
+      padding: 10px;
+      /* Thêm padding để tạo khoảng cách giữa các phần tử bên trong */
+      background-color: #f2f2f2;
+      align-self: center;
+      /* Màu nền */
+    }
+
+    /* CSS cho input và button trong bottom_chat_frame */
+    .bottom_chat_frame input[type="text"] {
+      width: calc(100% - 100px);
+      /* Chiều rộng của input sẽ chiếm phần còn lại của chat_frame sau khi trừ đi kích thước của button */
+      padding: 10px;
+      /* Thêm padding cho input */
+      border: 1px solid #ccc;
+      /* Viền */
+      border-radius: 5px;
+      /* Bo tròn góc */
+    }
+
+    .bottom_chat_frame button {
+      width: 100px;
+      /* Độ rộng của button */
+      margin-left: 10px;
+      /* Khoảng cách giữa input và button */
     }
 
     .message_wrapper {
@@ -189,14 +229,25 @@
       border-top-right-radius: 10px;
       border-bottom-right-radius: 10px;
 
+      word-wrap: break-word;
+
     }
 
     .right-message {
+      width: fit-content;
       padding: 10px;
-      background-color: #3cb371;
-      /* Màu xanh */
-      max-width: 300px;
+      color: white;
+      background-color: #007bff;
+      max-width: 400px;
+      margin-left: 10px;
+      border-top-right-radius: 10px;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+
+      word-wrap: break-word;
     }
+
+
 
     .avata {
       border-radius: 50px;
@@ -204,13 +255,20 @@
       width: 50px;
       height: 50px;
     }
+
+    .avata_admin {
+
+      border-radius: 50px;
+      margin-top: 30px;
+      width: 50px;
+      height: 50px;
+
+    }
   </style>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
+ 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -223,6 +281,15 @@
 
 
     });
+
+
+    function handleKeyPress(event, idUser) {
+      // Kiểm tra xem phím ấn là "Enter" và không phải là một ký tự nâng cao (như Ctrl, Shift, Alt)
+      if (event.key === "Enter" && !event.shiftKey && !event.ctrlKey && !event.altKey) {
+        sendMessage(idUser);
+        event.preventDefault(); // Ngăn chặn hành động mặc định của phím "Enter" (như xuống dòng trong textarea)
+      }
+    }
     function highlightButton(buttonId) {
       var buttons = document.querySelectorAll('.check_chat button');
       // Chọn tất cả các nút trong phần check_chat
@@ -245,9 +312,31 @@
       nameUser.innerHTML = nameAcc;
       window.data_ChatFrame(idChat, idAccount, srcImg)
     }
+    function luuIdChat(idChat) {
+      localStorage.clear()
+      localStorage.setItem('selectedChatId', idChat);
+
+    }
+
+    function sendMessage(idUser) {
+      const inputElement = document.getElementById('message_admin')
+      const inputValue = inputElement.value;
+      const id = localStorage.getItem('selectedChatId');
+      if (id == undefined) {
+        return;
+      } else {
+        if (inputValue) {
+          window.sendMess(id, inputValue, idUser)
+        } else {
+          return;
+        }
+
+      }
+    }
 
 
   </script>
+
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js'
     // If you enabled Analytics in your project, add the Firebase SDK for Google Analytics
@@ -290,7 +379,7 @@
             const imgElement = document.createElement('img');
             messageElement.innerText = message.content;
             if (message.idAccount === idAccount) {
-              if (srcImg === "") {
+              if (srcImg == "") {
                 imgElement.classList.add('avata');
                 messageElement.classList.add('left-message');
                 imgElement.src = 'https://cdn-icons-png.flaticon.com/128/3135/3135715.png';
@@ -300,10 +389,17 @@
                 imgElement.src = srcImg;
               }
             } else {
-              imgElement.classList.add('avata_admin');
+
               messageElement.classList.add('right-message');
+              imgElement.classList.add('avata_admin');
               imgElement.src = 'https://cdn-icons-png.flaticon.com/128/6024/6024190.png';
+
+              // Thêm img vào div mới
+
             }
+
+
+
             messageWrapper.appendChild(imgElement); // Thêm img vào div mới
             messageWrapper.appendChild(messageElement); // Thêm message vào div mới
             messageContainer.appendChild(messageWrapper); // Thêm div mới vào container chứa tin nhắn
@@ -312,10 +408,58 @@
         } else {
           console.log('No messages found');
         }
+
+        body_chat_frame.scrollTop = body_chat_frame.scrollHeight;
       });
     }
 
+    function formartTime() {
+      var currentTimeMillis = Date.now();
 
+      // Tạo một đối tượng Date từ số miligiây
+      var currentTime = new Date(currentTimeMillis);
+
+      // Chuyển múi giờ từ UTC sang múi giờ Việt Nam (GMT+7)
+      var vietnamTime = new Date(currentTime.getTime()); // Thêm 7 giờ (7*60*60*1000 miligiây)
+
+      // Lấy ngày, tháng, năm
+      var day = vietnamTime.getDate();
+      var month = vietnamTime.getMonth() + 1; // Lưu ý: Tháng bắt đầu từ 0
+      var year = vietnamTime.getFullYear();
+
+      // Lấy giờ, phút, giây
+      var hours = vietnamTime.getHours();
+      var minutes = vietnamTime.getMinutes();
+      var seconds = vietnamTime.getSeconds();
+
+      // Định dạng lại chuỗi ngày-tháng-năm giờ-phút-giây
+      var formattedDateTime = `${day < 10 ? '0' : ''}${day}-${month < 10 ? '0' : ''}${month}-${year} ${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      return formattedDateTime
+    }
+
+    window.sendMess = function (idChat, content, idUser) {
+
+      const dataMess = ref(database, '/messages');
+      const newMessageRef = push(dataMess);
+
+      // Lấy key của tin nhắn mới tạo
+      const messageId = newMessageRef.key;
+      set(newMessageRef, {
+        Daxem: false,
+        ThuHoi: false,
+        content: content,
+        id: messageId,
+        idChat: idChat,
+        idAccount: idUser.toString(),
+        thoiGian: formartTime()
+        // Gán id chat cho tin nhắn
+      }).then(() => {
+        console.log("Tin nhắn đã được gửi thành công.");
+        document.getElementById('message_admin').value = '';
+      }).catch((error) => {
+        console.error("Gửi tin nhắn thất bại: ", error);
+      });
+    }
 
 
 
@@ -324,99 +468,109 @@
 </head>
 
 <body>
-  <%- include('../inc/header') %>
-    <div class="d-flex flex-row">
-      <%- include('../inc/sidebar') %>
-        <div class="message-container">
+  <div class="wrapper">
+    <%- include('../inc/sidebar') %>
+      <div class="main">
+        <%- include('../inc/header') %>
+          <div class="message-container">
 
 
-          <div class="search_and_check">
-            <div class="search_mess">
-              <button class="btn_search" type="button">
-                <img class="icon_btn" width="40" height="40" src="https://cdn-icons-png.flaticon.com/128/954/954591.png"
-                  alt="search_mess" srcset="">
-              </button>
-              <input placeholder="Tìm Kiếm " style="border: white; height: 30px; width: 75%; " type="text">
+            <div class="search_and_check">
+              <div class="search_mess">
+                <div class="input-group mb-3 ">
+                  <button class="btn btn-outline-secondary  " type="button">Search</button>
+                  <input type="text" placeholder="tìm kiếm ... " class="form-control function_search"
+                    aria-label="Text input with segmented dropdown button">
+                </div>
 
-            </div>
+              </div>
 
-            <!-- chon chưa đọc và tất cả  -->
-            <div class="check_chat" style="margin-top: 10px; width: 100%; align-items: center;">
-              <button class="btn_all" type="submit" onclick="highlightButton('btn_all')">Tất cả </button>
-              <button class="btn_not_seen" type="submit" onclick="highlightButton('btn_not_seen')"
-                style="border-radius: 20px; width: 48%;">Chưa đọc </button>
-            </div>
+              <!-- chon chưa đọc và tất cả  -->
+              <div class="check_chat" style="margin-top: 10px; width: 100%; align-items: center;">
+                <button class="btn_all" type="submit" onclick="highlightButton('btn_all')">Tất cả </button>
+                <button class="btn_not_seen" type="submit" onclick="highlightButton('btn_not_seen')"
+                  style="border-radius: 20px; width: 48%;">Chưa đọc </button>
+              </div>
 
-            <!-- /////////////////////// -->
+              <!-- /////////////////////// -->
 
 
-            <div class="list_chat" style="max-height: max-content; width: 100%; overflow-x: auto;">
-              <% if (listAccounts==null) { %>
+              <div class="list_chat" style="max-height: max-content; width: 100%; overflow-y: scroll;">
+                <% if (listAccounts==null) { %>
 
-                <% } else { %>
-                  <% listAccounts.forEach(account=> { %>
-                    <% listMess.forEach(message=> { %>
-                      <% if (account) { %>
-                        <% if (message.idAccount == account._id ) { %>
-                          <div class="item_chat"
-                            onclick="item_chatOnclick('<%= account.avatar %>', '<%= account.taiKhoan %>', '<%= message.idChat %>' ,'<%= account._id %>'  )">
-                            <% if (account.avatar) { %>
-                              <img style="border-radius: 30px; margin-left: 10px;" width="50" height="50"
-                                src="<%= account.avatar %>">
-                              <% } else { %>
+                  <% } else { %>
+                    <% listAccounts.forEach(account=> { %>
+                      <% listMess.forEach(message=> { %>
+                        <% if (account) { %>
+                          <% if (message.idAccount==account._id ) { %>
+                            <div class="item_chat"
+                              onclick="item_chatOnclick('<%= account.avatar %>', '<%= account.taiKhoan %>', '<%= message.idChat %>' ,'<%= account._id %>'  , luuIdChat('<%= message.idChat %>') )">
+                              <% if (account.avatar) { %>
                                 <img style="border-radius: 30px; margin-left: 10px;" width="50" height="50"
-                                  src="https://cdn-icons-png.flaticon.com/128/3135/3135715.png">
-                                <% } %>
-                                  <div style="margin-left: 10px; margin-top: 5px;">
-                                    <% if (account.taiKhoan) { %>
-                                      <p>
-                                        <%= account.taiKhoan %>
-                                      </p>
-                                      <% } %>
-                                        <% if (message.idAccount==account._id) { %>
-                                          <strong class="item_chat_contentMess">
-                                            <%= message.content %>
-                                          </strong>
-                                          <% } %>
-
-                                  </div>
-                          </div>
-                          <% } %>
-                            <% } %>
-                              <% }); %>
-                                <% }); %>
+                                  src="<%= account.avatar %>">
+                                <% } else { %>
+                                  <img style="border-radius: 30px; margin-left: 10px;" width="50" height="50"
+                                    src="https://cdn-icons-png.flaticon.com/128/3135/3135715.png">
                                   <% } %>
+                                    <div style="margin-left: 10px; margin-top: 5px; width: 90%;">
+                                      <% if (account.taiKhoan) { %>
+                                        <p style="margin-left: 5px; font-weight: bolder;">
+                                          <%= account.taiKhoan %>
+                                        </p>
+                                        <% } %>
+                                          <% if (message.idAccount==account._id) { %>
+                                            <p class="item_chat_contentMess">
+                                              Tin Nhắn : <%= message.content %>
+                                            </p>
+                                            <% } %>
+
+                                    </div>
+                            </div>
+                            <% } %>
+                              <% } %>
+                                <% }); %>
+                                  <% }); %>
+                                    <% } %>
 
 
+
+              </div>
+            </div>
+            <div id="chat_frame" class="chat_frame">
+              <div id="header_chat_frame" class="header_chat_frame">
+                <img id="img_avata_user_Chatframe" src="https://cdn-icons-png.flaticon.com/128/3135/3135715.png"
+                  width="55" height="55" alt="" srcset="">
+                <strong id="name_user_Chatframe" class="name_user_Chatframe">Vũ Huy Hoàng</strong>
+              </div>
+              <div id="body_chat_frame" class="body_chat_frame">
+              </div>
+              <div id="bottom_chat_frame" class="bottom_chat_frame">
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control " onkeypress="handleKeyPress(event ,'<%= user._id %>')"
+                    id="message_admin" placeholder="Trả lời tin nhắn người dùng " aria-label="Recipient's username"
+                    aria-describedby="button-addon2">
+                  <button class="btn btn-outline-secondary" type="button" onclick="sendMessage()"
+                    id="button-addon2">Send</button>
+                </div>
+              </div>
 
             </div>
+
+
           </div>
-          <div id="chat_frame" class="chat_frame">
-            <div id="header_chat_frame" class="header_chat_frame">
-              <img id="img_avata_user_Chatframe" src="https://cdn-icons-png.flaticon.com/128/3135/3135715.png"
-                width="70" height="70" alt="" srcset="">
-              <strong id="name_user_Chatframe" class="name_user_Chatframe">Vũ Huy Hoàng</strong>
-            </div>
-            <div id="body_chat_frame" class="body_chat_frame">
-            </div>
-            <div id="bottom_chat_frame" class="bottom_chat_frame">
-
-            </div>
-
-          </div>
 
 
-        </div>
+
+
+          <%- include('../inc/footer') %>
+      </div>
+  </div>
 
 
 
 
 
-    </div>
 
-
-
-    <%- include('../inc/footer') %>
 </body>
 
 

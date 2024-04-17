@@ -1,4 +1,5 @@
 
 exports.home = (req,res,next)=>{
-    res.render('thongbao/home_thongbao',{title: "Quản lý thông báo"});
+    const user = req.session.Account;
+    res.render('thongbao/home_thongbao',{title: "Quản lý thông báo" , user :  user});
 }
