@@ -2,6 +2,8 @@ var Account = require('../../models/Account');
 const { uploadImage, deleteImage } = require('../../middlewares/upload.image.firebase');
 
 const nameFolder = 'Account';
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 exports.listAccounts = async (req, res, next) => {
     try {
@@ -23,11 +25,13 @@ exports.createAccount = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Tài khoản đã tồn tại. Vui lòng nhập tài khoản khác!' });
         }
 
-        // Tạo mới một tài khoản
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(matKhau, saltRounds); 
+
         const newAccount = new Account({
             taiKhoan,
             hoTen,
-            matKhau,
+            matKhau: hashedPassword,  // Store the hashed password
             email,
             sdt,
             tenQuyen,
@@ -72,10 +76,12 @@ exports.getAccountById = async (req, res) => {
         //     return res.status(400).json({ success: false, message: 'Số điện thoại đã tồn tại' });
         // }
         // Tạo tài khoản mới
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(matKhau, saltRounds);
         const newAccount = new Account({
             tenQuyen  : "User",
             taiKhoan :  taiKhoan,
-            matKhau :  matKhau,
+            matKhau :  hashedPassword,
             trangThai  : true, 
             avatar:'https://cdn-icons-png.flaticon.com/128/3135/3135715.png'
            
@@ -100,11 +106,13 @@ exports.signIn = async (req, res) => {
             return res.status(200).json({success: false, message: 'Tài khoản không tồn tại!' });
         }
 
-        if(existingAccount.matKhau != matKhau){
+        // Compare the provided password with the hashed one
+        const match = await bcrypt.compare(matKhau, existingAccount.matKhau);  
+        if (!match) {
             return res.status(200).json({success: false, message: 'Mật khẩu không chính xác!' });
         }
-        // Nếu tài khoản và mật khẩu đúng, trả về ID của tài khoản
-        return res.status(200).json({success: true, message: 'Đăng nhập thành công!',value:existingAccount._id});
+
+        return res.status(200).json({success: true, message: 'Đăng nhập thành công!', value: existingAccount._id});
     } catch (error) {
         console.error(error);
         return res.status(500).json({success: false, message: error.message });
@@ -133,18 +141,37 @@ exports.editHoTen = async (req, res) => {
 // Cập nhật mật khẩu của một account dựa trên ID
 exports.editMatKhau = async (req, res) => {
     try {
-        const { matKhau } = req.body;
-        const account = await Account.findById(req.params.id);
+        // Assuming the request includes both current and new passwords
+        const { currentPassword, newPassword } = req.body; 
+        const accountId = req.params.id;
+
+        const account = await Account.findById(accountId);
 
         if (!account) {
             return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
         }
 
-        account.matKhau = matKhau;
+        // Verify current password
+        const isMatch = await bcrypt.compare(currentPassword, account.matKhau);
+        if (!isMatch) {
+            return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không chính xác' });
+        }
+
+        // Optional: Validate new password (e.g., length, complexity)
+        if (newPassword.length < 8 || !newPassword.match(/[a-z]/i) || !newPassword.match(/\d/) || !newPassword.match(/[@#$%^&]/)) {
+            return res.status(400).json({ success: false, message: 'Mật khẩu mới không đủ mạnh' });
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+        // Update password in database
+        account.matKhau = hashedPassword;
         await account.save();
 
         res.json({ success: true, message: 'Cập nhật mật khẩu thành công' });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
