@@ -157,8 +157,7 @@ exports.editMatKhau = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không chính xác' });
         }
 
-        // Optional: Validate new password (e.g., length, complexity)
-        if (newPassword.length < 8 || !newPassword.match(/[a-z]/i) || !newPassword.match(/\d/) || !newPassword.match(/[@#$%^&]/)) {
+        if (newPassword.length < 6 || newPassStr.length() > 20) {
             return res.status(400).json({ success: false, message: 'Mật khẩu mới không đủ mạnh' });
         }
 
