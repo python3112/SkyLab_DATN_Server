@@ -141,36 +141,37 @@ exports.editHoTen = async (req, res) => {
 // Cập nhật mật khẩu của một account dựa trên ID
 exports.editMatKhau = async (req, res) => {
     try {
-        // Assuming the request includes both current and new passwords
-        const { currentPassword, newPassword } = req.body; 
-        const accountId = req.params.id;
+        const { currentPassword, newPassword } = req.body;
 
+        const accountId = req.params.id;
         const account = await Account.findById(accountId);
 
         if (!account) {
-            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+            return res.status(404).json({ message: 'Account not found' });
         }
 
-        // Verify current password
+        console.log("Verifying current password");
         const isMatch = await bcrypt.compare(currentPassword, account.matKhau);
         if (!isMatch) {
-            return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không chính xác' });
+            return res.status(400).json({ success: false, message: 'Current password is incorrect' });
         }
 
-        if (newPassword.length < 6 || newPassword.length() > 20) {
-            return res.status(400).json({ success: false, message: 'Mật khẩu mới không đủ mạnh' });
+        console.log("Checking newPassword length:", newPassword.length);
+        if (newPassword.length < 6 || newPassword.length > 20) {
+            return res.status(400).json({ success: false, message: 'New password must be between 6 and 20 characters' });
         }
 
-        // Hash new password
+        console.log("Hashing new password");
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
         // Update password in database
         account.matKhau = hashedPassword;
         await account.save();
 
-        res.json({ success: true, message: 'Cập nhật mật khẩu thành công' });
+        console.log("Password updated successfully");
+        res.json({ success: true, message: 'Password updated successfully' });
     } catch (error) {
-        console.error(error);
+        console.error("Error updating password:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
