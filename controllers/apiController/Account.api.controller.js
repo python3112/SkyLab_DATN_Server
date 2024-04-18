@@ -120,55 +120,40 @@ exports.signIn = async (req, res) => {
 };
 
 // Cập nhật họ tên của một account dựa trên ID
-exports.editHoTen = async (req, res) => {
-    try {
-        const { hoTen } = req.body;
-        const account = await Account.findById(req.params.id);
-
-        if (!account) {
-            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
-        }
-
-        account.hoTen = hoTen;
-        await account.save();
-
-        res.json({ success: true, message: 'Cập nhật họ tên thành công' });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
-};
-
-// Cập nhật mật khẩu của một account dựa trên ID
 exports.editMatKhau = async (req, res) => {
     try {
         const { currentPassword, newPassword } = req.body;
+        console.log("Received body:", req.body);  // Log the full body to verify input
+
+        if (typeof currentPassword !== 'string' || typeof newPassword !== 'string') {
+            console.log("Invalid input types:", { currentPassword, newPassword });
+            return res.status(400).json({ success: false, message: 'Passwords must be strings' });
+        }
 
         const accountId = req.params.id;
         const account = await Account.findById(accountId);
 
         if (!account) {
+            console.log("Account not found:", accountId);
             return res.status(404).json({ message: 'Account not found' });
         }
 
-        console.log("Verifying current password");
         const isMatch = await bcrypt.compare(currentPassword, account.matKhau);
+        console.log("Password match result:", isMatch);
         if (!isMatch) {
             return res.status(400).json({ success: false, message: 'Current password is incorrect' });
         }
 
-        console.log("Checking newPassword length:", newPassword.length);
         if (newPassword.length < 6 || newPassword.length > 20) {
+            console.log("Invalid new password length:", newPassword.length);
             return res.status(400).json({ success: false, message: 'New password must be between 6 and 20 characters' });
         }
 
-        console.log("Hashing new password");
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-
-        // Update password in database
         account.matKhau = hashedPassword;
         await account.save();
 
-        console.log("Password updated successfully");
+        console.log("Password updated successfully for accountId:", accountId);
         res.json({ success: true, message: 'Password updated successfully' });
     } catch (error) {
         console.error("Error updating password:", error);
