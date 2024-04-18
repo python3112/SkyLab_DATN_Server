@@ -23,6 +23,15 @@
                         <h2>Sửa thông tin sản phẩm</h2>
                         <form id="editProductForm" method="POST" action="/api/sanPham/edit/<%= product._id %>"
                             enctype="multipart/form-data">
+                            <% if (product.bienThe && product.bienThe.length) { %>
+                                <% for (var i=0; i < product.bienThe.length; i++) { %>
+                                    <div class="d-inline-flex border border-black border-1 p-2 rounded-3">
+                                        <p class="text-center">
+                                            <%= product.bienThe[i].ram %> + <%= product.bienThe[i].rom %>
+                                        </p>
+                                    </div>
+                                    <% } %>
+                                        <% } %>
                             <!-- Cơ bản -->
                             <div class="row mb-2 p-2">
                                 <div class="col me-2 border border-black border-1 p-2 rounded-3">
@@ -44,24 +53,12 @@
 
                                     <!-- Ảnh -->
                                     <label for="anhSanPham" class="form-label">Ảnh Sản Phẩm Hiện Tại (Ảnh Chính)</label>
-                                    <br>
-                                    <img src="<%= product.anhSanPham %>" alt="Ảnh Sản Phẩm Chính"
-                                        style="max-width: 100px;">
                                     <input type="file" class="form-control" id="anh" name="anh" multiple>
 
                                     <!-- Ảnh slide -->
                                     <label for="anh" class="form-label">Ảnh </label>
                                     <input type="file" class="form-control" id="anh" name="anh" multiple>
 
-                                    <!-- Số lượng -->
-                                    <label for="soLuong" class="form-label">Số Lượng</label>
-                                    <input type="number" class="form-control" id="soLuong" name="soLuong" min="1"
-                                        value="<%= product.bienThe[0].soLuong %>">
-
-                                    <!-- Giá tiền -->
-                                    <label for="giaTien" class="form-label">Giá Tiền</label>
-                                    <input type="number" class="form-control" id="giaTien" name="giaTien" min="0"
-                                        step="any" value="<%= product.bienThe[0].giaTien %>">
                                 </div>
 
                                 <!-- Bộ xử lý -->
@@ -105,18 +102,8 @@
                                     <label for="gpu" class="form-label">GPU</label>
                                     <input type="text" class="form-control" id="gpu" name="gpu"
                                         value="<%=product.gpu %>">
-
-                                    <!-- ROM -->
-                                    <label for="rom" class="form-label">ROM</label>
-                                    <input type="text" class="form-control" id="rom" name="rom"
-                                        value="<%=product.bienThe[0].rom %>">
-
-                                    <!-- RAM -->
-                                    <label for="ram" class="form-label">RAM</label>
-                                    <input type="text" class="form-control" id="ram" name="ram"
-                                        value="<%=product.bienThe[0].ram %>">
-
-                                    <!-- Loại Ram -->
+                                   
+                                        <!-- Loại Ram -->
                                     <label for="loaiRam" class="form-label">Loại RAM</label>
                                     <input type="text" class="form-control" id="loaiRam" name="loaiRam"
                                         value="<%=product.loaiRam %>">

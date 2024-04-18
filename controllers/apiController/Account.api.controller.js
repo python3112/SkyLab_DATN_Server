@@ -62,6 +62,21 @@ exports.getAccountById = async (req, res) => {
     }
   };
   
+  // Cập nhật họ tên của một account dựa trên ID
+exports.editHoTen = async (req, res) => {
+    try {
+        const { hoTen } = req.body;
+        const account = await Account.findById(req.params.id);
+        if (!account) {
+            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+        }
+        account.hoTen = hoTen;
+        await account.save();
+        res.json({ success: true, message: 'Cập nhật họ tên thành công' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
   exports.signUp = async (req, res) => {
     try {
         const {taiKhoan, matKhau } = req.body;
