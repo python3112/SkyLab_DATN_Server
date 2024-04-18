@@ -1,5 +1,6 @@
 const { body } = require('express-validator');
 
+
 exports.validateSanPham = [
   body('soLuong').isInt().notEmpty(),
   body('trangThai').optional().isBoolean(),
@@ -18,3 +19,12 @@ exports.validateTheloaiSp = [
   body('tenTheLoai').isString().notEmpty(),
   body('trangThai').optional().isBoolean(),
 ];
+
+
+exports.checkLogin = (req , res , next) => {
+  if(req.session.Account){
+      next();
+  }else{
+      return res.redirect('/')
+  }
+}

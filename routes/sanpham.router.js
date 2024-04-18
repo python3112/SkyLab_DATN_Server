@@ -3,12 +3,12 @@ var router = express.Router();
 
 // Đường dẫn tới home.controller.js
 var sanphamCtrl = require('../controllers/sanpham.controller');
-
+var checkLogin = require('../middlewares/validation');
 
 // Vào trang home theo địa chỉ '/'
-router.get('/',sanphamCtrl.home);
-router.get('/chi-tiet/:id',sanphamCtrl.chiTiet);
-router.get('/edit/:id', sanphamCtrl.edit);
+router.get('/',checkLogin.checkLogin,sanphamCtrl.home);
+router.get('/chi-tiet/:id',checkLogin.checkLogin,sanphamCtrl.chiTiet);
+router.get('/edit/:id',checkLogin.checkLogin, sanphamCtrl.edit);
 router.get('/add',sanphamCtrl.add);
 
 // Xuất router

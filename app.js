@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var dotenv = require('dotenv');
+var session = require('express-session');
 dotenv.config();
 
 
@@ -46,7 +47,11 @@ connectDB();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.engine("html" , require('ejs').renderFile);
-
+app.use(session({
+  secret:'nhNNGHSNFGH83sdf23435Fdzgsfnksjdfh9', // chuỗi ký tự đặc biệt để Session mã hóa, tự viết
+  resave:false,
+  saveUninitialized:true
+  }));
 
 
 

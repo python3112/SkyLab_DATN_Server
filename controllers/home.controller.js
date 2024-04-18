@@ -1,4 +1,7 @@
 
 exports.home = (req,res,next)=>{
-    res.render('home/home',{title: "Trang chủ"});
+     user = req.session.Account;
+     console.log( 'ss :'+ req.session.Account)
+    res.render('home/home',{title: "Trang chủ" , user : user});
 }
+

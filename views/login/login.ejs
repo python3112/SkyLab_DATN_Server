@@ -139,16 +139,19 @@ button{
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
-    <form method="get" action="/home">
-        <h3>Login Here</h3>
+    <form method="post" >
+        <h3>Web Admin SkyLap</h3>
+        <% if(msg!=null) { %>
+            <h4 class="text-center"  style="color: red; text-align: center;"><%= msg %></h4>
+            <% } %>
 
         <label for="username">Username</label>
-        <input type="text" placeholder="Email or Phone" id="username">
+        <input type="text" name="taiKhoan" placeholder="Email or Phone" id="username">
 
         <label for="password">Password</label>
-        <input type="password" placeholder="Password" id="password">
+        <input type="password" name="matKhau" placeholder="Password" id="password">
 
-        <button >Log In</button>
+        <button type="submit">Log In</button>
     </form>
 </body>
 </html>

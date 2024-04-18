@@ -1,4 +1,5 @@
 
 exports.home = (req,res,next)=>{
-    res.render('thongke/home_thongke',{title: "Thống kê"});
+    const user = req.session.Account;
+    res.render('thongke/home_thongke',{title: "Thống kê" , user :  user});
 }

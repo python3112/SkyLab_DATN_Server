@@ -4,8 +4,9 @@ const KhuyenMai = require('../models/KhuyenMai')
 const { uploadImage, deleteImage } = require('../middlewares/upload.image.firebase');
 exports.home = async (req,res,next)=>{
     try{
+        const user = req.session.Account;
         let listKhuyenMai = await khuyenmaiMd.find();
-        res.render('khuyenmai/home_khuyenmai',{title: "Quản lý khuyến mãi", listKhuyenMai: listKhuyenMai});
+        res.render('khuyenmai/home_khuyenmai',{title: "Quản lý khuyến mãi", listKhuyenMai: listKhuyenMai , user : user});
     }
     catch(error){
         res.render("Error/err",{msg: error.message})
