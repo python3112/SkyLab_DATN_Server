@@ -62,6 +62,21 @@ exports.getAccountById = async (req, res) => {
     }
   };
   
+  // Cập nhật họ tên của một account dựa trên ID
+exports.editHoTen = async (req, res) => {
+    try {
+        const { hoTen } = req.body;
+        const account = await Account.findById(req.params.id);
+        if (!account) {
+            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+        }
+        account.hoTen = hoTen;
+        await account.save();
+        res.json({ success: true, message: 'Cập nhật họ tên thành công' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
   exports.signUp = async (req, res) => {
     try {
         const {taiKhoan, matKhau } = req.body;
@@ -120,57 +135,43 @@ exports.signIn = async (req, res) => {
 };
 
 // Cập nhật họ tên của một account dựa trên ID
-exports.editHoTen = async (req, res) => {
-    try {
-        const { hoTen } = req.body;
-        const account = await Account.findById(req.params.id);
-
-        if (!account) {
-            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
-        }
-
-        account.hoTen = hoTen;
-        await account.save();
-
-        res.json({ success: true, message: 'Cập nhật họ tên thành công' });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
-};
-
-// Cập nhật mật khẩu của một account dựa trên ID
 exports.editMatKhau = async (req, res) => {
     try {
-        // Assuming the request includes both current and new passwords
-        const { currentPassword, newPassword } = req.body; 
-        const accountId = req.params.id;
+        const { currentPassword, newPassword } = req.body;
+        console.log("Received body:", req.body);  // Log the full body to verify input
 
+        if (typeof currentPassword !== 'string' || typeof newPassword !== 'string') {
+            console.log("Invalid input types:", { currentPassword, newPassword });
+            return res.status(400).json({ success: false, message: 'Passwords must be strings' });
+        }
+
+        const accountId = req.params.id;
         const account = await Account.findById(accountId);
 
         if (!account) {
-            return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+            console.log("Account not found:", accountId);
+            return res.status(404).json({ message: 'Account not found' });
         }
 
-        // Verify current password
         const isMatch = await bcrypt.compare(currentPassword, account.matKhau);
+        console.log("Password match result:", isMatch);
         if (!isMatch) {
-            return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không chính xác' });
+            return res.status(400).json({ success: false, message: 'Current password is incorrect' });
         }
 
-        if (newPassword.length < 6 || newPassword.length() > 20) {
-            return res.status(400).json({ success: false, message: 'Mật khẩu mới không đủ mạnh' });
+        if (newPassword.length < 6 || newPassword.length > 20) {
+            console.log("Invalid new password length:", newPassword.length);
+            return res.status(400).json({ success: false, message: 'New password must be between 6 and 20 characters' });
         }
 
-        // Hash new password
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-
-        // Update password in database
         account.matKhau = hashedPassword;
         await account.save();
 
-        res.json({ success: true, message: 'Cập nhật mật khẩu thành công' });
+        console.log("Password updated successfully for accountId:", accountId);
+        res.json({ success: true, message: 'Password updated successfully' });
     } catch (error) {
-        console.error(error);
+        console.error("Error updating password:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 };

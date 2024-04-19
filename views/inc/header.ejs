@@ -4,8 +4,11 @@
     </button>
     <div class="navbar-collapse navbar">
      <% if (user) {%>
+       
         <ul class="navbar-nav">
+            <p class="nav-name-user" ><%= user.taiKhoan %></p>
             <li class="nav-item dropdown">
+              
                 <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
                          <img src="<%= user.avatar %>" class="avatar img-fluid rounded" alt="">
                 </a>
