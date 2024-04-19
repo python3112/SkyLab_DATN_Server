@@ -45,29 +45,9 @@
             align-items: center;
         }
         
-        .stt {
-            width: 3%;
-            text-align: center;
-        }
-        
-        .id {
-            width: 15%;
-        }
-        
         .anh {
             width: 10%;
             height: 30px;
-        }
-        
-        .ten {
-            width: 20%;
-        }
-        .trangThai{
-            width: 5%;
-        }
-        
-        .hanhDong {
-            width: 10%;
         }
         .img1 {
             width: 100%;
@@ -121,9 +101,6 @@
         .top #form2{
             width: 100%;
             margin: auto;
-        }
-        .sotien{
-          width: 5%;
         }
         .input-group, .form-check{
             margin-top: 5%;
@@ -190,9 +167,12 @@
                                         <span class="input-group-text" id="inputGroup-sizing-lg">Số Lượng</span>
                                         <input required="true" name="soLuong" type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
                                       </div>
-                                      <div class="form-check form-switch">
-                                        <label class="form-check-label" for="flexSwitchCheckChecked">Trạng Thái</label>
-                                        <input name="trangThai" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+                                      <div class="input-group ">
+                                        <select id="trangThai" name="trangThai" class="form-select">
+                                            <option value="False">Trạng thái</option>
+                                            <option value="False">False</option>
+                                            <option value="True">True</option>
+                                        </select>
                                       </div>
                                       <div class="input-group ">
                                         <input type="file" name="file" id="logoInput" accept="image/*" required="true">
@@ -218,9 +198,6 @@
                         <th class="id">ID</th>
                         <th class="anh">Ảnh</th>
                         <th class="sotien">Số tiền Giảm</th>
-                        <th class="hanhDong">Ngày Băt Đầu</th>
-                        <th class="hanhDong">Ngày Kết Thúc</th>
-                        <th class="hanhDong">Code</th>
                         <th class="trangThai">Trạng Thái</th>
                         <th class="hanhDong">Hành Động</th>
                     </tr>
@@ -230,19 +207,66 @@
                         <td><%= khuyenMai._id %></td>
                         <td><img class="img1" src="<%= khuyenMai.anh %>" alt=""></td>
                         <td style="color: red; font-size: 80%; font-weight: bold;"><%= khuyenMai.soTienGiam.toLocaleString() %>₫</td>
-                        <td style="width: 10%;"><%= khuyenMai.thoiGianBatDau.toLocaleString() %></td>
-                        <td><%= khuyenMai.thoiGianKetThuc.toLocaleString() %></td>
-                        <td><%= khuyenMai.code %></td>
                         <td <% if (khuyenMai.trangThai === true) { %> style="color: black;" <% } else { %> style="color: red;" <% } %>><%= khuyenMai.trangThai %></td>
                         <td>
-                            <table class="tb2">
-                                <th class="th2">
-                                    <a href="/adu">
-                                        <img src="https://cdn2.iconfinder.com/data/icons/lucid-generic/24/edit_update_pencil_post_write-512.png"
-                                             alt="">
-                                    </a>
-                                </th>
-                            </table>
+                                <button class=" btn btn-danger" data-bs-toggle="modal" data-bs-target="#update<%= index %>">
+                                       Chi tiết
+                                </button>
+                                    <div class="modal fade" id="update<%= index %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-xl">
+                                        <div class="form2 modal-content">
+                                            <form id="form2" method="post" action="/khuyen-mai/update/<%= khuyenMai._id %>" enctype="multipart/form-data">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">ID khuyến mại: <%= khuyenMai._id %></h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="input-group ">
+                                                        <span class="input-group-text" id="inputGroup-sizing-lg">Thời gian bắt đầu</span>
+                                                        <input value="<%= khuyenMai.thoiGianBatDau.toISOString().slice(0, 19)%>" required="true" name="thoiGianBatDau" type="datetime-local" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                                                      </div>
+                                                      <div class="input-group ">
+                                                        <span class="input-group-text" id="inputGroup-sizing-lg">Thời gian kết thúc</span>
+                                                        <input value="<%= khuyenMai.thoiGianKetThuc.toISOString().slice(0, 19)%>" required="true" name="thoiGianKetThuc" type="datetime-local" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                                                      </div>
+                                                      <div class="input-group ">
+                                                        <span class="input-group-text" id="inputGroup-sizing-lg">Code</span>
+                                                        <input value="<%= khuyenMai.code %>" required="true" name="code" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                                                      </div>
+                                                      <div class="input-group ">
+                                                        <span class="input-group-text" id="inputGroup-sizing-lg">Số tiền</span>
+                                                        <input value="<%= khuyenMai.soTienGiam %>" required="true" name="soTienGiam" type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                                                      </div>
+                                                      <div class="input-group ">
+                                                        <span class="input-group-text" id="inputGroup-sizing-lg">Mô Tả</span>
+                                                        <input value="<%= khuyenMai.moTa %>" required="true" name="moTa" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                                                      </div>
+                                                      <div class="input-group ">
+                                                        <span class="input-group-text" id="inputGroup-sizing-lg">Số Lượng</span>
+                                                        <input value="<%= khuyenMai.soLuong%>" required="true" name="soLuong" type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                                                      </div>
+                                                      <div class="input-group">
+                                                        <select id="trangThai" name="trangThai" class="form-select">
+                                                            <option value="False">Trạng thái</option>
+                                                            <option value="False" <% if (khuyenMai.trangThai !== true) { %> selected <% } %>>False</option>
+                                                            <option value="True" <% if (khuyenMai.trangThai === true) { %> selected <% } %>>True</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="input-group">
+                                                        <img class="" src="<%= khuyenMai.anh %>" alt="" style="width: auto; height: auto; max-width: 80%; max-height: 40vh;"  >
+                                                    </div>
+                                                    <div class="input-group">
+                                                        <input type="file" name="file" id="logoInput" accept="image/*" >
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</a>
+                                                    <button type="submit" class="btn btn-primary">Lưu</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        </div>
+                                    </div>
                         </td>
                     </tr>
                     <% }) %>
