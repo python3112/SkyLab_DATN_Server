@@ -46,3 +46,16 @@ exports.query = async (req, res , next )=>{
     }
     
 }
+exports.update = async (req, res, next)=>{
+    try{
+        let id = req.params.id;
+        let trangThai = req.body.trangThai === 'True' ? true : false;
+        let user = await userModel.findById(id);
+        user.trangThai = trangThai;
+        await user.save();
+        res.redirect('/user')
+    }
+    catch(error){
+        res.render('Error/err',{msg: error}) 
+    }
+}
