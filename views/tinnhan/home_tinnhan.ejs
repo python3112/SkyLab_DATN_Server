@@ -127,7 +127,9 @@
       width: 73%;
       border-radius: 10px;
       flex-direction: column;
-      height: 600px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      height: 650px;
       margin-top: 20px;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
       background-color: white;
@@ -157,9 +159,10 @@
     }
 
     .bottom_chat_frame {
-      width: 100%;
+      width: 90%;
       /* Đảm bảo rằng phần bottom_chat_frame có chiều rộng 100% của chat_frame */
-      padding: 10px;
+      margin-left: 20px;
+      margin-right: 20px;
       /* Thêm padding để tạo khoảng cách giữa các phần tử bên trong */
       background-color: #f2f2f2;
       align-self: center;
@@ -239,11 +242,11 @@
       color: white;
       background-color: #007bff;
       max-width: 400px;
-      margin-left: 10px;
+      margin-left: auto;
+      margin-right: 20px;
       border-top-right-radius: 10px;
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
-
       word-wrap: break-word;
     }
 
@@ -252,23 +255,17 @@
     .avata {
       border-radius: 50px;
       margin-top: 30px;
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 40px;
+    
     }
 
-    .avata_admin {
-
-      border-radius: 50px;
-      margin-top: 30px;
-      width: 50px;
-      height: 50px;
-
-    }
+ 
   </style>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
- 
+
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -391,8 +388,8 @@
             } else {
 
               messageElement.classList.add('right-message');
-              imgElement.classList.add('avata_admin');
-              imgElement.src = 'https://cdn-icons-png.flaticon.com/128/6024/6024190.png';
+             
+             
 
               // Thêm img vào div mới
 
@@ -549,7 +546,7 @@
                   <input type="text" class="form-control " onkeypress="handleKeyPress(event ,'<%= user._id %>')"
                     id="message_admin" placeholder="Trả lời tin nhắn người dùng " aria-label="Recipient's username"
                     aria-describedby="button-addon2">
-                  <button class="btn btn-outline-secondary" type="button" onclick="sendMessage()"
+                  <button class="btn btn-outline-secondary" type="button" onclick="sendMessage('<%= user._id %>')"
                     id="button-addon2">Send</button>
                 </div>
               </div>

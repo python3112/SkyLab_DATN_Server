@@ -201,3 +201,9 @@ html[data-bs-theme="dark"] .theme-toggle .fa-moon {
 html[data-bs-theme="light"] .theme-toggle .fa-sun {
     display: none;
 }
+
+.nav-name-user{
+    margin-top: 10%;
+    margin-right: 10px;
+    
+}
