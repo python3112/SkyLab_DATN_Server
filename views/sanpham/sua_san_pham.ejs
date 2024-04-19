@@ -37,10 +37,10 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    <form id="editProductForm" method="POST"
-                                        action="/api/sanPham/edit/<%= product._id %>" enctype="multipart/form-data">
+                                    <form id="themBienTheForm" method="POST"
+                                        action="/api/sanPham/add-variant/<%= product._id %>"
+                                        enctype="multipart/form-data">
                                         <div class="modal-body">
-
                                             <div class="col">
                                                 <!-- RAM -->
                                                 <label for="ram" class="form-label">RAM <span
@@ -71,7 +71,7 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Hủy</button>
-                                            <button type="button" class="btn btn-primary">Xác
+                                            <button type="submit" class="btn btn-primary">Xác
                                                 nhận</button>
                                         </div>
                                     </form>
@@ -82,13 +82,13 @@
                         <% if (product.bienThe && product.bienThe.length) { %>
                             <% for (var i=0; i < product.bienThe.length; i++) { %>
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#exampleModal">
+                                    data-bs-target="#<%= i %>">
                                     <%= product.bienThe[i].ram %> + <%= product.bienThe[i].rom %>
                                 </button>
 
                                 <!-- Modal biến thể-->
-                                <div class="modal fade" id="exampleModal" tabindex="-1"
-                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="<%= i %>" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -97,8 +97,8 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
-                                            <form id="editProductForm" method="POST"
-                                                action="/api/sanPham/edit/<%= product._id %>"
+                                            <form class="suaBienTheForm" data-variant-id="<%= product.bienThe[i]._id %>" id="suaBienTheForm<%= product.bienThe[i]._id %>" method="PUT"
+                                                action="/api/sanPham/update-variant/<%= product._id %>/<%= product.bienThe[i]._id %>"
                                                 enctype="multipart/form-data">
                                                 <div class="modal-body">
 
@@ -136,7 +136,7 @@
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Hủy</button>
-                                                    <button type="button" class="btn btn-primary">Xác
+                                                    <button type="submit" class="btn btn-primary">Xác
                                                         nhận</button>
                                                 </div>
                                             </form>
@@ -414,8 +414,78 @@
                     <%- include('../inc/footer') %>
             </div>
     </div>
+    <!-- Thêm biến thể -->
+    <script>
+        document.getElementById('themBienTheForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const variantData = {};
+            for (const [key, value] of formData.entries()) {
+                variantData[key] = value;
+            }
+            try {
+                const response = await fetch('/api/sanPham/add-variant/<%= product._id %>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(variantData)
+                });
 
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                alert('Thêm biến thể thành công!');
+                window.location.reload();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra, vui lòng thử lại.'); // Hiển thị thông báo lỗi
+            }
+        });
+    </script>
+    <!-- Sửa biến thể -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editVariantForms = document.querySelectorAll('.suaBienTheForm');
+            editVariantForms.forEach(form => {
+                form.addEventListener('submit', async function (event) {
+                    event.preventDefault();
+                    const formData = new FormData(event.target);
+                    const variantData = {};
+                    const variantId = form.dataset.variantId;
+                    for (const [key, value] of formData.entries()) {
+                        variantData[key] = value;
+                    }
 
+                    try {
+                        const response = await fetch(`/api/sanPham/update-variant/<%= product._id %>/${variantId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(variantData)
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+
+                        const data = await response.json();
+                        console.log('Success:', data);
+
+                        // Hiển thị thông báo thành công và/hoặc chuyển hướng người dùng
+                        alert('Sửa biến thể thành công!');
+                        window.location.reload(); // Reload trang sau khi sửa biến thể thành công
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Có lỗi xảy ra, vui lòng thử lại.'); // Hiển thị thông báo lỗi
+                    }
+                });
+            });
+        });
+    </script>
+    <!-- Sửa sản phẩm -->
     <script>
         document.getElementById('editProductForm').addEventListener('submit', async function (event) {
             // Prevent the form from submitting the traditional way

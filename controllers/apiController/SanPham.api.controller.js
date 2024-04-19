@@ -229,3 +229,50 @@ exports.toggleProductStatus = async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   };
+
+//   Biến thể
+exports.addVariant = async (req, res) => {
+    try {
+        const productId = req.params.id; // ID của sản phẩm
+        const variantData = req.body; // Dữ liệu của biến thể từ request body
+        // Tìm sản phẩm theo ID
+        const product = await SanPham.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: "Sản phẩm không tồn tại" });
+        }
+
+        // Thêm biến thể mới vào mảng bienThe của sản phẩm
+        product.bienThe.push(variantData);
+        await product.save();
+
+        res.status(201).json({ message: "Biến thể mới đã được thêm vào sản phẩm" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.updateVariant = async (req, res) => {
+    try {
+        const productId = req.params.productId; // ID của sản phẩm
+        const variantId = req.params.variantId; // ID của biến thể
+        const newData = req.body; // Dữ liệu mới của biến thể từ request body
+
+        // Tìm sản phẩm theo ID
+        const product = await SanPham.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: "Sản phẩm không tồn tại" });
+        }
+
+        // Tìm và cập nhật biến thể trong mảng bienThe của sản phẩm
+        const variant = product.bienThe.id(variantId);
+        if (!variant) {
+            return res.status(404).json({ message: "Biến thể không tồn tại" });
+        }
+
+        variant.set(newData); // Cập nhật dữ liệu mới của biến thể
+        await product.save();
+
+        res.json({ message: "Thông tin của biến thể đã được cập nhật" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
