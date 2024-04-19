@@ -74,6 +74,7 @@ exports.chitiet = async (req, res, next) => {
     try {
         // Lấy idDonhang từ request
         const id = req.params.id; // Giả sử idDonhang được truyền vào qua route params
+        const user = req.session.Account;
 
         // Tìm đơn hàng theo idDonhang
         const donhang = await DonHang.findById(id);
@@ -96,7 +97,7 @@ exports.chitiet = async (req, res, next) => {
         }
 
         // Render trang với thông tin đơn hàng, sản phẩm và tài khoản
-        res.render('donhang/chitiet_donhang', { title: "Thông tin đơn hàng", donhang: donhang, sanPham: sanPham, account: account, ttNow: ttNow });
+        res.render('donhang/chitiet_donhang', { title: "Thông tin đơn hàng", donhang: donhang, sanPham: sanPham, account: account, ttNow: ttNow,user:user });
     } catch (error) {
         // Xử lý lỗi nếu có
         res.status(500).json({ message: error.message });
