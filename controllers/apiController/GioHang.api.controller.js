@@ -35,7 +35,7 @@ exports.addGioHang = async (req, res) => {
         const { idAccount, idSanPham, soLuong,idBienThe } = req.body;
 
         // Kiểm tra nếu giỏ hàng đã có sản phẩm đó thì tăng số lượng
-        const existingGH = await GioHang.findOne({ idSanPham: idSanPham, idAccount: idAccount });
+        const existingGH = await GioHang.findOne({ idSanPham: idSanPham, idAccount: idAccount,idBienThe:idBienThe });
         const sanPham = await SanPham.findById(idSanPham);
         let soLuongSP = sanPham.soLuong;
         if (existingGH !== null && existingGH !== undefined) {
