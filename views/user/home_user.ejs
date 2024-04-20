@@ -144,7 +144,9 @@
                       <td><%= user.trangThai %></td>
                       <td>
                            <!-- Button trigger modal -->
-                                <p data-bs-toggle="modal" data-bs-target="#exampleModal<%= index %>"><a href="#" class="underline"><i>Chi tiết</i></a></p>
+                           <button class=" btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal<%= index %>">
+                            Chi tiết
+                            </button>
                             <!-- Modal -->
                             <form action="/user/update/<%= user._id %>" method="post">
                                 <div class="modal fade" id="exampleModal<%= index %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
