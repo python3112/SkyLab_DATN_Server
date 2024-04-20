@@ -212,7 +212,7 @@ exports.addDonHang = async (req, res) => {
 exports.themTrangThai = async (req, res) => {
     try {
         const donHangId = req.params.id;
-        const trangThai = req.query.trangThai; 
+        const trangThai = req.query.trangThai;
 
         const donHang = await DonHang.findById(donHangId);
 
@@ -235,8 +235,20 @@ exports.themTrangThai = async (req, res) => {
         // Thêm trạng thái mới
         const newDH = { trangThai, isNow: true };
         donHang.trangThai.push(newDH);
+
+        // Nếu trạng thái mới là "Đã hủy", thêm lại số lượng sản phẩm vào kho
+        if (trangThai === "Đã hủy") {
+            const { idSanPham, soLuong, idBienThe } = donHang;
+            const existingBienThe = await SanPham.findById(idSanPham).select('bienThe').session(session);
+            const selectedBienThe = existingBienThe.bienThe.id(idBienThe);
+            selectedBienThe.soLuong += soLuong;
+            selectedBienThe.trangThai = true; // Đánh dấu sản phẩm là có sẵn trong kho
+            await existingBienThe.save();
+        }
+
         await donHang.save();
-        switch(trangThai) {
+
+        switch (trangThai) {
             case "Đã giao hàng":
                 const tieuDe3 = 'Giao hàng thành công';
                 const noiDung3 = 'Đơn hàng đã giao thành công, bạn có thể đánh giá sản phẩm nhé';
@@ -257,6 +269,7 @@ exports.themTrangThai = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
 
 exports.editThanhToan = async (req, res) => {
     try {

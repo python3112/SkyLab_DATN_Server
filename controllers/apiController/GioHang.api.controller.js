@@ -32,39 +32,41 @@ exports.getGioHangByIdGioHang = async (req, res, next) => {
 };
 exports.addGioHang = async (req, res) => {
     try {
-        const { idAccount, idSanPham, soLuong,idBienThe } = req.body;
+        const { idAccount, idSanPham, soLuong, idBienThe } = req.body;
 
-        // Kiểm tra nếu giỏ hàng đã có sản phẩm đó thì tăng số lượng
-        const existingGH = await GioHang.findOne({ idSanPham: idSanPham, idAccount: idAccount,idBienThe:idBienThe });
-        const sanPham = await SanPham.findById(idSanPham);
-        let soLuongSP = sanPham.soLuong;
+        // Kiểm tra nếu giỏ hàng đã có sản phẩm đó và biến thể sản phẩm đó thì tăng số lượng
+        const existingGH = await GioHang.findOne({ idSanPham, idAccount, idBienThe });
         if (existingGH !== null && existingGH !== undefined) {
-            let sl = existingGH.soLuong;
-            if (sl == soLuongSP) {
-                return res.status(200).json({ success: false, message: 'Số lượng sản phẩm này trong giỏ hàng đã đạt tối đa!' });
+            const sanPham = await SanPham.findById(idSanPham).select('bienThe');
+            const selectedBienThe = sanPham.bienThe.id(idBienThe);
+            if (!selectedBienThe || existingGH.soLuong + soLuong > selectedBienThe.soLuong) {
+                return res.status(200).json({ success: false, message: 'Số lượng sản phẩm này trong kho đã đạt tối đa!' });
             }
 
-            existingGH.soLuong = sl + soLuong;
-            if (existingGH.soLuong > soLuongSP) {
-                let slAdd = soLuongSP - sl;
-                return res.status(200).json({ success: false, message: 'Bạn chỉ được thêm ' + slAdd + ' sản phẩm nữa!' });
-            }
+            existingGH.soLuong += soLuong;
             await existingGH.save();
-            return res.status(200).json({ success: true, message: 'Đã thêm vào giỏ hàng!',value: existingGH._id  });
+            return res.status(200).json({ success: true, message: 'Đã thêm vào giỏ hàng!', value: existingGH._id });
         }
 
         // Nếu chưa có sản phẩm trong giỏ hàng, thêm mới
+        const sanPham = await SanPham.findById(idSanPham).select('bienThe soLuong');
+        const selectedBienThe = sanPham.bienThe.id(idBienThe);
+        if (!selectedBienThe || soLuong > selectedBienThe.soLuong) {
+            return res.status(200).json({ success: false, message: 'Số lượng sản phẩm này trong kho đã đạt tối đa!' });
+        }
+
         const newGH = new GioHang({
-            idAccount, idSanPham, soLuong,idBienThe,
+            idAccount, idSanPham, soLuong, idBienThe,
         });
 
         await newGH.save();
-        return res.status(201).json({ success: true, message: 'Đã thêm vào giỏ hàng!',value: newGH._id });
+        return res.status(201).json({ success: true, message: 'Đã thêm vào giỏ hàng!', value: newGH._id });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ success: false, message: error.message });
     }
 };
+
 
 // Sửa số lượng của sản phẩm trong giỏ hàng
 exports.editSoLuongSanPham = async (req, res) => {
