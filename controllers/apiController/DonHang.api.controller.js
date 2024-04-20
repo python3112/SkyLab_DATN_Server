@@ -142,20 +142,31 @@ exports.addDonHang = async (req, res) => {
             }
 
             // Update số lượng biến thể sản phẩm trong kho
-            const newSoLuongBienThe = selectedBienThe.soLuong - soLuong;
-            selectedBienThe.soLuong = newSoLuongBienThe;
-            if (newSoLuongBienThe === 0) {
-                selectedBienThe.trangThai = false;
-            }
+            selectedBienThe.soLuong -= soLuong;
             await existingBienThe.save();
+
+            // Kiểm tra xem có biến thể nào có số lượng khác 0 không
+            let allVariantsEmpty = true;
+            for (const variant of existingBienThe.bienThe) {
+                if (variant.soLuong > 0) {
+                    allVariantsEmpty = false;
+                    break;
+                }
+            }
+
+            // Nếu tất cả các biến thể đều đã hết hàng, đặt trạng thái sản phẩm về false
+            if (allVariantsEmpty) {
+                const product = await SanPham.findById(idSanPham);
+                product.trangThai = false;
+                await product.save();
+            }
 
             // Trừ số lượng khuyến mãi (nếu có)
             if (idKhuyenMaiValue) {
                 const existingKM = await KhuyenMai.findById(idKhuyenMaiValue).session(session);
                 if (existingKM) {
-                    const newSoLuongKM = existingKM.soLuong - 1;
-                    existingKM.soLuong = newSoLuongKM;
-                    if (newSoLuongKM === 0) {
+                    existingKM.soLuong -= 1;
+                    if (existingKM.soLuong === 0) {
                         existingKM.trangThai = false;
                     }
                     await existingKM.save();
@@ -208,12 +219,10 @@ exports.addDonHang = async (req, res) => {
 };
 
 
-
 exports.themTrangThai = async (req, res) => {
     try {
         const donHangId = req.params.id;
         const trangThai = req.query.trangThai;
-
         const donHang = await DonHang.findById(donHangId);
 
         if (!donHang) {
@@ -237,12 +246,13 @@ exports.themTrangThai = async (req, res) => {
         donHang.trangThai.push(newDH);
 
         // Nếu trạng thái mới là "Đã hủy", thêm lại số lượng sản phẩm vào kho
-        if (trangThai === "Đã hủy") {
-            const { idSanPham, soLuong, idBienThe } = donHang;
-            const existingBienThe = await SanPham.findById(idSanPham).select('bienThe').session(session);
-            const selectedBienThe = existingBienThe.bienThe.id(idBienThe);
-            selectedBienThe.soLuong += soLuong;
-            selectedBienThe.trangThai = true; // Đánh dấu sản phẩm là có sẵn trong kho
+        if (trangThai == "Đã hủy") {
+            const existingBienThe = await SanPham.findById(donHang.idSanPham).select('bienThe');
+            const product = await SanPham.findById(idSanPham);
+            const selectedBienThe = existingBienThe.bienThe.id(donHang.idBienThe);
+            selectedBienThe.soLuong += donHang.soLuong;
+            product.trangThai = true;
+            await product.save();
             await existingBienThe.save();
         }
 
@@ -266,6 +276,7 @@ exports.themTrangThai = async (req, res) => {
         }
         res.json({ success: true, message: 'Thêm trạng thái thành công' });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
