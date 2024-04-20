@@ -6,6 +6,7 @@ const GioHangSchema = new mongoose.Schema({
         ref: 'Account'
     },
     soLuong: Number,
+  idBienThe: String,
 }, {
     collection: 'GioHang_Table'
 });

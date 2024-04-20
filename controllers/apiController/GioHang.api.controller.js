@@ -32,7 +32,7 @@ exports.getGioHangByIdGioHang = async (req, res, next) => {
 };
 exports.addGioHang = async (req, res) => {
     try {
-        const { idAccount, idSanPham, soLuong } = req.body;
+        const { idAccount, idSanPham, soLuong,idBienThe } = req.body;
 
         // Kiểm tra nếu giỏ hàng đã có sản phẩm đó thì tăng số lượng
         const existingGH = await GioHang.findOne({ idSanPham: idSanPham, idAccount: idAccount });
@@ -55,7 +55,7 @@ exports.addGioHang = async (req, res) => {
 
         // Nếu chưa có sản phẩm trong giỏ hàng, thêm mới
         const newGH = new GioHang({
-            idAccount, idSanPham, soLuong,
+            idAccount, idSanPham, soLuong,idBienThe,
         });
 
         await newGH.save();
