@@ -15,4 +15,8 @@ router.post('/add',upload.any("image"), SanPhamCtrl.createSanPham);
 router.put('/edit/:id',upload.any("image"),SanPhamCtrl.updateSanPhamById);
 router.post('/search', SanPhamCtrl.searchSanPham);
 router.patch('/toggle-status/:id', SanPhamCtrl.toggleProductStatus);
+// Biến thể
+router.post('/add-variant/:id', SanPhamCtrl.addVariant);
+router.put('/update-variant/:productId/:variantId', SanPhamCtrl.updateVariant);
+
 module.exports = router;
