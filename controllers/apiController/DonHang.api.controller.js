@@ -122,7 +122,7 @@ exports.layDonHangDaHuy = async (req, res) => {
 };
 exports.addDonHang = async (req, res) => {
     try {
-        const { idSanPham,idBienThe, idAccount, idKhuyenMai, soLuong, tongTien, ghiChu, thanhToan, tienShip } = req.body;
+        const { idSanPham, idBienThe, idAccount, idKhuyenMai, soLuong, tongTien, ghiChu, thanhToan, tienShip } = req.body;
         let idKhuyenMaiValue;
         if (idKhuyenMai) {
             idKhuyenMaiValue = idKhuyenMai;
@@ -134,17 +134,20 @@ exports.addDonHang = async (req, res) => {
         session.startTransaction();
 
         try {
-            const existingSanPham = await SanPham.findById(idSanPham).session(session);
-            if (!existingSanPham || existingSanPham.soLuong < soLuong) {
+            // Kiểm tra xem biến thể sản phẩm có tồn tại và đủ số lượng không
+            const existingBienThe = await SanPham.findById(idSanPham).select('bienThe').session(session);
+            const selectedBienThe = existingBienThe.bienThe.id(idBienThe);
+            if (!selectedBienThe || selectedBienThe.soLuong < soLuong) {
                 return res.status(404).json({ success: false, message: 'Đặt hàng thất bại, số lượng hàng trong kho đã hết' });
             }
-            // Update số lượng sản phẩm trong kho
-            const newSoLuongSanPham = existingSanPham.soLuong - soLuong;
-            existingSanPham.soLuong = newSoLuongSanPham;
-            if (newSoLuongSanPham === 0) {
-                existingSanPham.trangThai = false;
+
+            // Update số lượng biến thể sản phẩm trong kho
+            const newSoLuongBienThe = selectedBienThe.soLuong - soLuong;
+            selectedBienThe.soLuong = newSoLuongBienThe;
+            if (newSoLuongBienThe === 0) {
+                selectedBienThe.trangThai = false;
             }
-            await existingSanPham.save();
+            await existingBienThe.save();
 
             // Trừ số lượng khuyến mãi (nếu có)
             if (idKhuyenMaiValue) {
@@ -203,6 +206,7 @@ exports.addDonHang = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
+
 
 
 exports.themTrangThai = async (req, res) => {
