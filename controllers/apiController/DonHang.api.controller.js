@@ -122,7 +122,7 @@ exports.layDonHangDaHuy = async (req, res) => {
 };
 exports.addDonHang = async (req, res) => {
     try {
-        const { idSanPham, idAccount, idKhuyenMai, soLuong, tongTien, ghiChu, thanhToan, tienShip } = req.body;
+        const { idSanPham,idBienThe, idAccount, idKhuyenMai, soLuong, tongTien, ghiChu, thanhToan, tienShip } = req.body;
         let idKhuyenMaiValue;
         if (idKhuyenMai) {
             idKhuyenMaiValue = idKhuyenMai;
@@ -168,7 +168,8 @@ exports.addDonHang = async (req, res) => {
                 tongTien,
                 ghiChu,
                 thanhToan,
-                tienShip
+                tienShip,
+                idBienThe
             });
             const savedDonHang = await newDonHang.save();
 
