@@ -16,14 +16,15 @@ exports.home = async (req,res,next)=>{
 exports.search = async (req,res,next)=>{
     const listKhuyenMai= [];
     const queryValue = req.query.query;
+    const user = req.session.Account;
     try{
     if (queryValue.lenght === 0) {
-        res.render('khuyenmai/home_khuyenmai',{title: "Quản lý Khuyến mại: id = null", listKhuyenMai: listKhuyenMai});
+        res.render('khuyenmai/home_khuyenmai',{title: "Quản lý Khuyến mại: id = null", listKhuyenMai: listKhuyenMai, user: user});
     }
     else{
         const khuyenmai = await khuyenmaiMd.findById(queryValue);
         listKhuyenMai.push(khuyenmai)
-        res.render('khuyenmai/home_khuyenmai',{title: "Quản lý Khuyến mại id: "+queryValue, listKhuyenMai: listKhuyenMai});
+        res.render('khuyenmai/home_khuyenmai',{title: "Quản lý Khuyến mại id: "+queryValue, listKhuyenMai: listKhuyenMai, user: user});
     }  
     }
     catch(error){

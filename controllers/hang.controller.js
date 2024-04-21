@@ -14,14 +14,15 @@ exports.home = async (req, res, next) => {
 }
 exports.search = async (req, res, next) => {
     const queryValue = req.query.query;
+    const user = req.session.Account;
     try {
         if (queryValue.lenght === 0) {
             const listHang = await hang.find();
-            res.render('hang/home_hang', { title: "Quản lý hãng", listHang: listHang });
+            res.render('hang/home_hang', { title: "Quản lý hãng", listHang: listHang, user: user });
         }
         else {
             const listHang = await hang.find({ tenHangSx: { $regex: queryValue, $options: 'i' } });
-            res.render('hang/home_hang', { title: "Quản lý hãng", listHang: listHang });
+            res.render('hang/home_hang', { title: "Quản lý hãng", listHang: listHang, user: user });
         }
     }
     catch (error) {
