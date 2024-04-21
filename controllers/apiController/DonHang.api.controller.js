@@ -248,7 +248,7 @@ exports.themTrangThai = async (req, res) => {
         // Nếu trạng thái mới là "Đã hủy", thêm lại số lượng sản phẩm vào kho
         if (trangThai == "Đã hủy") {
             const existingBienThe = await SanPham.findById(donHang.idSanPham).select('bienThe');
-            const product = await SanPham.findById(idSanPham);
+            const product = await SanPham.findById(donHang.idSanPham);
             const selectedBienThe = existingBienThe.bienThe.id(donHang.idBienThe);
             selectedBienThe.soLuong += donHang.soLuong;
             product.trangThai = true;
