@@ -15,7 +15,18 @@ exports.getDaDanhGia = async (req, res, next) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+exports.getDaDanhGiaByIdSP = async (req, res, next) => {
+    try {
+        const donHangDaDanhGia = await DonHang.find({
+            'idSanPham': req.params.id,
+            'danhGia': { '$exists': true, '$ne': null }
+        });
 
+        res.json(donHangDaDanhGia);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 exports.getChuaDanhGia = async (req, res, next) => {
     try {
         const idAccount = req.params.id;
