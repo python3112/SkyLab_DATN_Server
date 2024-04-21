@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style_header.css' />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/ae360af17e.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="/stylesheets/sidebar.css">
+  </head>
+  <body style="background-color: white;">
+    <div class="wrapper">
+      <%- include('../inc/sidebar') %>
+      <div class="main"> 
+        <%- include('../inc/header') %>
+      <div class="content col-md-10 sm-10">
+        <div>
+          <canvas id="myChart" style="background-color: white;"></canvas>
+        </div>
+        <div>
+          <div class="mt-2">
+            <% let totalRevenue = 0; %>
+            <% for (let i = 0; i < data.length; i++) { %>
+                <% totalRevenue += data[i]; %>
+            <% } %>
+            <button type="button" class="btn btn-danger">Tổng Doanh Thu: <%= totalRevenue.toLocaleString() %> </button>
+            <button type="button" class="btn btn-primary ms-4">Zalopay: <%= tongDoanhThuTrue.toLocaleString() %></button>
+            <button type="button" class="btn btn-success ms-4">Tiền mặt: <%= (totalRevenue - tongDoanhThuTrue).toLocaleString() %> </button>
+        </div>
+        </div>
+        <div>
+          <button type="button" class="btn btn-light mt-2 w-100">Danh sách đơn hàng </button>
+        </div>
+        <div>
+          <table class="table table-bordered table-hover mt-3">
+              <thead>
+                <tr class="align-middle text-center">
+                  <th scope="col" class="col-xl-0.5 col-lg-0.5 col-md-0.5 col-sm-0.5">STT</th>
+                  <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Thời gian</th>
+                  <th scope="col" class="col-xl-2 col-lg-2 col-md-2 col-sm-2">Trạng thái</th>
+                  <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Tổng tiền</th>
+                  <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Hành động</th>
+                </tr>
+              </thead>
+              <tbody class="table-group-divider">
+                <% listDonHang.forEach((donHang, index)=> { %>
+                  <% const trangThai=donHang.trangThai.find(tt=> tt.isNow == true) %>
+                    <tr class="align-middle text-center">
+                      <th scope="row">
+                        <%=  index+1 %>
+                      </th>
+                      <td class="time-cell">
+                        <%= trangThai ? new Date(trangThai.thoiGian.toISOString()).toISOString().replace("T", " ").replace("Z", ""): "ok" %> 
+                      </td>
+                      <td>
+                        <%= trangThai ? trangThai.trangThai : "ok" %>
+                      </td>
+                      <td class="text-danger fw-bold total-cell">
+                        <%= donHang.tongTien.toLocaleString() %>
+                      </td>
+                      <td>
+                        <a href="/don-hang/chi-tiet/<%= donHang._id %> " class="btn btn-primary icon-btn ms-2 me-2">Chi
+                          tiết</a>
+                      </td>
+                    </tr>
+                    <% }); %>
+              </tbody>
+            </table>
+        </div>
+      </div>
+      <%- include('../inc/footer') %>
+    </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const ctx = document.getElementById('myChart');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: [' 1', ' 2', ' 3', ' 4', ' 5', ' 6', " 7"," 8"," 9"
+          ," 9"," 10", " 11", "  12",' 13', ' 14', ' 15', ' 16', ' 17', ' 18',
+           " 19"," 20"," 21"
+          ," 22"," 23", " 24", "  25",' 26', ' 27', ' 28', ' 29',' 30',' 31'],
+          datasets: [{
+            label: 'Ban được',
+            data: <%= JSON.stringify(data) %>,
+            borderWidth: 0.5
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

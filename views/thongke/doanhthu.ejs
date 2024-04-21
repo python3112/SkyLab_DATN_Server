@@ -45,9 +45,9 @@
               <% if(data[i] == 0){ %>
                 <% continue; %>
               <% } %>
-              <button class="btn btn-light w-100 mt-2 text-start" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+              <a href="/Thong-ke/chi-tiet/<%= i+1 %>/<%= year %>" class="btn btn-light w-100 mt-2 text-start" >
                 Tháng <%= i+1 %>: <%= data[i].toLocaleString() %> Vnd
-              </button>
+              </a>
             <% } %>
           </div>
       </div>
@@ -57,7 +57,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
       const ctx = document.getElementById('myChart');
-new Chart(ctx, {
+    new Chart(ctx, {
     type: 'bar',
     data: {
         labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],

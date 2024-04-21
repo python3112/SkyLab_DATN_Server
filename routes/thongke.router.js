@@ -13,5 +13,6 @@ router.get('/San-pham', (req, res, next)=>{
     const user = req.session.Account;
     res.render('thongke/doanhthu',{title: "Thống kê" , user :  user});
 })
+router.get('/chi-tiet/:month/:year', thongkeCtrl.chiTietDoanhThu)
 // Xuất router
 module.exports = router;
