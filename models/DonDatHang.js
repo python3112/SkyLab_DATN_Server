@@ -31,6 +31,7 @@ const donDatHangSchema = new mongoose.Schema({
   tienShip: Number,
   tongTien: Number,
   ghiChu: String,
+  idBienThe: String,
   thanhToan: Boolean,
 }, {
   collection: 'DonDatHang_Table'

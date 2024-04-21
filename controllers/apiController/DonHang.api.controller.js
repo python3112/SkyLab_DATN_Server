@@ -122,7 +122,7 @@ exports.layDonHangDaHuy = async (req, res) => {
 };
 exports.addDonHang = async (req, res) => {
     try {
-        const { idSanPham, idAccount, idKhuyenMai, soLuong, tongTien, ghiChu, thanhToan, tienShip } = req.body;
+        const { idSanPham, idBienThe, idAccount, idKhuyenMai, soLuong, tongTien, ghiChu, thanhToan, tienShip } = req.body;
         let idKhuyenMaiValue;
         if (idKhuyenMai) {
             idKhuyenMaiValue = idKhuyenMai;
@@ -134,25 +134,39 @@ exports.addDonHang = async (req, res) => {
         session.startTransaction();
 
         try {
-            const existingSanPham = await SanPham.findById(idSanPham).session(session);
-            if (!existingSanPham || existingSanPham.soLuong < soLuong) {
+            // Kiểm tra xem biến thể sản phẩm có tồn tại và đủ số lượng không
+            const existingBienThe = await SanPham.findById(idSanPham).select('bienThe').session(session);
+            const selectedBienThe = existingBienThe.bienThe.id(idBienThe);
+            if (!selectedBienThe || selectedBienThe.soLuong < soLuong) {
                 return res.status(404).json({ success: false, message: 'Đặt hàng thất bại, số lượng hàng trong kho đã hết' });
             }
-            // Update số lượng sản phẩm trong kho
-            const newSoLuongSanPham = existingSanPham.soLuong - soLuong;
-            existingSanPham.soLuong = newSoLuongSanPham;
-            if (newSoLuongSanPham === 0) {
-                existingSanPham.trangThai = false;
+
+            // Update số lượng biến thể sản phẩm trong kho
+            selectedBienThe.soLuong -= soLuong;
+            await existingBienThe.save();
+
+            // Kiểm tra xem có biến thể nào có số lượng khác 0 không
+            let allVariantsEmpty = true;
+            for (const variant of existingBienThe.bienThe) {
+                if (variant.soLuong > 0) {
+                    allVariantsEmpty = false;
+                    break;
+                }
             }
-            await existingSanPham.save();
+
+            // Nếu tất cả các biến thể đều đã hết hàng, đặt trạng thái sản phẩm về false
+            if (allVariantsEmpty) {
+                const product = await SanPham.findById(idSanPham);
+                product.trangThai = false;
+                await product.save();
+            }
 
             // Trừ số lượng khuyến mãi (nếu có)
             if (idKhuyenMaiValue) {
                 const existingKM = await KhuyenMai.findById(idKhuyenMaiValue).session(session);
                 if (existingKM) {
-                    const newSoLuongKM = existingKM.soLuong - 1;
-                    existingKM.soLuong = newSoLuongKM;
-                    if (newSoLuongKM === 0) {
+                    existingKM.soLuong -= 1;
+                    if (existingKM.soLuong === 0) {
                         existingKM.trangThai = false;
                     }
                     await existingKM.save();
@@ -168,7 +182,8 @@ exports.addDonHang = async (req, res) => {
                 tongTien,
                 ghiChu,
                 thanhToan,
-                tienShip
+                tienShip,
+                idBienThe
             });
             const savedDonHang = await newDonHang.save();
 
@@ -207,8 +222,7 @@ exports.addDonHang = async (req, res) => {
 exports.themTrangThai = async (req, res) => {
     try {
         const donHangId = req.params.id;
-        const trangThai = req.query.trangThai; 
-
+        const trangThai = req.query.trangThai;
         const donHang = await DonHang.findById(donHangId);
 
         if (!donHang) {
@@ -230,8 +244,21 @@ exports.themTrangThai = async (req, res) => {
         // Thêm trạng thái mới
         const newDH = { trangThai, isNow: true };
         donHang.trangThai.push(newDH);
+
+        // Nếu trạng thái mới là "Đã hủy", thêm lại số lượng sản phẩm vào kho
+        if (trangThai == "Đã hủy") {
+            const existingBienThe = await SanPham.findById(donHang.idSanPham).select('bienThe');
+            const product = await SanPham.findById(idSanPham);
+            const selectedBienThe = existingBienThe.bienThe.id(donHang.idBienThe);
+            selectedBienThe.soLuong += donHang.soLuong;
+            product.trangThai = true;
+            await product.save();
+            await existingBienThe.save();
+        }
+
         await donHang.save();
-        switch(trangThai) {
+
+        switch (trangThai) {
             case "Đã giao hàng":
                 const tieuDe3 = 'Giao hàng thành công';
                 const noiDung3 = 'Đơn hàng đã giao thành công, bạn có thể đánh giá sản phẩm nhé';
@@ -249,9 +276,11 @@ exports.themTrangThai = async (req, res) => {
         }
         res.json({ success: true, message: 'Thêm trạng thái thành công' });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
 
 exports.editThanhToan = async (req, res) => {
     try {
