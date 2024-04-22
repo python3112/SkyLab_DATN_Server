@@ -8,10 +8,5 @@ var checkLogin = require('../middlewares/validation');
 
 // Vào trang home theo địa chỉ '/'
 router.get('/',checkLogin.checkLogin,homeCtrl.home);
-
-
-
-
-
 // Xuất router
 module.exports = router;

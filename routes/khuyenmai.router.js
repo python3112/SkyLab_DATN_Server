@@ -14,6 +14,7 @@ router.get('/search',khuyenmaiCtrl.search);
 router.get('/addKhuyenMai', (res,req,next)=>{
     req.redirect('/', khuyenmaiCtrl.home)
 })
+router.post('/update/:id',upload.single('file'), khuyenmaiCtrl.update);
 router.post('/addKhuyenMai',upload.single('file'), khuyenmaiCtrl.addKhuyenMai)
 // Xuất router
 module.exports = router;

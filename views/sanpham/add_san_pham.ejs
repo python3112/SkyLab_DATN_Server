@@ -20,14 +20,14 @@
         <%- include('../inc/sidebar') %>
             <div class="main ">
                 <%- include('../inc/header') %>
-                    <div class="container my-5">
-                        <h2>Thêm sản phẩm mới</h2>
+                    <div class="container my-2">
+                        <h3 class="text-center">Thêm sản phẩm mới</h3>
                         <form id="addProductForm" method="POST" action="/san-pham/add" enctype="multipart/form-data">
-                            <!-- Cơ bản -->
-                            <div class="row mb-2 p-2">
-                                <div class="col me-2 border border-black border-1 p-2 rounded-3">
+                            <div class="row mt-3">
+                                <div class="col col-md-2">
                                     <!-- Hãng -->
-                                    <label for="idHangSx" class="form-label">Hãng Sản Xuất</label>
+                                    <label for="idHangSx" class="form-label">Hãng sản xuất <span
+                                            class="text-danger">(*)</span></label>
                                     <select class="form-select" id="idHangSx" name="idHangSx">
                                         <% listHangSx.forEach((hangSx, index)=> { %>
                                             <option value="<%= hangSx._id %>">
@@ -35,191 +35,233 @@
                                             </option>
                                             <% }) %>
                                     </select>
-
+                                </div>
+                                <div class="col col-md-5">
                                     <!-- Tên -->
-                                    <label for="tenSanPham" class="form-label">Tên Sản Phẩm</label>
+                                    <label for="tenSanPham" class="form-label">Tên sản phẩm <span
+                                            class="text-danger">(*)</span></label>
                                     <input type="text" class="form-control" id="tenSanPham" name="tenSanPham">
-
+                                </div>
+                                <div class="col col-md-5">
                                     <!-- Ảnh -->
-                                    <label for="anhSanPham" class="form-label">Ảnh Sản Phẩm</label>
+                                    <label for="anhSanPham" class="form-label">Ảnh sản phẩm <span
+                                            class="text-danger">(*)</span></label>
                                     <input type="file" class="form-control" id="anhSanPham" name="anhSanPham">
-
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col col-md-4">
                                     <!-- Ảnh slide -->
-                                    <label for="anh" class="form-label">Ảnh </label>
+                                    <label for="anh" class="form-label">Ảnh slide<span class="text-danger">(*)</span>
+                                    </label>
                                     <input type="file" class="form-control" id="anh" name="anh" multiple>
-
-                                    <!-- Số lượng -->
-                                    <label for="soLuong" class="form-label">Số Lượng</label>
-                                    <input type="number" class="form-control" id="soLuong" name="soLuong" min="1">
-
-                                    <!-- Giá tiền -->
-                                    <label for="giaTien" class="form-label">Giá Tiền</label>
-                                    <input type="number" class="form-control" id="giaTien" name="giaTien" min="0"
-                                        step="any">
                                 </div>
-
-                                <!-- Bộ xử lý -->
-                                <div class="col me-2 border border-black border-1 p-2 rounded-3">
-
+                                <div class="col col-md-2">
                                     <!-- CPU -->
-                                    <label for="cpu" class="form-label">CPU</label>
+                                    <label for="cpu" class="form-label">CPU <span class="text-danger">(*)</span></label>
                                     <input type="text" class="form-control" id="cpu" name="cpu">
-
-                                    <!-- Số nhân -->
-                                    <label for="soNhan" class="form-label">Số Nhân</label>
-                                    <input type="number" class="form-control" id="soNhan" name="soNhan">
-
-                                    <!-- Số luồng CPU -->
-                                    <label for="soLuongCPU" class="form-label">Số luồng CPU</label>
-                                    <input type="number" class="form-control" id="soLuongCPU" name="soLuongCPU">
-
-                                    <!-- Tốc độ CPU -->
-                                    <label for="tocDoCPU" class="form-label">Tốc Độ CPU</label>
-                                    <input type="text" class="form-control" id="tocDoCPU" name="tocDoCPU">
-
-                                    <!-- Tốc độ tối đa -->
-                                    <label for="tocDoToiDa" class="form-label">Tốc Độ Tối Đa</label>
-                                    <input type="text" class="form-control" id="tocDoToiDa" name="tocDoToiDa">
-
-                                    <!-- Bộ nhớ đệm -->
-                                    <label for="boNhoDem" class="form-label">Bộ Nhớ Đệm</label>
-                                    <input type="text" class="form-control" id="boNhoDem" name="boNhoDem">
-
                                 </div>
-
-                                <!-- Bộ nhớ ram,ổ cứng -->
-                                <div class="col me-2 border border-black border-1 p-2 rounded-3">
+                                <div class="col col-md-2">
                                     <!-- GPU -->
                                     <label for="gpu" class="form-label">GPU</label>
                                     <input type="text" class="form-control" id="gpu" name="gpu">
-
-                                    <!-- ROM -->
-                                    <label for="rom" class="form-label">ROM</label>
-                                    <input type="text" class="form-control" id="rom" name="rom">
-
-                                    <!-- RAM -->
-                                    <label for="ram" class="form-label">RAM</label>
-                                    <input type="text" class="form-control" id="ram" name="ram">
-
-                                    <!-- Loại Ram -->
-                                    <label for="loaiRam" class="form-label">Loại RAM</label>
-                                    <input type="text" class="form-control" id="loaiRam" name="loaiRam">
-
-                                    <!-- Tốc độ Ram -->
-                                    <label for="tocDoBusRam" class="form-label">Tốc Độ Bus RAM</label>
-                                    <input type="text" class="form-control" id="tocDoBusRam" name="tocDoBusRam">
-
-                                    <!-- Hỗ trợ Ram tối đa -->
-                                    <label for="hoTroRamToiDa" class="form-label">Hỗ Trợ RAM Tối Đa</label>
-                                    <input type="text" class="form-control" id="hoTroRamToiDa" name="hoTroRamToiDa">
                                 </div>
-
-                                <div class="col border border-black border-1 p-2 rounded-3">
-
-                                    <!-- Pin -->
-                                    <label for="pin" class="form-label">Pin</label>
-                                    <input type="text" class="form-control" id="pin" name="pin">
-
-                                    <!-- Công suất sạc -->
-                                    <label for="congSuatSac" class="form-label">Công Suất Sạc</label>
-                                    <input type="text" class="form-control" id="congSuatSac" name="congSuatSac">
-
-                                    <!-- Thời điểm ra mắt -->
-                                    <label for="thoiDiemRaMat" class="form-label">Thời Điểm Ra Mắt</label>
-                                    <input type="text" class="form-control" id="thoiDiemRaMat" name="thoiDiemRaMat">
-
+                                <div class="col col-md-2">
+                                    <!-- Kích thước -->
+                                    <label for="display" class="form-label">Màn hình <span
+                                            class="text-danger">(*)</span></label>
+                                    <input type="text" class="form-control" id="display" name="display">
+                                </div>
+                                <div class="col col-md-2">
                                     <!-- Bảo hành -->
-                                    <label for="baohanh" class="form-label">Bảo Hành</label>
+                                    <label for="baohanh" class="form-label">Bảo hành <span
+                                            class="text-danger">(*)</span></label>
                                     <input type="text" class="form-control" id="baohanh" name="baohanh">
-
-                                    <!-- Hệ điều hành -->
-                                    <label for="os" class="form-label">Hệ Điều Hành</label>
-                                    <input type="text" class="form-control" id="os" name="os">
-
-                                    <!-- Phụ kiện -->
-                                    <label for="phuKien" class="form-label">Phụ Kiện</label>
-                                    <input type="text" class="form-control" id="phuKien" name="phuKien">
                                 </div>
                             </div>
-                            <div class="row p-2">
-                                <!-- Màn hình -->
-                                <div class="col me-2 border border-black border-1 p-2 rounded-3">
-
-                                    <!-- Kích thước -->
-                                    <label for="display" class="form-label">Kích thước màn hình</label>
-                                    <input type="text" class="form-control" id="display" name="display">
-
-                                    <!-- Độ phân giải -->
-                                    <label for="doPhanGiai" class="form-label">Độ Phân Giải</label>
-                                    <input type="text" class="form-control" id="doPhanGiai" name="doPhanGiai">
-
-                                    <!-- Tần số quét -->
-                                    <label for="tanSoQuet" class="form-label">Tần Số Quét</label>
-                                    <input type="text" class="form-control" id="tanSoQuet" name="tanSoQuet">
-
-                                    <!-- Độ phủ màu -->
-                                    <label for="doPhuMau" class="form-label">Độ Phủ Màu</label>
-                                    <input type="text" class="form-control" id="doPhuMau" name="doPhuMau">
-
-                                    <!--  Công nghệ màn hình-->
-                                    <label for="congNgheManHinh" class="form-label">Công Nghệ Màn Hình</label>
-                                    <input type="text" class="form-control" id="congNgheManHinh" name="congNgheManHinh">
+                            <div class="row my-2">
+                                <div class="col col-md-2">
+                                    <!-- RAM -->
+                                    <label for="ram" class="form-label">RAM <span class="text-danger">(*)</span></label>
+                                    <input type="text" class="form-control" id="ram" name="ram">
                                 </div>
-
-                                <!-- Đồ họa và âm thanh -->
-                                <div class="col me-2 border border-black border-1 p-2 rounded-3">
-                                    <!-- Mô tả -->
-                                    <label for="moTa" class="form-label">Mô Tả</label>
-                                    <textarea class="form-control" id="moTa" name="moTa" rows="2"></textarea>
-
+                                <div class="col col-md-2">
+                                    <!-- ROM -->
+                                    <label for="rom" class="form-label">ROM <span class="text-danger">(*)</span></label>
+                                    <input type="text" class="form-control" id="rom" name="rom">
+                                </div>
+                                <div class="col col-md-2">
+                                    <!-- Số lượng -->
+                                    <label for="soLuong" class="form-label">Số lượng <span
+                                            class="text-danger">(*)</span></label>
+                                    <input type="number" class="form-control" id="soLuong" name="soLuong" min="1">
+                                </div>
+                                <div class="col col-md-3">
+                                    <!-- Giá tiền -->
+                                    <label for="giaTien" class="form-label">Giá tiền <span
+                                            class="text-danger">(*)</span></label>
+                                    <input type="number" class="form-control" id="giaTien" name="giaTien" min="0"
+                                        step="any">
+                                </div>
+                                <div class="col col-md-3">
                                     <!-- Màu sắc -->
                                     <label for="mauSac" class="form-label">Màu Sắc</label>
                                     <input type="text" class="form-control" id="mauSac" name="mauSac">
-
-                                    <!-- Công nghệ âm thanh -->
-                                    <label for="congNgheAmThanh" class="form-label">Công Nghệ Âm Thanh</label>
-                                    <input type="text" class="form-control" id="congNgheAmThanh" name="congNgheAmThanh">
-
-                                    <!-- Kích thước -->
-                                    <label for="kichThuocKhoiLuong" class="form-label">Kích Thước & Khối Lượng</label>
-                                    <input type="text" class="form-control" id="kichThuocKhoiLuong"
-                                        name="kichThuocKhoiLuong">
-
-                                    <!-- Chất liệu -->
-                                    <label for="chatLieu" class="form-label">Chất Liệu</label>
-                                    <input type="text" class="form-control" id="chatLieu" name="chatLieu">
+                                </div>
+                            </div>
+                            <!-- Mô tả -->
+                            <label for="moTa" class="form-label">Mô tả <span class="text-danger">(*)</span></label>
+                            <textarea class="form-control" id="moTa" name="moTa" rows="2"></textarea>
+                            <div class="row mt-2">
+                                <div class="col col-md-2">
+                                    <!-- Số nhân -->
+                                    <label for="soNhan" class="form-label">Số nhân CPU</label>
+                                    <input type="number" class="form-control" id="soNhan" name="soNhan">
+                                </div>
+                                <div class="col col-md-2">
+                                    <!-- Số luồng -->
+                                    <label for="soLuongCPU" class="form-label">Số luồng CPU</label>
+                                    <input type="number" class="form-control" id="soLuongCPU" name="soLuongCPU">
+                                </div>
+                                <div class="col col-md-2">
+                                    <!-- Tốc độ CPU -->
+                                    <label for="tocDoCPU" class="form-label">Tốc độ CPU</label>
+                                    <input type="text" class="form-control" id="tocDoCPU" name="tocDoCPU">
+                                </div>
+                                <div class="col col-md-3">
+                                    <!-- Tốc độ tối đa CPU-->
+                                    <label for="tocDoToiDa" class="form-label">Tốc độ tối đa CPU</label>
+                                    <input type="text" class="form-control" id="tocDoToiDa" name="tocDoToiDa">
+                                </div>
+                                <div class="col col-md-3">
+                                    <!-- Loại Ram -->
+                                    <label for="loaiRam" class="form-label">Loại RAM</label>
+                                    <input type="text" class="form-control" id="loaiRam" name="loaiRam">
                                 </div>
 
-                                <!-- Cổng kết nối và tính năng mở rộng -->
-                                <div class="col border border-black border-1 p-2 rounded-3">
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col col-md-2">
+                                    <!-- Bộ nhớ đệm -->
+                                    <label for="boNhoDem" class="form-label">Bộ nhớ đệm</label>
+                                    <input type="text" class="form-control" id="boNhoDem" name="boNhoDem">
+                                </div>
 
-                                    <!-- Cổng giao tiếp -->
-                                    <label for="congGiaoTiep" class="form-label">Cổng Giao Tiếp</label>
-                                    <input type="text" class="form-control" id="congGiaoTiep" name="congGiaoTiep">
+                                <div class="col col-md-2">
+                                    <!-- Tốc độ Ram -->
+                                    <label for="tocDoBusRam" class="form-label">Tốc độ BUS RAM</label>
+                                    <input type="text" class="form-control" id="tocDoBusRam" name="tocDoBusRam">
+                                </div>
+                                <div class="col col-md-2">
+                                    <!-- Hỗ trợ Ram tối đa -->
+                                    <label for="hoTroRamToiDa" class="form-label">Hỗ trợ RAM tối đa</label>
+                                    <input type="text" class="form-control" id="hoTroRamToiDa" name="hoTroRamToiDa">
+                                </div>
+                                <div class="col col-md-2">
+                                    <!-- Độ phân giải -->
+                                    <label for="doPhanGiai" class="form-label">Độ phân giải</label>
+                                    <input type="text" class="form-control" id="doPhanGiai" name="doPhanGiai">
+                                </div>
+                                <div class="col col-md-2">
+                                    <!-- Tần số quét -->
+                                    <label for="tanSoQuet" class="form-label">Tần số quét</label>
+                                    <input type="text" class="form-control" id="tanSoQuet" name="tanSoQuet">
+                                </div>
+                                <div class="col col-md-2">
+                                    <!-- Độ phủ màu -->
+                                    <label for="doPhuMau" class="form-label">Độ phủ màu</label>
+                                    <input type="text" class="form-control" id="doPhuMau" name="doPhuMau">
+                                </div>
 
-                                    <!-- Kết nối không dây -->
-                                    <label for="ketNoiKhongDay" class="form-label">Kết Nối Không Dây</label>
-                                    <input type="text" class="form-control" id="ketNoiKhongDay" name="ketNoiKhongDay">
-
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col col-md-3">
+                                    <!--  Công nghệ màn hình-->
+                                    <label for="congNgheManHinh" class="form-label">Công nghệ màn hình</label>
+                                    <input type="text" class="form-control" id="congNgheManHinh" name="congNgheManHinh">
+                                </div>
+                                <div class="col col-md-3">
+                                    <!-- Công nghệ âm thanh -->
+                                    <label for="congNgheAmThanh" class="form-label">Công nghệ âm thanh</label>
+                                    <input type="text" class="form-control" id="congNgheAmThanh" name="congNgheAmThanh">
+                                </div>
+                                <div class="col col-md-2">
                                     <!-- WebCam -->
                                     <label for="webCam" class="form-label">Webcam</label>
                                     <input type="text" class="form-control" id="webCam" name="webCam">
-
+                                </div>
+                                <div class="col col-md-2">
                                     <!-- Đèn bàn phím -->
-                                    <label for="denBanPhim" class="form-label">Đèn Bàn Phím</label>
+                                    <label for="denBanPhim" class="form-label">Đèn bàn phím</label>
                                     <input type="text" class="form-control" id="denBanPhim" name="denBanPhim">
-
-                                    <!-- Tính năng khác -->
-                                    <label for="tinhNangKhac" class="form-label">Tính Năng Khác</label>
-                                    <input type="text" class="form-control" id="tinhNangKhac" name="tinhNangKhac">
+                                </div>
+                                <div class="col col-md-2">
+                                    <!-- Chất liệu -->
+                                    <label for="chatLieu" class="form-label">Chất liệu</label>
+                                    <input type="text" class="form-control" id="chatLieu" name="chatLieu">
                                 </div>
                             </div>
+                            <div class="row mt-2">
+                                <div class="col col-md-3">
+                                    <!-- Cổng giao tiếp -->
+                                    <label for="congGiaoTiep" class="form-label">Cổng giao tiếp</label>
+                                    <textarea rows="2" type="text" class="form-control" id="congGiaoTiep"
+                                        name="congGiaoTiep"></textarea>
+                                </div>
+                                <div class="col col-md-3">
+                                    <!-- Kết nối không dây -->
+                                    <label for="ketNoiKhongDay" class="form-label">Kết nối không dây</label>
+                                    <textarea rows="2" type="text" class="form-control" id="ketNoiKhongDay"
+                                        name="ketNoiKhongDay"></textarea>
+                                </div>
+                                <div class="col col-md-3">
+                                    <!-- Kích thước -->
+                                    <label for="kichThuocKhoiLuong" class="form-label">Kích thước & Khối lượng</label>
+                                    <textarea rows="2" type="text" class="form-control" id="kichThuocKhoiLuong"
+                                        name="kichThuocKhoiLuong"></textarea>
+                                </div>
 
-
-
-                            <button type="submit" class="btn btn-primary">Thêm Sản Phẩm</button>
+                                <div class="col col-md-3">
+                                    <!-- Tính năng khác -->
+                                    <label for="tinhNangKhac" class="form-label">Tính năng khác</label>
+                                    <textarea rows="2" type="text" class="form-control" id="tinhNangKhac"
+                                        name="tinhNangKhac"></textarea>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col col-md-2">
+                                    <!-- Pin -->
+                                    <label for="pin" class="form-label">Pin</label>
+                                    <input type="text" class="form-control" id="pin" name="pin">
+                                </div>
+                                <div class="col col-md-2">
+                                    <!-- Công suất sạc -->
+                                    <label for="congSuatSac" class="form-label">Công suất sạc</label>
+                                    <input type="text" class="form-control" id="congSuatSac" name="congSuatSac">
+                                </div>
+                                <div class="col col-md-2">
+                                    <!-- Thời điểm ra mắt -->
+                                    <label for="thoiDiemRaMat" class="form-label">Thời điểm ra mắt</label>
+                                    <input type="text" class="form-control" id="thoiDiemRaMat" name="thoiDiemRaMat">
+                                </div>
+                                <div class="col col-md-3">
+                                    <!-- Hệ điều hành -->
+                                    <label for="os" class="form-label">Hệ điều hành</label>
+                                    <input type="text" class="form-control" id="os" name="os">
+                                </div>
+                                <div class="col col-md-3">
+                                    <!-- Phụ kiện -->
+                                    <label for="phuKien" class="form-label">Phụ kiện</label>
+                                    <input type="text" class="form-control" id="phuKien" name="phuKien">
+                                </div>
+                            </div>
+                            <div class="row mt-3 text-end">
+                                <div class="col">
+                                    <!-- Nút button "Thêm Sản Phẩm" -->
+                                    <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
+                                </div>
+                            </div>
                         </form>
-
                     </div>
                     <%- include('../inc/footer') %>
             </div>
@@ -228,67 +270,7 @@
         document.getElementById('addProductForm').addEventListener('submit', async function (event) {
             // Prevent the form from submitting the traditional way
             event.preventDefault();
-
-            const soLuong = document.getElementById('soLuong').value;
-            const giaTien = document.getElementById('giaTien').value;
-            const tenSanPham = document.getElementById('tenSanPham').value;
-            const cpu = document.getElementById('cpu').value;
-            const gpu = document.getElementById('gpu').value;
-            const kichThuocManHinh = document.getElementById('display').value;
-            const ram = document.getElementById('ram').value;
-            const rom = document.getElementById('rom').value;
-            const moTa = document.getElementById('moTa').value;
-            const anhSanPham = document.getElementById('anhSanPham').files.length;
-            const anhSlide = document.getElementById('anh').files.length;
-
-            // Validations
-            let errorMessage = '';
-
-            if (!tenSanPham.trim()) {
-                errorMessage += 'Tên sản phẩm không được để trống.\n';
-            }
-            if (soLuong <= 0) {
-                errorMessage += 'Số lượng phải lớn hơn 0.\n';
-            }
-            if (giaTien <= 0) {
-                errorMessage += 'Giá tiền phải lớn hơn 0.\n';
-            }
-            if (!cpu.trim()) {
-                errorMessage += 'CPU không được để trống.\n';
-            }
-            if (!gpu.trim()) {
-                errorMessage += 'GPU không được để trống.\n';
-            }
-            if (!kichThuocManHinh.trim()) {
-                errorMessage += 'Kích thước màn hình không được để trống.\n';
-            }
-            if (!ram.trim()) {
-                errorMessage += 'RAM không được để trống.\n';
-            }
-            if (!rom.trim()) {
-                errorMessage += 'ROM không được để trống.\n';
-            }
-            if (!moTa.trim()) {
-                errorMessage += 'Mô tả sản phẩm không được để trống.\n';
-            }
-            if (anhSanPham === 0) {
-                errorMessage += 'Bạn phải chọn ít nhất một ảnh sản phẩm chính.\n';
-            }
-            if (anhSlide === 0) {
-                errorMessage += 'Bạn phải chọn ít nhất một ảnh cho slide.\n';
-            }
-
-            // Show error message if validation fails
-            if (errorMessage) {
-                alert(errorMessage);
-                return; // Stop the function if there is an error
-            }
-
             const formData = new FormData(event.target);
-            // Log ra nội dung của formData nếu cần
-            // formData.forEach((value, key) => {
-            //     console.log(`${key}: ${value}`);
-            // });
             try {
                 const response = await fetch('/api/sanPham/add', {
                     method: 'POST',
@@ -300,14 +282,10 @@
                 }
 
                 const data = await response.json();
-                console.log('Success:', data);
-
-                // Hiển thị thông báo thành công và/hoặc chuyển hướng người dùng
-                alert('Thêm sản phẩm thành công!');
-                window.location.href = '/san-pham'; // Chuyển hướng 
+                window.location.href = '/san-pham';
             } catch (error) {
                 console.error('Error:', error);
-                alert('Có lỗi xảy ra, vui lòng thử lại.'); // Hiển thị thông báo lỗi
+                alert('Có lỗi xảy ra, vui lòng thử lại.');
             }
         });
     </script>

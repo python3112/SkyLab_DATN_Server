@@ -1,10 +1,10 @@
-<nav class="navbar navbar-expand px-3 border-bottom">
+<nav class="navbar navbar-expand px-3 border-bottom ">
     <button title="" class="btn" id="sidebar-toggle" type="button">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="navbar-collapse navbar">
+    <h1><%= title %></h1>
      <% if (user) {%>
-       
         <ul class="navbar-nav">
             <p class="nav-name-user" ><%= user.taiKhoan %></p>
             <li class="nav-item dropdown">

@@ -11,4 +11,5 @@ router.get('/userActiveTrue',userCtrl.findUserTrue);
 router.get('/userActiveFalse',userCtrl.findUserFales);
 router.get('/queryUser',userCtrl.query);
 // Xuất router
+router.post('/update/:id',userCtrl.update);
 module.exports = router;
