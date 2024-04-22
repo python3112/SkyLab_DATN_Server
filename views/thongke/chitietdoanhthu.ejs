@@ -17,7 +17,7 @@
         <%- include('../inc/header') %>
       <div class="content col-md-10 sm-10">
         <div>
-          <canvas id="myChart" style="background-color: white;"></canvas>
+          <canvas class="w-100" id="myChart" style="background-color: white;"></canvas>
         </div>
         <div>
           <div class="mt-2">
@@ -28,11 +28,22 @@
             <button type="button" class="btn btn-danger">Tổng Doanh Thu: <%= totalRevenue.toLocaleString() %> </button>
             <button type="button" class="btn btn-primary ms-4">Zalopay: <%= tongDoanhThuTrue.toLocaleString() %></button>
             <button type="button" class="btn btn-success ms-4">Tiền mặt: <%= (totalRevenue - tongDoanhThuTrue).toLocaleString() %> </button>
-        </div>
+          </div>
         </div>
         <div>
           <button type="button" class="btn btn-light mt-2 w-100">Danh sách đơn hàng </button>
         </div>
+        <div class="dropdown mb-1 w-100 mt-2">
+          <button class="btn btn-light w-100 text-start" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+             <%= day %>
+          </button>
+          <ul class="dropdown-menu m-2" aria-labelledby="dropdownMenuButton" style="background-color: white; width: 100vw;">
+            <li><a href="/Thong-ke/chi-tiet/<%= month %>/<%= year %>" class="dropdown-item" onclick="changeText('<%= i %>')">Tất cả các ngày</a></li>
+            <% for(var i = 1; i <= 31; i++) { %>
+              <li><a class="dropdown-item" href="/Thong-ke/chi-tiet/<%= i %>/<%= month %>/<%= year %>" onclick="changeText('<%= i %>')">Ngày <%= i %> </a></li>
+            <% } %>
+          </ul>
+      </div>
         <div>
           <table class="table table-bordered table-hover mt-3">
               <thead>
@@ -79,7 +90,7 @@
       new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: [' 1', ' 2', ' 3', ' 4', ' 5', ' 6', " 7"," 8"," 9"
+          labels: [' 1', ' 2', ' 3', ' 4', ' 5', ' 6', " 7"," 8"
           ," 9"," 10", " 11", "  12",' 13', ' 14', ' 15', ' 16', ' 17', ' 18',
            " 19"," 20"," 21"
           ," 22"," 23", " 24", "  25",' 26', ' 27', ' 28', ' 29',' 30',' 31'],
@@ -97,6 +108,9 @@
           }
         }
       });
+      function changeText(selectedYear) {
+        document.getElementById("dropdownMenuButton").textContent ="Ngày "+ selectedYear;
+      }
     </script>
   </body>
 </html>
