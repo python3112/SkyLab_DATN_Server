@@ -84,5 +84,22 @@
         </ul>
     </div>
 </aside>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Lấy danh sách tất cả các sidebar-item
+        var sidebarItems = document.querySelectorAll(".sidebar-item");
 
-
+        // Duyệt qua từng sidebar-item và thêm event listener
+        sidebarItems.forEach(function(item) {
+            item.addEventListener("click", function() {
+                // Đặt lại background color của tất cả các sidebar-item về mặc định
+                sidebarItems.forEach(function(item) {
+                    item.style.backgroundColor = "";
+                });
+                // Đặt background color của sidebar-item được click thành màu trắng
+                this.style.backgroundColor = "white";
+                
+            });
+        });
+    });
+</script>

@@ -91,6 +91,15 @@ a.sidebar-link {
     display: block;
     font-size: 0.875rem;
 }
+a.sidebar-link:focus {
+    padding: .625rem 1.625rem;
+    color:black;
+    position: relative;
+    display: block;
+    font-size: 0.875rem;
+}
+
+
 
 .sidebar-link[data-bs-toggle="collapse"]::after {
     border: solid;
