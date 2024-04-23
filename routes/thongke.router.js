@@ -17,4 +17,5 @@ router.get('/chi-tiet/:month/:year', thongkeCtrl.chiTietDoanhThu)
 router.get('/thongke-sanpham' ,thongkeCtrl.sanpham );
 router.get('/thongke-sanpham/:year',thongkeCtrl.sanphamTheoNam)
 // Xuất router
+router.get('/chi-tiet/:day/:month/:year',thongkeCtrl.chiTietDoanhThuNgay)
 module.exports = router;
