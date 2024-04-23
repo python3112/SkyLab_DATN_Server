@@ -52,13 +52,17 @@
                 </a>
                 <ul id="posts" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                     <li class="sidebar-item">
-                        <a href="/Thong-ke/Doanh-thu" class="sidebar-link">Doanh thu</a>
+                        <a href="/Thong-ke/Doanh-thu" class="sidebar-link a-thongke">
+                            <i class="fa-solid fa-sack-dollar"></i>
+                            Doanh thu</a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="/Thong-ke/thong-ke/Doanh-thu/San-pham" class="sidebar-link">Sản phẩm</a>
+                        <a href="/Thong-ke/thongke-sanpham" class="sidebar-link a-thongke">
+                            <i class="fa-solid fa-chart-simple"></i>
+                            Sản phẩm</a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="/Thong-ke/Doanh-thu/Khac" class="sidebar-link">Khác</a>
+                        <a href="/Thong-ke/Doanh-thu/Khac" class="sidebar-link a-thongke">Khác</a>
                     </li>
                 </ul>
             </li>
@@ -84,22 +88,3 @@
         </ul>
     </div>
 </aside>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Lấy danh sách tất cả các sidebar-item
-        var sidebarItems = document.querySelectorAll(".sidebar-item");
-
-        // Duyệt qua từng sidebar-item và thêm event listener
-        sidebarItems.forEach(function(item) {
-            item.addEventListener("click", function() {
-                // Đặt lại background color của tất cả các sidebar-item về mặc định
-                sidebarItems.forEach(function(item) {
-                    item.style.backgroundColor = "";
-                });
-                // Đặt background color của sidebar-item được click thành màu trắng
-                this.style.backgroundColor = "white";
-                
-            });
-        });
-    });
-</script>

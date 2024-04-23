@@ -14,5 +14,7 @@ router.get('/San-pham', (req, res, next)=>{
     res.render('thongke/doanhthu',{title: "Thống kê" , user :  user});
 })
 router.get('/chi-tiet/:month/:year', thongkeCtrl.chiTietDoanhThu)
+router.get('/thongke-sanpham' ,thongkeCtrl.sanpham );
+router.get('/thongke-sanpham/:year',thongkeCtrl.sanphamTheoNam)
 // Xuất router
 module.exports = router;
