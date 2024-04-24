@@ -176,7 +176,7 @@ exports.chiTietDoanhThu = async (req, res, next) => {
         const DayRevenue = []; // Initialize array to store daily revenue
         
         // Calculate revenue for each day of the month
-        for (let day = 1; day <= 30; day++) {
+        for (let day = 0; day <= 30; day++) {
             const firstHourofDay = new Date(year, month - 1, day, 0, 0, 0, 0);
             const lastHourofDay = new Date(year, month - 1, day +1,  0, 0, 0, 0);
 
