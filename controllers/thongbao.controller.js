@@ -7,7 +7,7 @@ exports.sendNotification = async (req, res) => {
     try {
         const { tieu_de, noi_dung } = req.body;
         // Gửi thông báo qua API
-        // await sendFirebaseNotification(tieu_de, noi_dung, '/topics/662613a44a3bd8553c24a063');
+        await sendFirebaseNotification(tieu_de, noi_dung, '/topics/skylap');
         const message ='Thông báo đã được gửi thành công';
         // Trả về phản hồi JSON chứa thông điệp thành công
         res.status(200).json({ success: true, message: message });
