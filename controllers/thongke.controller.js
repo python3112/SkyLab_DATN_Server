@@ -12,7 +12,8 @@ exports.doanhThu = async (req, res, next) => {
     for (let month = 1; month <= 12; month++) {
         // Tạo ngày đầu tiên và ngày cuối cùng của tháng
         let firstDayOfMonth = new Date(year, month - 1, 0); // Ngày đầu tiên của tháng
-        let lastDayOfMonth = new Date(year, month - 1, 31); // Ngày cuối cùng của tháng
+        let lastDayOfMonth = new Date(year, month, 0); // Ngày cuối cùng của tháng
+
 
         // Tạo bộ lọc cho tháng hiện tại
         let filter = {
@@ -174,12 +175,15 @@ exports.chiTietDoanhThu = async (req, res, next) => {
         const { month, year } = req.params;
         const user = req.session.Account;
 
-        const DayRevenue = Array(31).fill(0); // Initialize array to store daily revenue
+
+
+        const DayRevenue = []; // Initialize array to store daily revenue
+        
 
         // Calculate revenue for each day of the month
-        for (let day = 1; day <= 31; day++) {
+        for (let day = 0; day <= 30; day++) {
             const firstHourofDay = new Date(year, month - 1, day, 0, 0, 0, 0);
-            const lastHourofDay = new Date(year, month - 1, day + 1, 0, 0, 0, 0);
+            const lastHourofDay = new Date(year, month - 1, day +1,  0, 0, 0, 0);
 
             const filter = {
                 "trangThai": {
@@ -200,8 +204,8 @@ exports.chiTietDoanhThu = async (req, res, next) => {
         }
 
         // Filter orders for the entire month
-        const firstDayOfMonth = new Date(year, month - 1, 1);
-        const lastDayOfMonth = new Date(year, month, 0);
+        const firstDayOfMonth = new Date(year, month - 1, 0);
+        const lastDayOfMonth = new Date(year, month -1, 31);
         const filterDonHang = {
             "trangThai": {
                 $elemMatch: {
@@ -249,7 +253,7 @@ exports.chiTietDoanhThuNgay = async (req, res, next) => {
         const { month, year, day } = req.params;
 
         const DayRevenue = [];
-        for (let dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
+        for (let dayOfMonth = 1; dayOfMonth <= 30; dayOfMonth++) {
             const firstHourOfDay = new Date(year, month - 1, dayOfMonth, 0, 0, 0, 0);
             const lastHourOfDay = new Date(year, month - 1, dayOfMonth, 23, 59, 59, 999);
 
@@ -271,8 +275,8 @@ exports.chiTietDoanhThuNgay = async (req, res, next) => {
             DayRevenue.push(result.length > 0 ? result[0].tongDoanhThu : 0);
         }
 
-        const firstDayOfMonth = new Date(year, month - 1, 1);
-        const lastDayOfMonth = new Date(year, month, 0);
+        const firstDayOfMonth = new Date(year, month - 1, 0);
+        const lastDayOfMonth = new Date(year, month-1, 31);
         const filterThanhToanTrue = {
             "trangThai": {
                 $elemMatch: {
