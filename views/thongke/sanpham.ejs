@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/stylesheets/sidebar.css">
 </head>
 
-<body style="background-color: white;">
+<body style="background-color: white;" onload="displayVietnamDateTime()">
   <div class="wrapper">
     <%- include('../inc/sidebar') %>
       <div class="main">
@@ -63,6 +63,7 @@
                     <button type="button" class="btn btn-danger" onclick="hideAllExcept()">Tổng Bán Được: <%= totalRevenue.toLocaleString() %></button>
                     <button type="button" class="btn btn-primary ms-4" onclick="showTop10BanChay()">top 10 bán chạy</button>
                     <button type="button" class="btn btn-success ms-4" onclick="showTop10YeuThich()">top 10 yêu thích</button>
+                    <button type="button" class="btn btn-success ms-4 btnkho" onclick="showKho()">Kho <span id="vietnamDateTime"> </span> : <%= kho %> sản phẩm</button>
             </div>
             <div  class="thongsoTheoThang">
               <% for (let i=0; i <=11; i++) { %>
@@ -75,12 +76,52 @@
                       <% } %>
             </div>
             <div class="top10banchay" style="display: none;">
-
+               <% if(top10banchay){%>
+                <table class="table table-bordered table-hover mt-3">
+                  <thead>
+                    <tr class="align-middle text-center">
+                      <th scope="col" class="col-md-0.5 sm-0.5">Top</th>
+                      <th scope="col" class="col-md-1 sm-1">Ảnh</th>
+                      <th scope="col" class="col-md-3 sm-3">Tên laptop</th>
+                      <th scope="col" class="col-md-1.5 sm-1.5">Thông số</th>
+                      <th scope="col" class="col-md-1.5 sm-1.5">Doanh số (Đã Bán)</th>
+                      <th scope="col" class="col-md-3.5 sm-3.5">Hành động</th>  
+                    </tr>
+                  </thead>
+                  <t class="table-group-divider">
+                    <% top10banchay.forEach((product, index)=> { %>
+                      <tr class="align-middle text-center">
+                        <th scope="row">
+                          <%= index + 1 %>
+                        </th>
+                        <td><img src="<%= product.hinhAnh %>" alt="Ảnh sản phẩm" width="70"></td>
+                        <td class="text-truncate overflow-hidden text-start" data-bs-toggle="tooltip"
+                          title="<%= product.tenSanPham %>">
+                          <%= product.tenSanPham.substring(0, 30) %>
+                            <%= product.tenSanPham.length> 30 ? '...' : '' %>
+                        </td>
+                        <td>
+                          <%= product.ram %> <%= product.rom  %>
+                        </td>
+                        
+                        <td>
+                          <%= product.totalQuantity %>
+                        </td>
+                        <td>
+                          <a href="" class="btn btn-primary icon-btn ms-2 me-2">Chi tiết</a>
+                        </td>
+                      </tr>
+                      <% }); %>
+                  </tbody>
+                </table>
+               <%} %>
             </div>
             <div class="top10yeuthich" style="display: none;">
-              
+              yêu thích 
             </div>
-
+            <div class="thongkekho" style="display: none;">
+                kho 
+            </div>
 
 
           </div>
@@ -93,12 +134,14 @@
         document.querySelector('.thongsoTheoThang').style.display = 'none';
         document.querySelector('.top10banchay').style.display = 'block';
         document.querySelector('.top10yeuthich').style.display = 'none';
+        document.querySelector('.thongkekho').style.display = 'none';
     }
 
     function showTop10YeuThich() {
         document.querySelector('.thongsoTheoThang').style.display = 'none';
         document.querySelector('.top10banchay').style.display = 'none';
         document.querySelector('.top10yeuthich').style.display = 'block';
+        document.querySelector('.thongkekho').style.display = 'none';
     }
 
     function hideAllExcept() {
@@ -106,7 +149,30 @@
         document.querySelector('.thongsoTheoThang').style.display = 'block';
         document.querySelector('.top10banchay').style.display = 'none';
         document.querySelector('.top10yeuthich').style.display = 'none';
+        document.querySelector('.thongkekho').style.display = 'none';
     }
+    function showKho() {
+        document.querySelector('.thongsoTheoThang').style.display = 'none';
+        document.querySelector('.top10banchay').style.display = 'none';
+        document.querySelector('.top10yeuthich').style.display = 'none';
+        document.querySelector('.thongkekho').style.display = 'block';
+    }
+</script>
+<script>
+  function displayVietnamDateTime() {
+    // Lấy thời gian hiện tại
+    const currentDateTime = new Date();
+    
+    // Chuyển múi giờ sang múi giờ của Việt Nam (UTC+7)
+    const vietnamDateTime = new Date(currentDateTime.getTime() + (7 * 60 * 60 * 1000));
+
+    // Định dạng thời gian theo định dạng ngày tháng của Việt Nam
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZone: 'Asia/Ho_Chi_Minh' };
+    const formattedDateTime = vietnamDateTime.toLocaleDateString('vi-VN', options);
+
+    // Hiển thị ngày giờ của Việt Nam
+    document.getElementById("vietnamDateTime").textContent = formattedDateTime;
+  }
 </script>
   <script>
     const ctx = document.getElementById('myChart');
@@ -115,7 +181,7 @@
       type: 'bar',
       data: {
         labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', "Tháng 7", "Tháng 8", "Tháng 9"
-          , "Tháng 9", "Tháng 10", "Tháng 11", " Tháng 12"],
+          , "Tháng 10", "Tháng 11", " Tháng 12"],
         datasets: [{
           label: 'Số Lượng Sản Phẩm Bán Được',
           data: <%= JSON.stringify(dataSp) %>,
@@ -125,14 +191,10 @@
         ]
       },
       options: {
-        animation: 3000,
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-
-
+        animation: {
+          duration:3000
         }
+        
       }
     });
 
