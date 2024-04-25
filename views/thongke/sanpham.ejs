@@ -20,69 +20,94 @@
       <div class="main">
         <%- include('../inc/header') %>
 
-          <div class="content col-md-10 sm-10" style="margin: 0 20px;">
-            <div class="row" style="height: 150px; margin: 20px 0; justify-content: space-around;">
-              <div class="" style="background-color: white; height: 100%; width: 20%; border-radius: 20px; ">
-               <img src="https://cdn-icons-png.flaticon.com/128/2821/2821858.png" alt="" width="50" height="50" srcset="">
-                  <a href=""><%= kho %></a>
+          <div class="content col-md-10 sm-10" style=" justify-content: space-around;">
+
+
+            <div class="w-100">
+              <div class="dropdown mb-1 w-100">
+                <button class="btn btn-light w-100 text-start" type="button" id="dropdownMenuButton"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  <%= year %>
+                </button>
+                <ul class="dropdown-menu m-2" aria-labelledby="dropdownMenuButton"
+                  style="background-color: white; width: 100vw;">
+                  <li><a class="dropdown-item" href="/thong-ke/thongke-sanpham/<%= 2024%>"
+                      onclick="changeText('<%= 2024 %>')">2024</a></li>
+                  <li><a class="dropdown-item" href="/Thong-ke/thongke-sanpham/<%= 2024 - 1 %>"
+                      onclick="changeText('<%= 2024 - 1 %>')">
+                      <%= 2024 - 1 %>
+                    </a></li>
+                  <li><a class="dropdown-item" href="/Thong-ke/thongke-sanpham/<%= 2024 - 2 %>"
+                      onclick="changeText('<%= 2024 - 2 %>')">
+                      <%= 2024 - 2 %>
+                    </a></li>
+                  <li><a class="dropdown-item" href="/Thong-ke/thongke-sanpham/<%= 2024 - 3 %>"
+                      onclick="changeText('<%= 2024 - 3 %>')">
+                      <%= 2024 - 3 %>
+                    </a></li>
+                  <li><a class="dropdown-item" href="/Thong-ke/thongke-sanpham/<%= 2024 - 4 %>"
+                      onclick="changeText('<%= 2024 - 4 %>')">
+                      <%= 2024 - 4 %>
+                    </a></li>
+                </ul>
               </div>
+              <canvas class="w-100 " style="background-color: white;" id="myChart"></canvas>
 
-              <div class="" style="background-color: black; height: 100%; width: 20%;  border-radius: 20px; ">
-
-              </div>
-
-              <div class="" style="background-color: black; height: 100%; width: 20%;  border-radius: 20px; ">
-
-              </div>
-
-              <div class="" style="background-color: black; height: 100%; width: 20%;  border-radius: 20px; ">
-
-              </div>
-             
-              
-
-          </div>
-
-          <div class="w-100">
-            <div class="dropdown mb-1 w-100">
-              <button class="btn btn-light w-100 text-start" type="button" id="dropdownMenuButton"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                <%= year %>
-              </button>
-              <ul class="dropdown-menu m-2" aria-labelledby="dropdownMenuButton"
-                style="background-color: white; width: 100vw;">
-                <li><a class="dropdown-item" href="/thong-ke/thongke-sanpham/<%= 2024%>"
-                    onclick="changeText('<%= 2024 %>')">2024</a></li>
-                <li><a class="dropdown-item" href="/Thong-ke/thongke-sanpham/<%= 2024 - 1 %>"
-                    onclick="changeText('<%= 2024 - 1 %>')">
-                    <%= 2024 - 1 %>
-                  </a></li>
-                <li><a class="dropdown-item" href="/Thong-ke/thongke-sanpham/<%= 2024 - 2 %>"
-                    onclick="changeText('<%= 2024 - 2 %>')">
-                    <%= 2024 - 2 %>
-                  </a></li>
-                <li><a class="dropdown-item" href="/Thong-ke/thongke-sanpham/<%= 2024 - 3 %>"
-                    onclick="changeText('<%= 2024 - 3 %>')">
-                    <%= 2024 - 3 %>
-                  </a></li>
-                <li><a class="dropdown-item" href="/Thong-ke/thongke-sanpham/<%= 2024 - 4 %>"
-                    onclick="changeText('<%= 2024 - 4 %>')">
-                    <%= 2024 - 4 %>
-                  </a></li>
-              </ul>
             </div>
-            <canvas class="w-100 " style="background-color: white;" id="myChart"></canvas>
+
+            <div class="mt-2">
+              <% let totalRevenue=0; %>
+                <% for (let i=0; i < dataSp.length; i++) { %>
+                  <% totalRevenue +=dataSp[i]; %>
+                    <% } %>
+                    <button type="button" class="btn btn-danger" onclick="hideAllExcept()">Tổng Bán Được: <%= totalRevenue.toLocaleString() %></button>
+                    <button type="button" class="btn btn-primary ms-4" onclick="showTop10BanChay()">top 10 bán chạy</button>
+                    <button type="button" class="btn btn-success ms-4" onclick="showTop10YeuThich()">top 10 yêu thích</button>
+            </div>
+            <div  class="thongsoTheoThang">
+              <% for (let i=0; i <=11; i++) { %>
+                <% if(dataSp[i]==0){ %>
+                  <% continue; %>
+                    <% } %>
+                      <a href="" class="btn btn-light w-100 mt-2 text-start">
+                        Tháng <%= i+1 %>: <%= dataSp[i].toLocaleString() %> Sản Phẩm
+                      </a>
+                      <% } %>
+            </div>
+            <div class="top10banchay" style="display: none;">
+
+            </div>
+            <div class="top10yeuthich" style="display: none;">
+              
+            </div>
+
+
 
           </div>
-
-
-
-
+          <%- include('../inc/footer') %>
       </div>
-      <%- include('../inc/footer') %>
-  </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    function showTop10BanChay() {
+        document.querySelector('.thongsoTheoThang').style.display = 'none';
+        document.querySelector('.top10banchay').style.display = 'block';
+        document.querySelector('.top10yeuthich').style.display = 'none';
+    }
+
+    function showTop10YeuThich() {
+        document.querySelector('.thongsoTheoThang').style.display = 'none';
+        document.querySelector('.top10banchay').style.display = 'none';
+        document.querySelector('.top10yeuthich').style.display = 'block';
+    }
+
+    function hideAllExcept() {
+        
+        document.querySelector('.thongsoTheoThang').style.display = 'block';
+        document.querySelector('.top10banchay').style.display = 'none';
+        document.querySelector('.top10yeuthich').style.display = 'none';
+    }
+</script>
   <script>
     const ctx = document.getElementById('myChart');
 

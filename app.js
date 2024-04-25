@@ -69,6 +69,7 @@ app.use('/hang', hangRoute);
 app.use('/san-pham', sanphamRoute);
 app.use('/thong-bao', thongbaoRoute);
 app.use('/thong-ke', thongkeRoute);
+
 app.use('/don-hang', donhangRoute);
 app.use('/tin-nhan', tinnhanRoute);
 app.use('/khuyen-mai', khuyenmaiRoute);

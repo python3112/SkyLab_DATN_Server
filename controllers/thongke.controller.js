@@ -371,7 +371,7 @@ exports.sanpham = async (req, res) => {
         }
       ]);
 
-
+      console.log(monthlyRevenue);
     const user = req.session.Account;
     res.render('thongke/sanpham', {
         title: "Thống kê sản phẩm ",
@@ -425,32 +425,10 @@ exports.sanphamTheoNam = async (req, res, next) => {
     }
 
     // Tạo bộ lọc cho các đơn hàng với thanhToan là true
-    let firstDayOfMonth = new Date(year, 1, 1); // Ngày đầu tiên của tháng
-    let lastDayOfMonth = new Date(year, 12, 0); // Ngày cuối cùng của tháng
-    let filterThanhToanTrue = {
-        "trangThai": {
-            $elemMatch: {
-                "trangThai": "Đã giao hàng",
-                "thoiGian": {
-                    $gte: firstDayOfMonth,
-                    $lt: lastDayOfMonth
-                },
-            }
-        },
-        // Chỉ lấy các đơn hàng có thanhToan là true
-    };
+    // Ngày cuối cùng của tháng
+   
     // Thực hiện aggregation để tính tổng doanh thu cho các đơn hàng có thanhToan là true
-    let resultThanhToanTrue = await DonHang.aggregate([
-        {
-            $match: filterThanhToanTrue // Sử dụng bộ lọc cho các đơn hàng có thanhToan là true
-        },
-        {
-            $group: {
-                _id: null, // Tính tổng doanh thu của tất cả các đơn hàng có thanhToan là true
-                tongDoanhThu: { $sum: "$soLuong" }
-            }
-        }
-    ]);
+ 
 
     const ketQua = await SanPham.aggregate([
         {
@@ -466,8 +444,8 @@ exports.sanphamTheoNam = async (req, res, next) => {
 
 
     // Lấy tổng doanh thu của các đơn hàng có thanhToan là true và false riêng biệt
-    const tongDoanhThuTrue = resultThanhToanTrue.length > 0 ? resultThanhToanTrue[0].tongDoanhThu : 0;
-    console.log(tongDoanhThuTrue)
+   
+   
     // Gửi mảng tổng doanh thu của từng tháng cùng với các tổng doanh thu riêng biệt
     const user = req.session.Account;
     res.render('thongke/sanpham', {
@@ -475,7 +453,7 @@ exports.sanphamTheoNam = async (req, res, next) => {
         user: user,
         dataSp: monthlyRevenue,
         year: year,
-        kho:ketQua == 0 ?  0 : ketQua,
+        kho:ketQua.length > 0 ?  ketQua[0].tongSoLuong : 0 ,
         
     });
 };
