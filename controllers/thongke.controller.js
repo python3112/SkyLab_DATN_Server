@@ -178,12 +178,12 @@ exports.chiTietDoanhThu = async (req, res, next) => {
 
 
         const DayRevenue = []; // Initialize array to store daily revenue
-        
+
 
         // Calculate revenue for each day of the month
         for (let day = 0; day <= 30; day++) {
             const firstHourofDay = new Date(year, month - 1, day, 0, 0, 0, 0);
-            const lastHourofDay = new Date(year, month - 1, day +1,  0, 0, 0, 0);
+            const lastHourofDay = new Date(year, month - 1, day + 1, 0, 0, 0, 0);
 
             const filter = {
                 "trangThai": {
@@ -205,7 +205,7 @@ exports.chiTietDoanhThu = async (req, res, next) => {
 
         // Filter orders for the entire month
         const firstDayOfMonth = new Date(year, month - 1, 0);
-        const lastDayOfMonth = new Date(year, month -1, 31);
+        const lastDayOfMonth = new Date(year, month - 1, 31);
         const filterDonHang = {
             "trangThai": {
                 $elemMatch: {
@@ -276,7 +276,7 @@ exports.chiTietDoanhThuNgay = async (req, res, next) => {
         }
 
         const firstDayOfMonth = new Date(year, month - 1, 0);
-        const lastDayOfMonth = new Date(year, month-1, 31);
+        const lastDayOfMonth = new Date(year, month - 1, 31);
         const filterThanhToanTrue = {
             "trangThai": {
                 $elemMatch: {
@@ -399,8 +399,8 @@ exports.sanpham = async (req, res) => {
                 }
             }
         }
-        
-       
+
+
 
 
         const ketQua = await SanPham.aggregate([
@@ -415,6 +415,7 @@ exports.sanpham = async (req, res) => {
             }
         ]);
 
+
         // console.log(filteredProducts)
 
         const user = req.session.Account;
@@ -424,7 +425,7 @@ exports.sanpham = async (req, res) => {
             dataSp: monthlyRevenue,
             year: year,
             kho: ketQua.length > 0 ? ketQua[0].tongSoLuong : 0,
-           top10banchay:productDetails,
+            top10banchay: productDetails,
         });
     } catch (error) {
         console.error(error);
@@ -435,7 +436,8 @@ exports.sanpham = async (req, res) => {
 exports.sanphamTheoNam = async (req, res, next) => {
     const paramY = req.params.year;
     let year = parseInt(paramY);
-    let monthlyRevenue = []; // Mảng chứa tổng doanh thu hàng tháng
+    let monthlyRevenue = [];
+    const productDetails = []; // Mảng chứa tổng doanh thu hàng tháng
 
     // Lặp qua từ tháng 1 đến tháng 12
     for (let month = 1; month <= 12; month++) {
@@ -472,13 +474,63 @@ exports.sanphamTheoNam = async (req, res, next) => {
 
         // Lưu tổng doanh thu của tháng hiện tại vào mảng monthlyRevenue
         monthlyRevenue.push(result.length > 0 ? result[0].tongDoanhThu : 0);
+
+
+    }
+    let filterTop10 = {
+        "trangThai": {
+            $elemMatch: {
+                "trangThai": "Đã giao hàng",
+                "thoiGian": {
+                    $gte: new Date(year, 0, 1),
+                    $lt: new Date(year + 1, 0, 1)
+                },
+                "isNow": true
+            }
+        }
+    }
+
+    const top10Banchay = await DonHang.aggregate([
+        {
+            $match: filterTop10
+
+        },
+        {
+            $group: {
+                _id: { idSanPham: '$idSanPham', idBienThe: '$idBienThe' },
+                totalQuantity: { $sum: '$soLuong' }
+            }
+        },
+        { $sort: { totalQuantity: -1 } }, // Sắp xếp theo số lượng giảm dần
+        { $limit: 10 } // Giới hạn kết quả trả về 10 phần tử
+    ]);
+
+    // Lặp qua các sản phẩm và lấy thông tin chi tiết của sản phẩm
+    for (const item of top10Banchay) {
+        // Tìm thông tin sản phẩm từ ID
+        const product = await SanPham.findById(item._id.idSanPham);
+        if (product) {
+            // Tìm thông tin biến thể từ ID
+            const variant = product.bienThe.find(variant => variant._id.toString() === item._id.idBienThe);
+            if (variant) {
+                // Thêm thông tin sản phẩm và số lượng vào mảng productDetails
+                productDetails.push({
+                    _id: product.id,
+                    idBienThe: variant.id,
+                    tenSanPham: product.tenSanPham,
+                    hinhAnh: product.anh[1],
+                    ram: variant.ram,
+                    rom: variant.rom,
+                    totalQuantity: item.totalQuantity
+                });
+            }
+        }
     }
 
     // Tạo bộ lọc cho các đơn hàng với thanhToan là true
     // Ngày cuối cùng của tháng
 
     // Thực hiện aggregation để tính tổng doanh thu cho các đơn hàng có thanhToan là true
-
 
     const ketQua = await SanPham.aggregate([
         {
@@ -494,9 +546,19 @@ exports.sanphamTheoNam = async (req, res, next) => {
 
 
     // Lấy tổng doanh thu của các đơn hàng có thanhToan là true và false riêng biệt
+    //// lấy sản phẩm trong kho 
+
+    const spKho = await SanPham.aggregate([
+        {
+            $unwind: "$bienThe" // Mở rộng các mảng biến thể thành các tài liệu độc lập
+        },
+      
+    ]);
+
 
 
     // Gửi mảng tổng doanh thu của từng tháng cùng với các tổng doanh thu riêng biệt
+    console.log(spKho)
     const user = req.session.Account;
     res.render('thongke/sanpham', {
         title: "Thống kê sản phẩm",
@@ -504,6 +566,7 @@ exports.sanphamTheoNam = async (req, res, next) => {
         dataSp: monthlyRevenue,
         year: year,
         kho: ketQua.length > 0 ? ketQua[0].tongSoLuong : 0,
-
+        top10banchay: productDetails,
+        spKho:spKho,
     });
 };
