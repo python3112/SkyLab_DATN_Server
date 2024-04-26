@@ -1,5 +1,5 @@
 const DonHang = require('../models/DonDatHang');
-const {SanPham} = require('../models/SanPham')
+const { SanPham } = require('../models/SanPham')
 exports.home = (req, res, next) => {
     const user = req.session.Account;
     res.render('thongke/home_thongke', { title: "Thống kê", user: user });
@@ -13,6 +13,7 @@ exports.doanhThu = async (req, res, next) => {
         // Tạo ngày đầu tiên và ngày cuối cùng của tháng
         let firstDayOfMonth = new Date(year, month - 1, 0); // Ngày đầu tiên của tháng
         let lastDayOfMonth = new Date(year, month, 0); // Ngày cuối cùng của tháng
+
 
         // Tạo bộ lọc cho tháng hiện tại
         let filter = {
@@ -44,6 +45,7 @@ exports.doanhThu = async (req, res, next) => {
         // Lưu tổng doanh thu của tháng hiện tại vào mảng monthlyRevenue
         monthlyRevenue.push(result.length > 0 ? result[0].tongDoanhThu : 0);
     }
+    console.log("doanh thu : " + monthlyRevenue);
 
     // Tạo bộ lọc cho các đơn hàng với thanhToan là true
     let filterThanhToanTrue = {
@@ -127,7 +129,7 @@ exports.doanhThuTheoNam = async (req, res, next) => {
 
     // Tạo bộ lọc cho các đơn hàng với thanhToan là true
 
-    let firstDayOfMonth = new Date(year, 1 , 1); // Ngày đầu tiên của tháng
+    let firstDayOfMonth = new Date(year, 1, 1); // Ngày đầu tiên của tháng
     let lastDayOfMonth = new Date(year, 12, 31); // Ngày cuối cùng của tháng
 
     let filterThanhToanTrue = {
@@ -173,12 +175,15 @@ exports.chiTietDoanhThu = async (req, res, next) => {
         const { month, year } = req.params;
         const user = req.session.Account;
 
+
+
         const DayRevenue = []; // Initialize array to store daily revenue
-        
+
+
         // Calculate revenue for each day of the month
         for (let day = 0; day <= 30; day++) {
             const firstHourofDay = new Date(year, month - 1, day, 0, 0, 0, 0);
-            const lastHourofDay = new Date(year, month - 1, day +1,  0, 0, 0, 0);
+            const lastHourofDay = new Date(year, month - 1, day + 1, 0, 0, 0, 0);
 
             const filter = {
                 "trangThai": {
@@ -200,7 +205,7 @@ exports.chiTietDoanhThu = async (req, res, next) => {
 
         // Filter orders for the entire month
         const firstDayOfMonth = new Date(year, month - 1, 0);
-        const lastDayOfMonth = new Date(year, month -1, 31);
+        const lastDayOfMonth = new Date(year, month - 1, 31);
         const filterDonHang = {
             "trangThai": {
                 $elemMatch: {
@@ -271,7 +276,7 @@ exports.chiTietDoanhThuNgay = async (req, res, next) => {
         }
 
         const firstDayOfMonth = new Date(year, month - 1, 0);
-        const lastDayOfMonth = new Date(year, month-1, 31);
+        const lastDayOfMonth = new Date(year, month - 1, 31);
         const filterThanhToanTrue = {
             "trangThai": {
                 $elemMatch: {
@@ -320,72 +325,119 @@ exports.chiTietDoanhThuNgay = async (req, res, next) => {
 };
 exports.sanpham = async (req, res) => {
     let year = new Date().getFullYear(); // Lấy năm hiện tại
-    let monthlyRevenue = []; // Mảng chứa tổng doanh thu hàng tháng
+    let monthlyRevenue = [];
+    // Mảng chứa tổng doanh thu hàng tháng
+    const productDetails = [];
+    try {
+        // Lặp qua từ tháng 1 đến tháng 12
+        for (let month = 1; month <= 12; month++) {
+            // Tạo ngày đầu tiên và ngày cuối cùng của tháng
+            let firstDayOfMonth = new Date(year, month - 1, 0); // Ngày đầu tiên của tháng
+            let lastDayOfMonth = new Date(year, month, -1, 31); // Ngày cuối cùng của tháng
 
-    // Lặp qua từ tháng 1 đến tháng 12
-    for (let month = 1; month <= 12; month++) {
-        // Tạo ngày đầu tiên và ngày cuối cùng của tháng
-        let firstDayOfMonth = new Date(year, month - 1, 1); // Ngày đầu tiên của tháng
-        let lastDayOfMonth = new Date(year, month, 0); // Ngày cuối cùng của tháng
+            // Tạo bộ lọc cho tháng hiện tại
+            let filter = {
+                "trangThai": {
+                    $elemMatch: {
+                        "trangThai": "Đã giao hàng",
+                        "thoiGian": {
+                            $gte: firstDayOfMonth,
+                            $lt: lastDayOfMonth
+                        },
+                        "isNow": true
+                    }
+                }
+            }
+            let result = await DonHang.aggregate([
+                {
+                    $match: filter // Sử dụng bộ lọc cho tháng hiện tại
+                },
+                {
+                    $group: {
+                        _id: null, // Tính tổng doanh thu của tất cả các đơn hàng trong tháng
+                        tongSoluong: { $sum: "$soLuong" }
+                    }
+                }
+            ]);
 
-        // Tạo bộ lọc cho tháng hiện tại
-        let filter = {
-            "trangThai": {
-                $elemMatch: {
-                    "trangThai": "Đã giao hàng",
-                    "thoiGian": {
-                        $gte: firstDayOfMonth,
-                        $lt: lastDayOfMonth
-                    },
-                    "isNow": true
+            // Lưu tổng doanh thu của tháng hiện tại vào mảng monthlyRevenue
+
+            monthlyRevenue.push(result.length > 0 ? result[0].tongSoluong : 0)
+
+        }
+        /// lấy ra 10 sản phẩm bán chạy nhất 
+        const top10Banchay = await DonHang.aggregate([
+            // Lọc các đơn đặt hàng có trạng thái là 'Đã giao hàng'
+            { $match: { 'trangThai.trangThai': 'Đã giao hàng' } },
+            // Group các đơn đặt hàng theo id sản phẩm và id biến thể, tính tổng số lượng
+            {
+                $group: {
+                    _id: { idSanPham: '$idSanPham', idBienThe: '$idBienThe' },
+                    totalQuantity: { $sum: '$soLuong' }
+                }
+            },
+            // Sắp xếp theo số lượng giảm dần
+            { $sort: { totalQuantity: -1 } },
+            // Giới hạn kết quả trả về 10 phần tử
+            { $limit: 10 }
+        ]);
+        for (const item of top10Banchay) {
+            // Tìm thông tin sản phẩm từ ID
+            const product = await SanPham.findById(item._id.idSanPham);
+            if (product) {
+                // Tìm thông tin biến thể từ ID
+                const variant = product.bienThe.find(variant => variant._id.toString() === item._id.idBienThe);
+                if (variant) {
+                    // Thêm thông tin sản phẩm và số lượng vào mảng productDetails
+                    productDetails.push({
+                        tenSanPham: product.tenSanPham,
+                        hinhAnh: product.anhSanPham,
+                        ram: variant.ram,
+                        rom: variant.rom,
+                        totalQuantity: item.totalQuantity
+                    });
                 }
             }
         }
-        let result = await DonHang.aggregate([
+
+
+
+
+        const ketQua = await SanPham.aggregate([
             {
-                $match: filter // Sử dụng bộ lọc cho tháng hiện tại
+                $unwind: "$bienThe" // Mở rộng các mảng biến thể thành các tài liệu độc lập
             },
             {
                 $group: {
-                    _id: null, // Tính tổng doanh thu của tất cả các đơn hàng trong tháng
-                    tongSoluong: { $sum: "$soLuong" }
+                    _id: null, // Gom tất cả các tài liệu lại với nhau
+                    tongSoLuong: { $sum: "$bienThe.soLuong" } // Tính tổng số lượng của các biến thể
                 }
             }
         ]);
 
-        // Lưu tổng doanh thu của tháng hiện tại vào mảng monthlyRevenue
 
-        monthlyRevenue.push(result.length > 0 ? result[0].tongSoluong : 0)
-        
+        // console.log(filteredProducts)
+
+        const user = req.session.Account;
+        res.render('thongke/sanpham', {
+            title: "Thống kê sản phẩm ",
+            user: user,
+            dataSp: monthlyRevenue,
+            year: year,
+            kho: ketQua.length > 0 ? ketQua[0].tongSoLuong : 0,
+            top10banchay: productDetails,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
     }
-
-    const ketQua = await SanPham.aggregate([
-        {
-          $unwind: "$bienThe" // Mở rộng các mảng biến thể thành các tài liệu độc lập
-        },
-        {
-          $group: {
-            _id: null, // Gom tất cả các tài liệu lại với nhau
-            tongSoLuong: { $sum: "$bienThe.soLuong" } // Tính tổng số lượng của các biến thể
-          }
-        }
-      ]);
-
-
-    const user = req.session.Account;
-    res.render('thongke/sanpham', {
-        title: "Thống kê sản phẩm ",
-        user: user,
-        dataSp: monthlyRevenue,
-        year:year,
-        kho:ketQua.length >  0 ?  ketQua[0].tongSoLuong : 0,
-    });
 }
 
 exports.sanphamTheoNam = async (req, res, next) => {
     const paramY = req.params.year;
     let year = parseInt(paramY);
-    let monthlyRevenue = []; // Mảng chứa tổng doanh thu hàng tháng
+    let monthlyRevenue = [];
+    const productDetails = []; // Mảng chứa tổng doanh thu hàng tháng
 
     // Lặp qua từ tháng 1 đến tháng 12
     for (let month = 1; month <= 12; month++) {
@@ -422,60 +474,99 @@ exports.sanphamTheoNam = async (req, res, next) => {
 
         // Lưu tổng doanh thu của tháng hiện tại vào mảng monthlyRevenue
         monthlyRevenue.push(result.length > 0 ? result[0].tongDoanhThu : 0);
-    }
 
-    // Tạo bộ lọc cho các đơn hàng với thanhToan là true
-    let firstDayOfMonth = new Date(year, 1, 1); // Ngày đầu tiên của tháng
-    let lastDayOfMonth = new Date(year, 12, 0); // Ngày cuối cùng của tháng
-    let filterThanhToanTrue = {
+
+    }
+    let filterTop10 = {
         "trangThai": {
             $elemMatch: {
                 "trangThai": "Đã giao hàng",
                 "thoiGian": {
-                    $gte: firstDayOfMonth,
-                    $lt: lastDayOfMonth
+                    $gte: new Date(year, 0, 1),
+                    $lt: new Date(year + 1, 0, 1)
                 },
+                "isNow": true
             }
-        },
-        // Chỉ lấy các đơn hàng có thanhToan là true
-    };
-    // Thực hiện aggregation để tính tổng doanh thu cho các đơn hàng có thanhToan là true
-    let resultThanhToanTrue = await DonHang.aggregate([
+        }
+    }
+
+    const top10Banchay = await DonHang.aggregate([
         {
-            $match: filterThanhToanTrue // Sử dụng bộ lọc cho các đơn hàng có thanhToan là true
+            $match: filterTop10
+
         },
         {
             $group: {
-                _id: null, // Tính tổng doanh thu của tất cả các đơn hàng có thanhToan là true
-                tongDoanhThu: { $sum: "$soLuong" }
+                _id: { idSanPham: '$idSanPham', idBienThe: '$idBienThe' },
+                totalQuantity: { $sum: '$soLuong' }
+            }
+        },
+        { $sort: { totalQuantity: -1 } }, // Sắp xếp theo số lượng giảm dần
+        { $limit: 10 } // Giới hạn kết quả trả về 10 phần tử
+    ]);
+
+    // Lặp qua các sản phẩm và lấy thông tin chi tiết của sản phẩm
+    for (const item of top10Banchay) {
+        // Tìm thông tin sản phẩm từ ID
+        const product = await SanPham.findById(item._id.idSanPham);
+        if (product) {
+            // Tìm thông tin biến thể từ ID
+            const variant = product.bienThe.find(variant => variant._id.toString() === item._id.idBienThe);
+            if (variant) {
+                // Thêm thông tin sản phẩm và số lượng vào mảng productDetails
+                productDetails.push({
+                    _id: product.id,
+                    idBienThe: variant.id,
+                    tenSanPham: product.tenSanPham,
+                    hinhAnh: product.anh[1],
+                    ram: variant.ram,
+                    rom: variant.rom,
+                    totalQuantity: item.totalQuantity
+                });
+            }
+        }
+    }
+
+    // Tạo bộ lọc cho các đơn hàng với thanhToan là true
+    // Ngày cuối cùng của tháng
+
+    // Thực hiện aggregation để tính tổng doanh thu cho các đơn hàng có thanhToan là true
+
+    const ketQua = await SanPham.aggregate([
+        {
+            $unwind: "$bienThe" // Mở rộng các mảng biến thể thành các tài liệu độc lập
+        },
+        {
+            $group: {
+                _id: null, // Gom tất cả các tài liệu lại với nhau
+                tongSoLuong: { $sum: "$bienThe.soLuong" } // Tính tổng số lượng của các biến thể
             }
         }
     ]);
 
-    const ketQua = await SanPham.aggregate([
-        {
-          $unwind: "$bienThe" // Mở rộng các mảng biến thể thành các tài liệu độc lập
-        },
-        {
-          $group: {
-            _id: null, // Gom tất cả các tài liệu lại với nhau
-            tongSoLuong: { $sum: "$bienThe.soLuong" } // Tính tổng số lượng của các biến thể
-          }
-        }
-      ]);
-
 
     // Lấy tổng doanh thu của các đơn hàng có thanhToan là true và false riêng biệt
-    const tongDoanhThuTrue = resultThanhToanTrue.length > 0 ? resultThanhToanTrue[0].tongDoanhThu : 0;
-    console.log(tongDoanhThuTrue)
+    //// lấy sản phẩm trong kho 
+
+    const spKho = await SanPham.aggregate([
+        {
+            $unwind: "$bienThe" // Mở rộng các mảng biến thể thành các tài liệu độc lập
+        },
+      
+    ]);
+
+
+
     // Gửi mảng tổng doanh thu của từng tháng cùng với các tổng doanh thu riêng biệt
+    console.log(spKho)
     const user = req.session.Account;
     res.render('thongke/sanpham', {
         title: "Thống kê sản phẩm",
         user: user,
         dataSp: monthlyRevenue,
         year: year,
-        kho:ketQua == 0 ?  0 : ketQua,
-        
+        kho: ketQua.length > 0 ? ketQua[0].tongSoLuong : 0,
+        top10banchay: productDetails,
+        spKho:spKho,
     });
 };
