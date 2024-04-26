@@ -1,5 +1,5 @@
 var Account = require('../models/Account')
-
+const homeRouter = require('../routes/home.router');
 exports.login = async(req, res, next)=>{
     let msg = '';
     if (req.method == 'POST') {
@@ -11,9 +11,7 @@ exports.login = async(req, res, next)=>{
                     // đúng thông tin tài khoản ==> lưu vào session
                     if (objU.tenQuyen.toString() === 'Admin' && objU.trangThai) {
                        req.session.Account = objU
-                      
-                        return res.render("home/home" , {title: "Trang chủ" , user :  req.session.Account});
-                        // chuyển trang về trang quản trị , 
+                        return res.redirect("/home");
                     } else {
                         msg = 'không phải admin'
                     }
@@ -34,8 +32,6 @@ exports.login = async(req, res, next)=>{
             msg = error.message;
         }
     }
-
-
     res.render('login/login', { msg: msg })
 
 }

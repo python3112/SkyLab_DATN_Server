@@ -43,7 +43,7 @@
                   <div class=" d-flex flex-column bg-success text-light p-1 shadow rounded">
                     <div class="top d-flex flex-row justify-content-between  ">
                       <img width="50" height="40" src="/images/donIcon.png" alt="" srcset="">
-                      <p class="fw-bold">10</p>
+                      <p class="fw-bold"> <%= soLuongDonHang.toLocaleString() %></p>
                     </div>
                     <div class="bot text-end">
                       <p>Đơn hàng mới</p>
@@ -75,7 +75,7 @@
                   <div class=" d-flex flex-column bg-success text-light p-1 shadow rounded">
                     <div class="top d-flex flex-row justify-content-between  ">
                       <img width="50" height="40" src="/images/doanhThuIcon.png" alt="" srcset="">
-                      <p class="fw-bold">10</p>
+                      <p class="fw-bold"><%= tongDoanhThu.toLocaleString() %> </p>
                     </div>
                     <div class="bot text-end">
                       <p>Doanh Thu</p>
@@ -134,31 +134,25 @@
                 <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
                  Tổng thành viên ->
                 </a>
-                 <p class="fw-bold">10</p>
+                 <p class="fw-bold"><%= soLuongThanhVien %></p>
               </div>
               <div class="d-flex flex-row justify-content-between border-bottom p-1">
                 <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
                   Tổng sản phẩm ->
                 </a>
-                 <p class="fw-bold">10</p>
+                 <p class="fw-bold"> <%= soLuongSp %></p>
               </div>
               <div class="d-flex flex-row justify-content-between border-bottom p-1">
                 <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
                   Tổng hãng ->
                 </a>
-               <p class="fw-bold">10</p>
+               <p class="fw-bold"><%= soLuongHang %></p>
               </div>
               <div class="d-flex flex-row justify-content-between border-bottom p-1">
                 <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
                  Tổng khuyến mãi ->
                 </a>
-                 <p class="fw-bold">10</p>
-              </div>
-              <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
-                  Tổng đánh giá ->
-                </a>
-               <p class="fw-bold">10</p>
+                 <p class="fw-bold"><%= soLuongKM %></p>
               </div>
            </div>
            <!-- thong ke ngày -->
