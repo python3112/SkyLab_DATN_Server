@@ -43,7 +43,7 @@
                   <div class=" d-flex flex-column bg-success text-light p-1 shadow rounded">
                     <div class="top d-flex flex-row justify-content-between  ">
                       <img width="50" height="40" src="/images/donIcon.png" alt="" srcset="">
-                      <p class="fw-bold"> <%= soLuongDonHang.toLocaleString() %></p>
+                      <p class="fw-bold"> <%= (choXacNhanHomNay + giaoThanhCongHomNay+ChoGiaoHomNay+ DangGiaoHomNay).toLocaleString() %></p>
                     </div>
                     <div class="bot text-end">
                       <p>Đơn hàng mới</p>
@@ -59,7 +59,7 @@
                   <div class=" d-flex flex-column bg-primary text-light p-1 shadow rounded">
                     <div class="top d-flex flex-row justify-content-between  ">
                       <img width="50" height="40" src="/images/usericon.png" alt="" srcset="">
-                      <p class="fw-bold">10</p>
+                      <p class="fw-bold"><%= soLuongThanhVien %></p>
                     </div>
                     <div class="bot text-end">
                       <p>Người dùng</p>
@@ -75,10 +75,10 @@
                   <div class=" d-flex flex-column bg-success text-light p-1 shadow rounded">
                     <div class="top d-flex flex-row justify-content-between  ">
                       <img width="50" height="40" src="/images/doanhThuIcon.png" alt="" srcset="">
-                      <p class="fw-bold"><%= tongDoanhThu.toLocaleString() %> </p>
+                      <p class="fw-bold"><%= tongDoanhThuNam.toLocaleString() %> </p>
                     </div>
                     <div class="bot text-end">
-                      <p>Doanh Thu</p>
+                      <p>Tổng Doanh Thu</p>
                     </div>
                   </div>
                   <div class="bot text-end ">
@@ -96,34 +96,40 @@
               <div class="col-4 d-flex flex-column bg-light p-1 shadow bg-body-tertiary rounded  p-4">
                  <h3 class="border-bottom text-center text-primary fw-bold">Thống kê đơn hàng</h3>
                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
+                    <a class="icon-link icon-link-hover text-warning" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
                       Chờ xác nhận ->
                     </a>
-                    <p class="fw-bold">10</p>
+                    <p class="fw-bold"><%= choXacNhan %></p>
                  </div>
                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                  <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
+                  <a class="icon-link icon-link-hover text-primary" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
                     Chờ giao ->
                   </a>
-                    <p class="fw-bold">10</p>
+                  <p class="fw-bold"><%= choGiao %></p>
                  </div>
                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                  <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
+                  <a class="icon-link icon-link-hover text-primary-emphasis" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
                     Đang giao ->
                   </a>
-                  <p class="fw-bold">10</p>
+                  <p class="fw-bold"><%= dangGiao %></p>
                  </div>
                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                  <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
+                  <a class="icon-link icon-link-hover text-success" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
                     Đã giao ->
                   </a>
-                    <p class="fw-bold">10</p>
+                  <p class="fw-bold"><%= daGiao %></p>
+                 </div>
+                 <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                  <a class="icon-link icon-link-hover text-danger" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
+                    Đã hủy ->
+                  </a>
+                  <p class="fw-bold"><%= daHuy %></p>
                  </div>
                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
                   <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
-                    Đã hủy ->
+                    Tổng đơn hàng ->
                   </a>
-                  <p class="fw-bold">10</p>
+                  <p class="fw-bold"><%= daHuy +daGiao + dangGiao + choGiao+ choXacNhan %></p>
                  </div>
               </div>
              
@@ -154,6 +160,12 @@
                 </a>
                  <p class="fw-bold"><%= soLuongKM %></p>
               </div>
+              <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
+                 Thành viên mới ->
+                </a>
+                 <p class="fw-bold">10</p>
+              </div>
            </div>
            <!-- thong ke ngày -->
            <div class="col-4 d-flex flex-column bg-light p-1 shadow bg-body-tertiary rounded ms-4 p-4">
@@ -162,25 +174,43 @@
               <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
                 Doanh thu ->
               </a>
-               <p class="fw-bold">10</p>
+              <p class="fw-bold"><%= tongDoanhThu.toLocaleString() %> </p>
+            </div>
+            <div class="d-flex flex-row justify-content-between border-bottom p-1">
+              <a class="icon-link icon-link-hover text-warning" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
+               Chờ xác nhận ->
+              </a>
+               <p class="fw-bold"> <%= choXacNhanHomNay %></p>
             </div>
             <div class="d-flex flex-row justify-content-between border-bottom p-1">
               <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
-               Đơn hàng <br> chờ xác nhận ->
+                Chờ giao hàng ->
               </a>
-               <p class="fw-bold">10</p>
+             <p class="fw-bold"><%= ChoGiaoHomNay %></p>
+            </div>
+            <div class="d-flex flex-row justify-content-between border-bottom p-1">
+              <a class="icon-link icon-link-hover text-primary-emphasis" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
+                Đang giao hàng ->
+              </a>
+             <p class="fw-bold"><%= DangGiaoHomNay %></p>
+            </div>
+            <div class="d-flex flex-row justify-content-between border-bottom p-1">
+              <a class="icon-link icon-link-hover text-success" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
+                Giao thành công ->
+              </a>
+             <p class="fw-bold"> <%= giaoThanhCongHomNay%></p>
+            </div>
+            <div class="d-flex flex-row justify-content-between border-bottom p-1">
+              <a class="icon-link icon-link-hover text-danger" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
+                Đơn hàng đã hủy ->
+              </a>
+             <p class="fw-bold"> <%= daHuyHomNay%></p>
             </div>
             <div class="d-flex flex-row justify-content-between border-bottom p-1">
               <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
-                Đơn hàng <br> giao thành công ->
+               Tổng đơn hàng ->
               </a>
-             <p class="fw-bold">10</p>
-            </div>
-            <div class="d-flex flex-row justify-content-between border-bottom p-1">
-              <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
-               Thành viên mới ->
-              </a>
-               <p class="fw-bold">10</p>
+               <p class="fw-bold"> <%= giaoThanhCongHomNay+DangGiaoHomNay+ChoGiaoHomNay+choXacNhanHomNay %> </p>
             </div>
          </div>
             </div>

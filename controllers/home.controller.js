@@ -22,12 +22,96 @@ exports.home =  async (req,res,next)=>{
                 $elemMatch: {
                     "trangThai": "Đã giao hàng",
                     "thoiGian": {
-                        $gte: new Date(year, month, day, 0, 0, 0, 0),
-                        $lt: new Date(year, month, day, 23, 59, 59, 999)
+                        $gte: startOfDay,
+                        $lt: endOfDay
                     }
                 }
             }
         };
+        async function filterDonHangSl(trangThai, year, monthS, monthE, dayS, dayE) {
+            try {
+                const filter = {
+                    "trangThai": {
+                        $elemMatch: {
+                            "trangThai": trangThai,
+                            "thoiGian": {
+                                $gte: new Date(year, monthS - 1, dayS),
+                                $lt: new Date(year, monthE-1, dayE)
+                            },
+                            isNow : true
+                        }
+                    },
+                    
+                };
+        
+                const result = await DonHang.aggregate([
+                    { $match: filter },
+                    {
+                        $group: {
+                            _id: null,
+                            soLuongDonHang: { $sum: 1 }
+                        }
+                    }
+                ]);
+        
+                const soLuong = result.length > 0 ? result[0].soLuongDonHang : 0;
+                return soLuong; // Trả về giá trị soLuong
+            } catch (error) {
+                console.error("Lỗi trong quá trình xử lý yêu cầu: ", error);
+                throw new Error("Đã xảy ra lỗi trong quá trình xử lý yêu cầu.");
+            }
+        }
+        // fillter trong ngay 
+        async function filterDonHangTrongNgay(trangThai) {
+            const date = new Date();
+            const year = date.getFullYear();
+            const day = date.getDate();
+            const month = date.getMonth();
+            const startFillter = new Date(year, month ,day,0,0,0,0)
+            const endFillter = new Date(year, month ,day,23,59,59,999)
+            try {
+                const filter = {
+                    "trangThai": {
+                        $elemMatch: {
+                            "trangThai": trangThai,
+                            "thoiGian": {
+                                $gte: startFillter,
+                                $lt: endFillter
+                            },
+                            isNow : true
+                        }
+                    },
+                    
+                };
+        
+                const result = await DonHang.aggregate([
+                    { $match: filter },
+                    {
+                        $group: {
+                            _id: null,
+                            soLuongDonHang: { $sum: 1 }
+                        }
+                    }
+                ]);
+        
+                const soLuong = result.length > 0 ? result[0].soLuongDonHang : 0;
+                return soLuong; // Trả về giá trị soLuong
+            } catch (error) {
+                console.error("Lỗi trong quá trình xử lý yêu cầu: ", error);
+                throw new Error("Đã xảy ra lỗi trong quá trình xử lý yêu cầu.");
+            }
+        }
+        const filterTongDoanhThu = {
+            "trangThai": {
+                $elemMatch: {
+                    "trangThai": "Đã giao hàng",
+                    "thoiGian": {
+                        $gte: new Date(year, 0, 0),
+                        $lt: new Date(year, 12, 31)
+                    },
+                }
+            }
+        }
         const resultDonHang = await DonHang.aggregate([
             { $match: filterDonHang }, // Sử dụng bộ lọc cho đơn hàng trong ngày hiện tại
             {
@@ -38,6 +122,17 @@ exports.home =  async (req,res,next)=>{
                 }
             }
         ]);
+        const resultDoanhThuNam = await DonHang.aggregate([
+            { $match: filterTongDoanhThu }, // Sử dụng bộ lọc cho đơn hàng trong ngày hiện tại
+            {
+                $group: {
+                    _id: null,
+                    tongDoanhThu: { $sum: "$tongTien" },
+                    soLuongDonHang: { $sum: 1 }
+                }
+            }
+        ]);
+        
         const ThanhVien = await MAccount.aggregate([
             {
         
@@ -79,25 +174,37 @@ exports.home =  async (req,res,next)=>{
                 }
         ] 
         ) 
+        
         const tongDoanhThu = resultDonHang.length > 0 ? resultDonHang[0].tongDoanhThu : 0;
-        const soLuongDonHang = resultDonHang.length > 0 ? resultDonHang[0].soLuongDonHang : 0;
         const soLuongThanhVien = ThanhVien.length > 0 ? ThanhVien[0].soLuong : 0;
         const soLuongKM = KhuyenMai.length > 0 ? KhuyenMai[0].soLuong : 0;
         const soLuongHang = Hang.length > 0 ? Hang[0].soLuong : 0;
         const soLuongSp = SLSP.length > 0 ? SLSP[0].soLuong : 0;
+        const tongDoanhThuNam = resultDoanhThuNam.length > 0 ? resultDoanhThuNam[0].tongDoanhThu : 0;
         // Gửi kết quả về client để xử lý trong front-end
-        // res.send(SLSP);
+
+        // res.send(Sl);
     
        // Hoặc render trang và truyền dữ liệu vào đó
         res.render('home/home', {
             user: req.session.Account,
             title: "Trang chủ",
             tongDoanhThu: tongDoanhThu,
-            soLuongDonHang:soLuongDonHang,
             soLuongThanhVien:soLuongThanhVien,
             soLuongKM: soLuongKM,
             soLuongHang:soLuongHang,
-            soLuongSp:soLuongSp
+            soLuongSp:soLuongSp,
+            tongDoanhThuNam:tongDoanhThuNam,
+            choXacNhan: await filterDonHangSl("Chờ xác nhận", year, "1" ,"12", "1", "31"),
+            choGiao: await filterDonHangSl("Chờ giao hàng", year, "1" ,"12", "1", "31"),
+            dangGiao: await filterDonHangSl("Đang giao hàng", year, "1" ,"12", "1", "31"),
+            daGiao: await filterDonHangSl("Đã giao hàng", year, "1" ,"12", "1", "31"),
+            daHuy: await filterDonHangSl("Đã hủy",  year, "1" ,"12", "1", "31"),
+            choXacNhanHomNay: await filterDonHangTrongNgay("Chờ xác nhận"),
+            giaoThanhCongHomNay: await filterDonHangTrongNgay("Đã giao hàng"),
+            ChoGiaoHomNay: await filterDonHangTrongNgay("Chờ giao hàng"),
+            daHuyHomNay: await filterDonHangTrongNgay("Đã hủy"),
+            DangGiaoHomNay: await filterDonHangTrongNgay("Đang giao hàng")
         });
     
     } catch (error) {
