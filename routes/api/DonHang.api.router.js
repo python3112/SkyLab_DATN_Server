@@ -12,6 +12,7 @@ router.get('/sl-cho-giao-hang/:id', DonHangCtrl.laySoLuongDonHangChoGiaoHang);
 router.get('/sl-dang-giao-hang/:id', DonHangCtrl.laySoLuongDonHangDangGiaoHang);
 router.get('/da-giao-hang/:id', DonHangCtrl.layDonHangDaGiaoHang);
 router.get('/da-huy/:id', DonHangCtrl.layDonHangDaHuy);
+router.get('/tra-hang/:id', DonHangCtrl.layDonHangTraHang);
 router.post('/add', DonHangCtrl.addDonHang);
 router.post('/add-trang-thai/:id', DonHangCtrl.themTrangThai);
 router.put('/editThanhToan/:id', DonHangCtrl.editThanhToan);

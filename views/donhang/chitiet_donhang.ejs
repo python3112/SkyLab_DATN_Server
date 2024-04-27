@@ -17,131 +17,139 @@
 <body>
   <div class="wrapper">
     <%- include('../inc/sidebar') %>
-    <div class="main">
-      <%- include('../inc/header') %>
-      <div class="content col-md-10 sm-10" style="overflow: auto; height: 80vh">
-        <div class="container">
-         
-          <div class="card mb-3">
-            <div class="card-header">
-              <strong>ID Đơn hàng:</strong>
-              <%= donhang._id %>
-            </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-4">
-                  <img src="<%= sanPham.anhSanPham %>" alt="Ảnh sản phẩm" class="img-fluid mb-3">
-                  <h5 class="card-title">
-                    <%= sanPham.tenSanPham %>
-                  </h5>
-                  <p class="card-text"><strong>Giá sản phẩm:</strong>
-                    <%= sanPham.giaTien %>
-                  </p>
-                  <p class="card-text"><strong>Số lượng:</strong>
-                    <%= donhang.soLuong %>
-                  </p>
-                  <p class="card-text"><strong>Tổng tiền:</strong>
-                    <%= donhang.tongTien %>
-                  </p>
+      <div class="main">
+        <%- include('../inc/header') %>
+          <div class="content col-md-10 sm-10" style="overflow: auto; height: 80vh">
+            <div class="container">
+
+              <div class="card mb-3">
+                <div class="card-header">
+                  <strong>ID Đơn hàng:</strong>
+                  <%= donhang._id %>
                 </div>
-                <div class="col-md-4">
-                  <h5 class="card-title">Thông tin người đặt</h5>
-                  <p class="card-text">
-                    <strong>Tên:</strong>
-                    <% if(account && account.hoTen) { %>
-                      <%= account.hoTen %>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <img src="<%= sanPham.anhSanPham %>" alt="Ảnh sản phẩm" class="img-fluid mb-3">
+                      <h5 class="card-title">
+                        <%= sanPham.tenSanPham %>
+                      </h5>
+                      <p class="card-text"><strong>Giá sản phẩm:</strong>
+                        <%= sanPham.giaTien %>
+                      </p>
+                      <p class="card-text"><strong>Số lượng:</strong>
+                        <%= donhang.soLuong %>
+                      </p>
+                      <p class="card-text"><strong>Tổng tiền:</strong>
+                        <%= donhang.tongTien %>
+                      </p>
+                    </div>
+                    <div class="col-md-4">
+                      <h5 class="card-title">Thông tin người đặt</h5>
+                      <p class="card-text">
+                        <strong>Tên:</strong>
+                        <% if(account && account.hoTen) { %>
+                          <%= account.hoTen %>
+                            <% } else { %>
+                              Có dữ liệu đâu mà hiện
+                              <% } %>
+                      </p>
+
+                      <p class="card-text">
+                        <strong>Địa chỉ:</strong>
+                        <% if(account && account.diaChi) { %>
+                          <%= account.diaChi.diaChi %>
+                            <% } else { %>
+                              Có dữ liệu đâu mà hiện
+                              <% } %>
+                      </p>
+
+                      <p class="card-text">
+                        <strong>Số điện thoại:</strong>
+                        <% if(account && account.sdt) { %>
+                          <%= account.sdt %>
+                            <% } else { %>
+                              Có dữ liệu đâu mà hiện
+                              <% } %>
+                      </p>
+
+                      <% if(account && account.avatar) { %>
+                        <img src="<%= account.avatar %>" alt="Avatar" class="img-fluid">
                         <% } else { %>
-                          Có dữ liệu đâu mà hiện
+                          <p class="card-text">Có dữ liệu đâu mà hiện</p>
                           <% } %>
-                  </p>
+                    </div>
 
-                  <p class="card-text">
-                    <strong>Địa chỉ:</strong>
-                    <% if(account && account.diaChi) { %>
-                      <%= account.diaChi %>
-                        <% } else { %>
-                          Có dữ liệu đâu mà hiện
-                          <% } %>
-                  </p>
+                    <div class="col-md-4">
+                      <h5 class="card-title">Thông tin đơn hàng</h5>
+                      <p class="card-text"><strong>Ghi chú:</strong>
+                        <%= donhang.ghiChu %>
+                      </p>
+                      <p class="card-text"><strong>Trạng thái:</strong>
+                        <%= ttNow.trangThai %>
+                      </p>
 
-                  <p class="card-text">
-                    <strong>Số điện thoại:</strong>
-                    <% if(account && account.sdt) { %>
-                      <%= account.sdt %>
-                        <% } else { %>
-                          Có dữ liệu đâu mà hiện
-                          <% } %>
-                  </p>
-
-                  <% if(account && account.avatar) { %>
-                    <img src="<%= account.avatar %>" alt="Avatar" class="img-fluid">
-                    <% } else { %>
-                      <p class="card-text">Có dữ liệu đâu mà hiện</p>
-                      <% } %>
-                </div>
-
-                <div class="col-md-4">
-                  <h5 class="card-title">Thông tin đơn hàng</h5>
-                  <p class="card-text"><strong>Ghi chú:</strong>
-                    <%= donhang.ghiChu %>
-                  </p>
-                  <p class="card-text"><strong>Trạng thái:</strong>
-                    <%= ttNow.trangThai %>
-                  </p>
-
-                  <% if(ttNow.trangThai=="Chờ xác nhận" ) { %>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                      data-bs-target="#exampleModal">Xác nhận đơn hàng</button>
-                    <% } else if(ttNow.trangThai=="Chờ giao hàng" ) { %>
-                      <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#exampleModal">Giao hàng</button>
-                      <% } %>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Modal -->
-          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">Cập nhật trạng thái đơn hàng</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <% let ttTiep="" %>
-                    <% if(ttNow.trangThai=="Chờ xác nhận" ) { %>
-                      <% ttTiep="Chờ giao hàng" %>
+                      <% if(ttNow.trangThai=="Chờ xác nhận" ) { %>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                          data-bs-target="#exampleModal">Xác nhận đơn hàng</button>
                         <% } else if(ttNow.trangThai=="Chờ giao hàng" ) { %>
-                          <% ttTiep="Đang giao hàng" %>
-                            <% } %>
-                              <form action="/don-hang/chi-tiet/<%= donhang._id %>?trangThai=<%= ttTiep %>"
-                                method="POST">
-                                <div class="row mb-3">
-                                  <p>Bạn muốn thay đổi trạng thái đơn hàng từ <strong>
-                                      <%= ttNow.trangThai %>
-                                    </strong>sang <strong>
-                                      <%= ttTiep %> ?
-                                    </strong></p>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Đồng ý</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                              </form>
+                          <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">Giao hàng</button>
+                          <% } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Modal -->
+              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Cập nhật trạng thái đơn hàng</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <% let ttTiep="" %>
+                        <% if(ttNow.trangThai=="Chờ xác nhận" ) { %>
+                          <% ttTiep="Chờ giao hàng" %>
+                            <% } else if(ttNow.trangThai=="Chờ giao hàng" ) { %>
+                              <% ttTiep="Đang giao hàng" %>
+                                <% } %>
+                                  <form action="/don-hang/chi-tiet/<%= donhang._id %>?trangThai=<%= ttTiep %>"
+                                    method="POST">
+                                    <p class="my-0">Bạn muốn thay đổi trạng thái đơn hàng từ <strong>
+                                        <%= ttNow.trangThai %>
+                                      </strong>sang <strong>
+                                        <%= ttTiep %> ?
+                                      </strong></p>
+                                    <% if(ttNow.trangThai=="Chờ xác nhận" ){ %>
+                                      <p class="my-1">Hãy nhập <strong>imei</strong> của sản phẩm để xác nhận đơn hàng:
+                                      </p>
+                                      <% for (let i=0; i < donhang.soLuong; i++) { %>
+                                        <label class="mb-1" for="imei_<%= i %>">IMEI <%= i + 1 %>:</label>
+                                        <input type="text" class="form-control mb-1" id="imei_<%= i %>"
+                                          name="imei_<%= i %>" placeholder="Nhập IMEI của sản phẩm thứ <%= i + 1 %>">
+                                        <% } %>
+                                          <% } %>
+                                            <button type="submit" class="btn btn-primary mt-2">Đồng ý</button>
+                                            <button type="button" class="btn btn-secondary mt-2"
+                                              data-bs-dismiss="modal">Hủy</button>
+                                  </form>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+          <%- include('../inc/footer') %>
       </div>
-      <%- include('../inc/footer') %>
-  </div>
   </div>
 
-  
-    
-    
-    
+
+
+
+
 </body>
 
 </html>

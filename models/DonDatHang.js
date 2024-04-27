@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const trangThaiDonHangSchema = new mongoose.Schema({
   trangThai: {
     type: String,
-    enum: ['Chờ xác nhận', 'Chờ giao hàng', 'Đang giao hàng', 'Đã giao hàng', 'Đã hủy'],
+    enum: ['Chờ xác nhận', 'Chờ giao hàng', 'Đang giao hàng', 'Đã giao hàng', 'Đã hủy', 'Trả hàng'],
     default: 'Chờ xác nhận',
     required: true
   },
@@ -15,6 +15,10 @@ const DanhGiaSchema = new mongoose.Schema({
   anh: [String],
   noiDung: String,
   thoiGian: { type: Date, default: Date.now }
+});
+const BaoHanhSchema = new mongoose.Schema({
+  imei: String,
+  tinhTrang: { type: Boolean, default: true },
 });
 const donDatHangSchema = new mongoose.Schema({
   idSanPham: { type: mongoose.Schema.Types.ObjectId, ref: 'SanPham' },
@@ -28,6 +32,7 @@ const donDatHangSchema = new mongoose.Schema({
     type: DanhGiaSchema,
   },
   soLuong: Number,
+  baoHanh: { type: [BaoHanhSchema] },
   tienShip: Number,
   tongTien: Number,
   ghiChu: String,
@@ -38,5 +43,4 @@ const donDatHangSchema = new mongoose.Schema({
 });
 
 const DonDatHang = mongoose.model('DonDatHang', donDatHangSchema);
-
 module.exports = DonDatHang;

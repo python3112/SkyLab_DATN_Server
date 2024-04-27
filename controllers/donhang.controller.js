@@ -1,4 +1,5 @@
 const DonHang = require('../models/DonDatHang');
+const {BaoHanh} = require('../models/DonDatHang');
 const { SanPham } = require('../models/SanPham');
 const Account = require('../models/Account');
 const { ThongBao } = require('../models/ThongBao');
@@ -11,9 +12,9 @@ exports.home = async (req, res, next) => {
         const page = parseInt(req.query.page) || 1;
         const perPage = 10;
         const skip = (page - 1) * perPage;
-        
+
         // Khởi tạo filter object để lọc
-        let filter = {}; 
+        let filter = {};
         if (req.query.status && req.query.status !== "Tất cả") {
             // Nếu có trạng thái được chọn và không phải là "Tất cả", thêm điều kiện lọc vào filter
             filter = {
@@ -25,7 +26,7 @@ exports.home = async (req, res, next) => {
                 }
             };
         }
-        
+
         // Lấy số lượng đơn hàng đã lọc
         const totalFilteredDonHang = await DonHang.countDocuments(filter);
         const totalPages = Math.ceil(totalFilteredDonHang / perPage);
@@ -64,7 +65,7 @@ exports.home = async (req, res, next) => {
             listSanPham: listSanPham,
             listAccount: listAccount,
             status: req.query.status,
-            user : user // Chuyển thêm tham số trạng thái để giữ trạng thái khi chuyển trang
+            user: user // Chuyển thêm tham số trạng thái để giữ trạng thái khi chuyển trang
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -97,7 +98,7 @@ exports.chitiet = async (req, res, next) => {
         }
 
         // Render trang với thông tin đơn hàng, sản phẩm và tài khoản
-        res.render('donhang/chitiet_donhang', { title: "Thông tin đơn hàng", donhang: donhang, sanPham: sanPham, account: account, ttNow: ttNow,user:user });
+        res.render('donhang/chitiet_donhang', { title: "Thông tin đơn hàng", donhang: donhang, sanPham: sanPham, account: account, ttNow: ttNow, user: user });
     } catch (error) {
         // Xử lý lỗi nếu có
         res.status(500).json({ message: error.message });
@@ -129,9 +130,16 @@ exports.themTrangThaiPost = async (req, res) => {
         // Thêm trạng thái mới
         const newDH = { trangThai, isNow: true };
         donHang.trangThai.push(newDH);
+
         await donHang.save();
         switch (trangThai) {
             case "Chờ giao hàng":
+                for (let i = 0; i < donHang.soLuong; i++) {
+                    const imei = req.body[`imei_${i}`];
+                    const newBH = { imei, tinhTrang: true };
+                    donHang.baoHanh.push(newBH);
+                }
+                await donHang.save();
                 const tieuDe1 = 'Đơn hàng đang chờ giao';
                 const noiDung1 = 'Đơn hàng của bạn hiện đang chờ giao, vui lòng kiên nhẫn đợi.';
                 const to1 = `/topics/${donHang.idAccount}`;
@@ -182,6 +190,7 @@ exports.themTrangThaiPost = async (req, res) => {
         // Redirect lại trang chi tiết đơn hàng
         res.redirect(`/don-hang/chi-tiet/${donHangId}`);
     } catch (error) {
+        console.log(error.message);
         res.status(500).json({ success: false, message: error.message });
     }
 };

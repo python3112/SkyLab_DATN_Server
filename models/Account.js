@@ -15,6 +15,10 @@ const accountSchema = new mongoose.Schema({
   avatar: String,
   trangThai: Boolean,
   diaChi: DiaChiSchema, 
+  thoiGian: {
+    type: Date,
+    default: Date.now,
+  },
 }, {
   collection: 'Account_table',
 });

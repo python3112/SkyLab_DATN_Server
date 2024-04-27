@@ -120,6 +120,25 @@ exports.layDonHangDaHuy = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+exports.layDonHangTraHang = async (req, res) => {
+    try {
+        const idAccount = req.params.id;
+        const trangThai = "Trả hàng";
+        const donHangTheoIdVaTrangThai = await DonHang.find({
+            idAccount: idAccount,
+            'trangThai': {
+                $elemMatch: {
+                    'trangThai': trangThai,
+                    'isNow': true
+                }
+            }
+        });
+
+        res.json(donHangTheoIdVaTrangThai);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 exports.addDonHang = async (req, res) => {
     try {
         const { idSanPham, idBienThe, idAccount, idKhuyenMai, soLuong, tongTien, ghiChu, thanhToan, tienShip } = req.body;
