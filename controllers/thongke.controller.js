@@ -414,6 +414,12 @@ exports.sanpham = async (req, res) => {
                 }
             }
         ]);
+        const spKho = await SanPham.aggregate([
+            {
+                $unwind: "$bienThe" // Mở rộng các mảng biến thể thành các tài liệu độc lập
+            },
+          
+        ]);
 
 
         // console.log(filteredProducts)
@@ -426,6 +432,7 @@ exports.sanpham = async (req, res) => {
             year: year,
             kho: ketQua.length > 0 ? ketQua[0].tongSoLuong : 0,
             top10banchay: productDetails,
+            spKho:spKho,
         });
     } catch (error) {
         console.error(error);
@@ -570,3 +577,105 @@ exports.sanphamTheoNam = async (req, res, next) => {
         spKho:spKho,
     });
 };
+exports.chiTietDoanhThuSp = async (req, res, next) => {
+    try {
+        const { month, year } = req.params;
+        const user = req.session.Account;
+        const productDetails = [];
+
+
+        const DayRevenue = []; // Initialize array to store daily revenue
+
+
+        // Calculate revenue for each day of the month
+        for (let day = 0; day <= 30; day++) {
+            const firstHourofDay = new Date(year, month - 1, day, 0, 0, 0, 0);
+            const lastHourofDay = new Date(year, month - 1, day + 1, 0, 0, 0, 0);
+
+            const filter = {
+                "trangThai": {
+                    $elemMatch: {
+                        "trangThai": "Đã giao hàng",
+                        "thoiGian": { $gte: firstHourofDay, $lt: lastHourofDay },
+                        "isNow": true
+                    }
+                }
+            };
+
+            const result = await DonHang.aggregate([
+                { $match: filter },
+                { $group: { _id: null, tongSoLuong: { $sum: "$soLuong" } } }
+            ]);
+
+            DayRevenue[day - 1] = result.length > 0 ? result[0].tongSoLuong : 0;
+        }
+
+        // Filter orders for the entire month
+        const firstDayOfMonth = new Date(year, month - 1, 0);
+        const lastDayOfMonth = new Date(year, month - 1, 31);
+        const filterDonHang = {
+            "trangThai": {
+                $elemMatch: {
+                    "trangThai": "Đã giao hàng",
+                    "thoiGian": { $gte: firstDayOfMonth, $lt: lastDayOfMonth }
+                }
+            }
+        };
+
+        const thongke1thang = await DonHang.aggregate([
+            {
+                $match: filterDonHang
+    
+            },
+            {
+                $group: {
+                    _id: { idDonhang : '$_id', idSanPham: '$idSanPham', idBienThe: '$idBienThe'  },
+
+                    totalQuantity: { $sum: '$soLuong' },
+                  
+                }
+            },
+           // Sắp xếp theo số lượng giảm dần
+             // Giới hạn kết quả trả về 10 phần tử
+        ]);
+       
+  for (const item of thongke1thang) {
+        // Tìm thông tin sản phẩm từ ID
+        const product = await SanPham.findById(item._id.idSanPham);
+        if (product) {
+            // Tìm thông tin biến thể từ ID
+            const variant = product.bienThe.find(variant => variant._id.toString() === item._id.idBienThe);
+            if (variant) {
+                // Thêm thông tin sản phẩm và số lượng vào mảng productDetails
+                productDetails.push({
+                    _id: item.id,
+                    idBienThe: variant.idDonhang,
+                    tenSanPham: product.tenSanPham,
+                    hinhAnh: product.anh[1],
+                    ram: variant.ram,
+                    rom: variant.rom,
+                    totalQuantity: item.totalQuantity
+                });
+            }
+        }
+    }
+        // Calculate total revenue for paid orders
+        console.log(productDetails);
+
+        // Render view with data
+        res.render('thongke/chitietsanpham', {
+            title: `Chi tiết doanh thu tháng ${month}/${year}`,
+            user : user,
+            data: DayRevenue,
+            year,
+            month,
+            day: "Tất cả các ngày",
+            
+        });
+    } catch (error) {
+        // Handle errors
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
