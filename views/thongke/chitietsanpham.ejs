@@ -25,9 +25,8 @@
             <% for (let i = 0; i < data.length; i++) { %>
                 <% totalRevenue += data[i]; %>
             <% } %>
-            <button type="button" class="btn btn-danger">Tổng Doanh Thu: <%= totalRevenue.toLocaleString() %> </button>
-            <button type="button" class="btn btn-primary ms-4">Zalopay: <%= tongDoanhThuTrue.toLocaleString() %></button>
-            <button type="button" class="btn btn-success ms-4">Tiền mặt: <%= (totalRevenue - tongDoanhThuTrue).toLocaleString() %> </button>
+            <button type="button" class="btn btn-danger">Tổng số Lượng: <%= totalRevenue.toLocaleString() %> </button>
+            
           </div>
         </div>
         <div>
@@ -51,32 +50,12 @@
                   <th scope="col" class="col-xl-0.5 col-lg-0.5 col-md-0.5 col-sm-0.5">STT</th>
                   <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Thời gian</th>
                   <th scope="col" class="col-xl-2 col-lg-2 col-md-2 col-sm-2">Trạng thái</th>
-                  <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Tổng tiền</th>
+                  <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Số Lượng</th>
                   <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Hành động</th>
                 </tr>
               </thead>
               <tbody class="table-group-divider">
-                <% listDonHang.forEach((donHang, index)=> { %>
-                  <% const trangThai=donHang.trangThai.find(tt=> tt.isNow == true) %>
-                    <tr class="align-middle text-center">
-                      <th scope="row">
-                        <%=  index+1 %>
-                      </th>
-                      <td class="time-cell">
-                        <%= trangThai ? new Date(trangThai.thoiGian.toISOString()).toISOString().replace("T", " ").replace("Z", ""): "ok" %> 
-                      </td>
-                      <td>
-                        <%= trangThai ? trangThai.trangThai : "ok" %>
-                      </td>
-                      <td class="text-danger fw-bold total-cell">
-                        <%= donHang.tongTien.toLocaleString() %>
-                      </td>
-                      <td>
-                        <a href="/don-hang/chi-tiet/<%= donHang._id %> " class="btn btn-primary icon-btn ms-2 me-2">Chi
-                          tiết</a>
-                      </td>
-                    </tr>
-                    <% }); %>
+               
               </tbody>
             </table>
         </div>
