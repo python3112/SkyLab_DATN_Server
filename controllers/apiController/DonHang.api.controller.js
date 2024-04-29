@@ -547,3 +547,28 @@ exports.getBaoHanhByIdAccount = async (req, res, next) => {
         res.status(500).json({ message: error.message });
     }
 }
+exports.getBaoHanhByIdBaoHanh = async (req, res, next) => {
+    try {
+        const idBaoHanh = req.params.id; // Lấy idBaoHanh từ URL
+
+        // Tìm đơn hàng chứa thông tin bảo hành có idBaoHanh
+        const donHang = await DonHang.findOne({ "baoHanh._id": idBaoHanh }).lean();
+
+        if (!donHang) {
+            return res.status(404).json({ message: "Không tìm thấy thông tin bảo hành với ID này" });
+        }
+
+        // Tìm thông tin bảo hành trong đơn hàng
+        const baoHanh = donHang.baoHanh.find(bh => bh._id.toString() === idBaoHanh);
+
+        if (!baoHanh) {
+            return res.status(404).json({ message: "Không tìm thấy thông tin bảo hành với ID này" });
+        }
+
+        // Trả về thông tin bảo hành
+        res.status(200).json(baoHanh);
+    } catch (error) {
+        // Xử lý lỗi
+        res.status(500).json({ message: error.message });
+    }
+};
