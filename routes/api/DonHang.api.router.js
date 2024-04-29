@@ -24,4 +24,5 @@ router.get('/da-ban/:id', DonHangCtrl.laySoLuongDonHangDaGiaoHang);
 router.get('/sao/:id', DonHangCtrl.laySoSaoTrungBinh);
 router.get('/lan-danh-gia/:id', DonHangCtrl.laySoLanDanhGia);
 router.put('/bao-hanh/:iddh/:idbh',upload.any('image'), DonHangCtrl.updateBaoHanh);
+router.get('/bao-hanh-by-id/:id', DonHangCtrl.getBaoHanhByIdAccount);
 module.exports = router;

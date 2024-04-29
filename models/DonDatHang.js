@@ -24,6 +24,7 @@ const BaoHanhSchema = new mongoose.Schema({
   anh: [String],
   thoiGian: { type: Date, default: Date.now },
   lyDo: String,
+  lyDoTuChoi: String,
   tinhTrang: { type: Number, default: 0 },
 });
 const donDatHangSchema = new mongoose.Schema({

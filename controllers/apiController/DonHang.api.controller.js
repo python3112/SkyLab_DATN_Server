@@ -518,3 +518,32 @@ exports.laySoLuongDonHangDangGiaoHang = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+exports.getBaoHanhByIdAccount = async (req, res, next) => {
+    try {
+        const idAccount = req.params.id; // Lấy idAccount từ URL
+
+        // Tìm các đơn hàng có chứa thông tin bảo hành của idAccount
+        const donHangs = await DonHang.find({ "baoHanh.idAccount": idAccount }).lean();
+
+        if (!donHangs) {
+            return res.status(404).json({ message: "Không tìm thấy bảo hành cho tài khoản này" });
+        }
+
+        // Lọc ra thông tin bảo hành từ các đơn hàng
+        const listBaoHanh = donHangs.reduce((acc, curr) => {
+            curr.baoHanh.forEach(baoHanh => {
+                if (baoHanh.idAccount.toString() === idAccount && baoHanh.tinhTrang != 0) {
+                    acc.push(baoHanh);
+                }
+            });
+            return acc;
+        }, []);
+
+        // Trả về danh sách các bảo hành
+        res.status(200).json(listBaoHanh);
+    } catch (error) {
+        // Xử lý lỗi
+        res.status(500).json({ message: error.message });
+    }
+}
