@@ -10,6 +10,7 @@ router.get('/',checkLogin.checkLogin,userCtrl.home);
 router.get('/userActiveTrue',userCtrl.findUserTrue);
 router.get('/userActiveFalse',userCtrl.findUserFales);
 router.get('/queryUser',userCtrl.query);
+router.get('/new',userCtrl.nguoiDungMoi);
 // Xuất router
 router.post('/update/:id',userCtrl.update);
 module.exports = router;

@@ -4,6 +4,8 @@ const { SanPham } = require('../../models/SanPham');
 const  {ThongBao}= require('../../models/ThongBao'); 
 const KhuyenMai = require('../../models/KhuyenMai');
 const mongoose = require('mongoose');
+const nameFolder = 'BaoHanh';
+const { uploadImages } = require('../../middlewares/upload.image.firebase');
 
 exports.GetAllDonHang = async (req, res, next) => {
     try {
@@ -399,6 +401,46 @@ exports.laySoSaoTrungBinh = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+exports.updateBaoHanh = async (req, res) => {
+    try {
+        const { lyDo, tinhTrang } = req.body;
+        const idDH = req.params.iddh;
+        const idBH = req.params.idbh;
+        let imageUrlAnh =[];
+        let files = req.files;
+        if (files) {
+            imageUrlAnh = await uploadImages(files, nameFolder);
+        }
+        // Kiểm tra xem đơn hàng có tồn tại không
+        const donHang = await DonHang.findById(idDH);
+
+        if (!donHang) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng' });
+        }
+
+        // Tìm và cập nhật thông tin bảo hành
+        const baoHanh = donHang.baoHanh.id(idBH);
+        if (!baoHanh) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy thông tin bảo hành' });
+        }
+
+        if (imageUrlAnh) {
+            baoHanh.anh = imageUrlAnh;
+        }
+        if (lyDo) {
+            baoHanh.lyDo = lyDo;
+        }
+        if (tinhTrang !== undefined) {
+            baoHanh.tinhTrang = tinhTrang;
+        }
+        await donHang.save();
+
+        res.json({ success: true, message: 'Cập nhật thông tin bảo hành thành công' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 exports.laySoLanDanhGia = async (req, res) => {
     try {
         const idSanPham = req.params.id;
@@ -474,5 +516,59 @@ exports.laySoLuongDonHangDangGiaoHang = async (req, res) => {
         res.json(donHangTheoIdVaTrangThai.length);
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+exports.getBaoHanhByIdAccount = async (req, res, next) => {
+    try {
+        const idAccount = req.params.id; // Lấy idAccount từ URL
+
+        // Tìm các đơn hàng có chứa thông tin bảo hành của idAccount
+        const donHangs = await DonHang.find({ "baoHanh.idAccount": idAccount }).lean();
+
+        if (!donHangs) {
+            return res.status(404).json({ message: "Không tìm thấy bảo hành cho tài khoản này" });
+        }
+
+        // Lọc ra thông tin bảo hành từ các đơn hàng
+        const listBaoHanh = donHangs.reduce((acc, curr) => {
+            curr.baoHanh.forEach(baoHanh => {
+                if (baoHanh.idAccount.toString() === idAccount && baoHanh.tinhTrang != 0) {
+                    acc.push(baoHanh);
+                }
+            });
+            return acc;
+        }, []);
+
+        // Trả về danh sách các bảo hành
+        res.status(200).json(listBaoHanh);
+    } catch (error) {
+        // Xử lý lỗi
+        res.status(500).json({ message: error.message });
+    }
+}
+exports.getBaoHanhByIdBaoHanh = async (req, res, next) => {
+    try {
+        const idBaoHanh = req.params.id; // Lấy idBaoHanh từ URL
+
+        // Tìm đơn hàng chứa thông tin bảo hành có idBaoHanh
+        const donHang = await DonHang.findOne({ "baoHanh._id": idBaoHanh }).lean();
+
+        if (!donHang) {
+            return res.status(404).json({ message: "Không tìm thấy thông tin bảo hành với ID này" });
+        }
+
+        // Tìm thông tin bảo hành trong đơn hàng
+        const baoHanh = donHang.baoHanh.find(bh => bh._id.toString() === idBaoHanh);
+
+        if (!baoHanh) {
+            return res.status(404).json({ message: "Không tìm thấy thông tin bảo hành với ID này" });
+        }
+
+        // Trả về thông tin bảo hành
+        res.status(200).json(baoHanh);
+    } catch (error) {
+        // Xử lý lỗi
+        res.status(500).json({ message: error.message });
     }
 };

@@ -62,3 +62,52 @@ exports.update = async (req, res, next)=>{
         res.render('Error/err',{msg: error}) 
     }
 }
+exports.nguoiDungMoi =  async (req,res,next)=>{
+    try{
+    let today = new Date();
+        let year = today.getFullYear();
+        let month = today.getMonth();
+        let day = today.getDate();
+        let startOfDay = new Date(year, month, day, 0, 0, 0, 0);
+        let endOfDay = new Date(year, month, day, 23, 59, 59, 999);
+    const resultDoanhUserNew = await userModel.aggregate([
+        {
+            $match: {
+                thoiGian: {
+                    $gte: startOfDay,
+                    $lt: endOfDay
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                soLuong: { $sum: 1 }
+            }
+        }
+    ]);
+    if (resultDoanhUserNew && resultDoanhUserNew.length > 0) {
+        // Lấy danh sách người dùng dựa trên kết quả của truy vấn aggregation
+        const userList = await userModel.find({
+            thoiGian: {
+                $gte: startOfDay,
+                $lt: endOfDay
+            }
+        });
+        res.render('user/home_user',
+        {
+        title:"Người dùng mới",
+         listUser: userList,
+          user :  user })
+    } else {
+        res.render('user/home_user',
+        {
+        title:"Người dùng mới",
+         listUser: [],
+          user :  user })
+    }
+}
+catch(error){
+    console.log('Không tìm thấy kết quả phù hợp.');
+}
+}

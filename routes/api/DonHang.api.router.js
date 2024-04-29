@@ -2,6 +2,10 @@ var express = require('express');
 var router = express.Router();
 const DonHangCtrl = require('../../controllers/apiController/DonHang.api.controller');
 
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 router.get('/', DonHangCtrl.GetAllDonHang);
 router.get('/get-by-id/:id', DonHangCtrl.getByID);
 router.get('/cho-xac-nhan/:id', DonHangCtrl.layDonHangChoXacNhan);
@@ -19,4 +23,7 @@ router.put('/editThanhToan/:id', DonHangCtrl.editThanhToan);
 router.get('/da-ban/:id', DonHangCtrl.laySoLuongDonHangDaGiaoHang);
 router.get('/sao/:id', DonHangCtrl.laySoSaoTrungBinh);
 router.get('/lan-danh-gia/:id', DonHangCtrl.laySoLanDanhGia);
+router.put('/bao-hanh/:iddh/:idbh',upload.any('image'), DonHangCtrl.updateBaoHanh);
+router.get('/bao-hanh-by-id/:id', DonHangCtrl.getBaoHanhByIdAccount);
+router.get('/bao-hanh-by-id-bh/:id', DonHangCtrl.getBaoHanhByIdBaoHanh);
 module.exports = router;

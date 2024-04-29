@@ -136,7 +136,10 @@ exports.themTrangThaiPost = async (req, res) => {
             case "Chờ giao hàng":
                 for (let i = 0; i < donHang.soLuong; i++) {
                     const imei = req.body[`imei_${i}`];
-                    const newBH = { imei, tinhTrang: true };
+                    const idSP = donHang.idSanPham;
+                    const idAC = donHang.idAccount;
+                    const idDH = donHang._id;
+                    const newBH = {idDonDatHang:idDH,idSanPham:idSP,idAccount:idAC, imei, tinhTrang: 0 };
                     donHang.baoHanh.push(newBH);
                 }
                 await donHang.save();
