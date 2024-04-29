@@ -22,6 +22,7 @@ var thongbaoRoute= require('./routes/thongbao.router');
 var khuyenmaiRoute= require('./routes/khuyenmai.router');
 var tinnhanRoute= require('./routes/tinnhan.router');
 var thongkeRoute= require('./routes/thongke.router');
+var baoHanhRoute= require('./routes/baohanh.router');
 
 
 
@@ -69,6 +70,7 @@ app.use('/hang', hangRoute);
 app.use('/san-pham', sanphamRoute);
 app.use('/thong-bao', thongbaoRoute);
 app.use('/thong-ke', thongkeRoute);
+app.use('/bao-hanh', baoHanhRoute);
 
 app.use('/don-hang', donhangRoute);
 app.use('/tin-nhan', tinnhanRoute);
