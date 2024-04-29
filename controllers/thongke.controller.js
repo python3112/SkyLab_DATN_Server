@@ -415,6 +415,12 @@ exports.sanpham = async (req, res) => {
                 }
             }
         ]);
+        const spKho = await SanPham.aggregate([
+            {
+                $unwind: "$bienThe" // Mở rộng các mảng biến thể thành các tài liệu độc lập
+            },
+          
+        ]);
 
 
         // console.log(filteredProducts)
@@ -427,6 +433,7 @@ exports.sanpham = async (req, res) => {
             year: year,
             kho: ketQua.length > 0 ? ketQua[0].tongSoLuong : 0,
             top10banchay: productDetails,
+            spKho:spKho,
         });
     } catch (error) {
         console.error(error);
