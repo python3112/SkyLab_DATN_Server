@@ -16,6 +16,16 @@ const DanhGiaSchema = new mongoose.Schema({
   noiDung: String,
   thoiGian: { type: Date, default: Date.now }
 });
+const BaoHanhSchema = new mongoose.Schema({
+  idDonDatHang: { type: mongoose.Schema.Types.ObjectId, ref: 'DonDatHang' },
+  idSanPham: { type: mongoose.Schema.Types.ObjectId, ref: 'SanPham' },
+  idAccount: { type: mongoose.Schema.Types.ObjectId, ref: 'Account' },
+  imei: String,
+  anh: [String],
+  thoiGian: { type: Date, default: Date.now },
+  lyDo: String,
+  tinhTrang: { type: Number, default: 0 },
+});
 const donDatHangSchema = new mongoose.Schema({
   idSanPham: { type: mongoose.Schema.Types.ObjectId, ref: 'SanPham' },
   idAccount: { type: mongoose.Schema.Types.ObjectId, ref: 'Account' },
@@ -28,6 +38,7 @@ const donDatHangSchema = new mongoose.Schema({
     type: DanhGiaSchema,
   },
   soLuong: Number,
+  baoHanh: { type: [BaoHanhSchema] },
   tienShip: Number,
   tongTien: Number,
   ghiChu: String,
@@ -38,5 +49,4 @@ const donDatHangSchema = new mongoose.Schema({
 });
 
 const DonDatHang = mongoose.model('DonDatHang', donDatHangSchema);
-
 module.exports = DonDatHang;

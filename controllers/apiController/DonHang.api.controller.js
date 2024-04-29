@@ -4,6 +4,8 @@ const { SanPham } = require('../../models/SanPham');
 const  {ThongBao}= require('../../models/ThongBao'); 
 const KhuyenMai = require('../../models/KhuyenMai');
 const mongoose = require('mongoose');
+const nameFolder = 'BaoHanh';
+const { uploadImages } = require('../../middlewares/upload.image.firebase');
 
 exports.GetAllDonHang = async (req, res, next) => {
     try {
@@ -105,6 +107,25 @@ exports.layDonHangDaHuy = async (req, res) => {
     try {
         const idAccount = req.params.id;
         const trangThai = "Đã hủy";
+        const donHangTheoIdVaTrangThai = await DonHang.find({
+            idAccount: idAccount,
+            'trangThai': {
+                $elemMatch: {
+                    'trangThai': trangThai,
+                    'isNow': true
+                }
+            }
+        });
+
+        res.json(donHangTheoIdVaTrangThai);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+exports.layDonHangTraHang = async (req, res) => {
+    try {
+        const idAccount = req.params.id;
+        const trangThai = "Trả hàng";
         const donHangTheoIdVaTrangThai = await DonHang.find({
             idAccount: idAccount,
             'trangThai': {
@@ -380,6 +401,46 @@ exports.laySoSaoTrungBinh = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+exports.updateBaoHanh = async (req, res) => {
+    try {
+        const { lyDo, tinhTrang } = req.body;
+        const idDH = req.params.iddh;
+        const idBH = req.params.idbh;
+        let imageUrlAnh =[];
+        let files = req.files;
+        if (files) {
+            imageUrlAnh = await uploadImages(files, nameFolder);
+        }
+        // Kiểm tra xem đơn hàng có tồn tại không
+        const donHang = await DonHang.findById(idDH);
+
+        if (!donHang) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng' });
+        }
+
+        // Tìm và cập nhật thông tin bảo hành
+        const baoHanh = donHang.baoHanh.id(idBH);
+        if (!baoHanh) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy thông tin bảo hành' });
+        }
+
+        if (imageUrlAnh) {
+            baoHanh.anh = imageUrlAnh;
+        }
+        if (lyDo) {
+            baoHanh.lyDo = lyDo;
+        }
+        if (tinhTrang !== undefined) {
+            baoHanh.tinhTrang = tinhTrang;
+        }
+        await donHang.save();
+
+        res.json({ success: true, message: 'Cập nhật thông tin bảo hành thành công' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 exports.laySoLanDanhGia = async (req, res) => {
     try {
         const idSanPham = req.params.id;
