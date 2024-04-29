@@ -638,7 +638,7 @@ exports.chiTietDoanhThuSp = async (req, res, next) => {
            // Sắp xếp theo số lượng giảm dần
              // Giới hạn kết quả trả về 10 phần tử
         ]);
-       
+       console.log(thongke1thang);
   for (const item of thongke1thang) {
         // Tìm thông tin sản phẩm từ ID
         const product = await SanPham.findById(item._id.idSanPham);
@@ -649,7 +649,7 @@ exports.chiTietDoanhThuSp = async (req, res, next) => {
                 // Thêm thông tin sản phẩm và số lượng vào mảng productDetails
                 productDetails.push({
                     _id: item.id,
-                    idBienThe: variant.idDonhang,
+                    idBienThe: variant.id,
                     tenSanPham: product.tenSanPham,
                     hinhAnh: product.anh[1],
                     ram: variant.ram,
