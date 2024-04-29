@@ -2,11 +2,10 @@ const DonHang = require('../models/DonDatHang');
 const MAccount = require('../models/Account')
 const { SanPham } = require('../models/SanPham');
 const MHang = require('../models/Hangsx')
-const MKhuyenMai = require('../models/KhuyenMai')
+const MKhuyenMai = require('../models/KhuyenMai');
+const { LoadBundleTask } = require('firebase/firestore');
 exports.home =  async (req,res,next)=>{
      user = req.session.Account;
-     const listAcount = [];
-     const listDoanhThu = [];
      const year = new Date().getFullYear(); // Lấy năm hiện tại
      try {
         // Tạo ngày bắt đầu và ngày kết thúc của ngày hiện tại
@@ -174,6 +173,24 @@ exports.home =  async (req,res,next)=>{
                 }
         ] 
         ) 
+        const resultDoanhUserNew = await MAccount.aggregate([
+            {
+                $match: {
+                    thoiGian: {
+                        $gte: startOfDay,
+                        $lt: endOfDay
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    soLuong: { $sum: 1 }
+                }
+            }
+        ]);
+        
+        
         
         const tongDoanhThu = resultDonHang.length > 0 ? resultDonHang[0].tongDoanhThu : 0;
         const soLuongThanhVien = ThanhVien.length > 0 ? ThanhVien[0].soLuong : 0;
@@ -181,10 +198,9 @@ exports.home =  async (req,res,next)=>{
         const soLuongHang = Hang.length > 0 ? Hang[0].soLuong : 0;
         const soLuongSp = SLSP.length > 0 ? SLSP[0].soLuong : 0;
         const tongDoanhThuNam = resultDoanhThuNam.length > 0 ? resultDoanhThuNam[0].tongDoanhThu : 0;
+        const soLuongAcountNew = resultDoanhUserNew.length > 0 ? resultDoanhUserNew[0].soLuong : 0;
         // Gửi kết quả về client để xử lý trong front-end
 
-        // res.send(Sl);
-    
        // Hoặc render trang và truyền dữ liệu vào đó
         res.render('home/home', {
             user: req.session.Account,
@@ -204,7 +220,11 @@ exports.home =  async (req,res,next)=>{
             giaoThanhCongHomNay: await filterDonHangTrongNgay("Đã giao hàng"),
             ChoGiaoHomNay: await filterDonHangTrongNgay("Chờ giao hàng"),
             daHuyHomNay: await filterDonHangTrongNgay("Đã hủy"),
-            DangGiaoHomNay: await filterDonHangTrongNgay("Đang giao hàng")
+            DangGiaoHomNay: await filterDonHangTrongNgay("Đang giao hàng"),
+            nguoiDungMoi : soLuongAcountNew,
+            year: year,
+            month: month,
+            day: day
         });
     
     } catch (error) {

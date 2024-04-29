@@ -299,7 +299,8 @@ exports.chiTietDoanhThuNgay = async (req, res, next) => {
                     "thoiGian": {
                         $gte: new Date(year, month - 1, day, 0, 0, 0, 0),
                         $lt: new Date(year, month - 1, day, 23, 59, 59, 999)
-                    }
+                    },
+                    isNow : true
                 }
             }
         };
@@ -569,4 +570,82 @@ exports.sanphamTheoNam = async (req, res, next) => {
         top10banchay: productDetails,
         spKho:spKho,
     });
+};
+exports.chiTietDoanhThuNgayStatus = async (req, res, next) => {
+    try {
+        const user = req.session.Account;
+        const { status,month, year, day } = req.params;
+        const DayRevenue = [];
+        for (let dayOfMonth = 1; dayOfMonth <= 30; dayOfMonth++) {
+            const firstHourOfDay = new Date(year, month - 1, dayOfMonth, 0, 0, 0, 0);
+            const lastHourOfDay = new Date(year, month - 1, dayOfMonth, 23, 59, 59, 999);
+
+            const filter = {
+                "trangThai": {
+                    $elemMatch: {
+                        "trangThai":status,
+                        "thoiGian": { $gte: firstHourOfDay, $lt: lastHourOfDay },
+                        "isNow": true
+                    }
+                }
+            };
+
+            const result = await DonHang.aggregate([
+                { $match: filter },
+                { $group: { _id: null, tongDoanhThu: { $sum: "$tongTien" } } }
+            ]);
+
+            DayRevenue.push(result.length > 0 ? result[0].tongDoanhThu : 0);
+        }
+
+        const firstDayOfMonth = new Date(year, month - 1, 0);
+        const lastDayOfMonth = new Date(year, month - 1, 31);
+        const filterThanhToanTrue = {
+            "trangThai": {
+                $elemMatch: {
+                    "trangThai": status,
+                    "thoiGian": { $gte: firstDayOfMonth, $lt: lastDayOfMonth },
+                    isNow : true
+                }
+            },
+            "thanhToan": true,
+
+        };
+
+        const resultThanhToanTrue = await DonHang.aggregate([
+            { $match: filterThanhToanTrue },
+            { $group: { _id: null, tongDoanhThu: { $sum: "$tongTien" } } }
+        ]);
+
+        const filterDonHang = {
+            "trangThai": {
+                $elemMatch: {
+                    "trangThai": status,
+                    "thoiGian": {
+                        $gte: new Date(year, month - 1, day, 0, 0, 0, 0),
+                        $lt: new Date(year, month - 1, day, 23, 59, 59, 999)
+                    },
+                    isNow : true
+                }
+            }
+        };
+
+        const listDonHang = await DonHang.find(filterDonHang);
+
+        const tongDoanhThuTrue = resultThanhToanTrue.length > 0 ? resultThanhToanTrue[0].tongDoanhThu : 0;
+
+        res.render('thongke/chitietdoanhthu', {
+            title: status+` ${day}/${month}/${year}`,
+            user,
+            data: DayRevenue,
+            year,
+            month,
+            day: `Ngày ${day}`,
+            tongDoanhThuTrue,
+            listDonHang
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
 };
