@@ -107,9 +107,10 @@ exports.chitiet = async (req, res, next) => {
 
 exports.updateStatus = async (req, res, next) => {
     try {
+        const {lyDoTuChoi} = req.body;
         const idBaoHanh = req.params.id; // Lấy idBaoHanh từ URL
         const newStatus = req.query.status; // Lấy trạng thái mới từ truy vấn
-
+        console.log(lyDoTuChoi);
         // Kiểm tra xem trạng thái mới có hợp lệ không
         if (!["2", "3"].includes(newStatus)) {
             return res.status(400).json({ message: "Trạng thái không hợp lệ" });
@@ -118,7 +119,7 @@ exports.updateStatus = async (req, res, next) => {
         // Tìm và cập nhật bảo hành trong đơn hàng
         const donHang = await DonHang.findOneAndUpdate(
             { "baoHanh._id": idBaoHanh },
-            { $set: { "baoHanh.$.tinhTrang": parseInt(newStatus) } },
+            { $set: { "baoHanh.$.tinhTrang": parseInt(newStatus), "baoHanh.$.lyDoTuChoi": lyDoTuChoi } }, 
             { new: true }
         );
 

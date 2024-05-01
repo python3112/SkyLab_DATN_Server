@@ -98,12 +98,10 @@
                                       <% break; } %>
                             </p>
                             <% if(baoHanh.tinhTrang==1){%>
-                              <form action="/bao-hanh/chi-tiet/<%= baoHanh._id %>?status=2" method="POST">
-                                <button type="submit" class="btn btn-success">Đồng ý</button>
-                              </form>
-                              <form action="/bao-hanh/chi-tiet/<%= baoHanh._id %>?status=3" method="POST">
-                                <button type="submit" class="btn btn-danger">Từ chối</button>
-                              </form>
+                              <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                data-bs-target="#confirmModal">Đồng ý</button>
+                              <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#rejectModal">Từ chối</button>
                               <% }%>
                     </div>
                   </div>
@@ -113,6 +111,57 @@
           </div>
           <%- include('../inc/footer') %>
       </div>
+
+      <!-- Confirm Modal -->
+      <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmModalLabel">Xác nhận đồng ý</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/bao-hanh/chi-tiet/<%= baoHanh._id %>?status=2" method="POST">
+            <div class="modal-body">
+              <p>Bạn có chắc chắn muốn đồng ý với yêu cầu bảo hành này không?</p>
+              <div class="mb-3">
+                <label for="feedbackInput" class="form-label">Phản hồi:</label>
+                <textarea class="form-control" id="lyDoTuChoi" name="lyDoTuChoi" rows="2"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="submit" class="btn btn-success">Đồng ý</button>
+            </div>
+          </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reject Modal -->
+      <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="rejectModalLabel">Xác nhận từ chối</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/bao-hanh/chi-tiet/<%= baoHanh._id %>?status=3" method="POST">
+            <div class="modal-body">
+              <p>Bạn có chắc chắn muốn từ chối yêu cầu bảo hành này không?</p>
+              <div class="mb-3">
+                <label for="feedbackInput" class="form-label">Phản hồi:</label>
+                <textarea class="form-control" id="lyDoTuChoi" name="lyDoTuChoi" rows="2"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="submit" class="btn btn-danger">Từ chối</button>
+            </div>
+          </form>
+          </div>
+        </div>
+      </div>
+
   </div>
 
 
