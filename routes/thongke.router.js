@@ -16,7 +16,7 @@ router.get('/San-pham', (req, res, next)=>{
 router.get('/chi-tiet/:month/:year', thongkeCtrl.chiTietDoanhThu)
 router.get('/thongke-sanpham' ,thongkeCtrl.sanpham );
 router.get('/thongke-sanpham/:year',thongkeCtrl.sanphamTheoNam);
-// router.get('/thongke-sanpham/:month/:year', thongkeCtrl.chiTietDoanhThuSp);
+router.get('/thongke-sanpham/:month/:year', thongkeCtrl.chiTietDoanhThuSp);
 // Xuất router
 router.get('/chi-tiet/:day/:month/:year',thongkeCtrl.chiTietDoanhThuNgay)
 router.get('/chi-tiet/:status/:day/:month/:year',thongkeCtrl.chiTietDoanhThuNgayStatus)

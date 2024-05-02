@@ -39,7 +39,7 @@
           <ul class="dropdown-menu m-2" aria-labelledby="dropdownMenuButton" style="background-color: white; width: 100vw;">
             <li><a href="/Thong-ke/chi-tiet/<%= month %>/<%= year %>" class="dropdown-item" onclick="changeText('<%= i %>')">Tất cả các ngày</a></li>
             <% for(var i = 1; i <= 31; i++) { %>
-              <li><a class="dropdown-item" href="/Thong-ke/chi-tiet/<%= i %>/<%= month %>/<%= year %>" onclick="changeText('<%= i %>')">Ngày <%= i %> </a></li>
+           
             <% } %>
           </ul>
       </div>
@@ -49,13 +49,43 @@
                 <tr class="align-middle text-center">
                   <th scope="col" class="col-xl-0.5 col-lg-0.5 col-md-0.5 col-sm-0.5">STT</th>
                   <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Thời gian</th>
-                  <th scope="col" class="col-xl-2 col-lg-2 col-md-2 col-sm-2">Trạng thái</th>
+                  <th scope="col" class="col-xl-2 col-lg-2 col-md-2 col-sm-2"> Ảnh Sản Phẩm </th>
+                  <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Tên Sản Phẩm</th>
+                  <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Cấu Hình</th>
                   <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Số Lượng</th>
-                  <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Hành động</th>
+                  <th scope="col" class="col-xl-1.5 col-lg-1.5 col-md-1.5 col-sm-1.5">Hành Động</th>
                 </tr>
               </thead>
               <tbody class="table-group-divider">
-               
+                <% listDonHangsp.forEach((donHang, index)=> { %>
+                 
+                    <tr class="align-middle text-center">
+                      <th scope="row">
+                        <%=  index+1 %>
+                      </th>
+                      <td class="time-cell">
+                        <%= donHang.time %>
+                      </td>
+                      <td class="text-truncate overflow-hidden text-start" data-bs-toggle="tooltip"
+                      title="<%= donHang.tenSanPham %>">
+                      <%= donHang.tenSanPham.substring(0, 30) %>
+                        <%= donHang.tenSanPham.length> 30 ? '...' : '' %>
+                    </td>
+                      <td>
+                        <img src="<%= donHang.hinhAnh %>" alt="Ảnh sản phẩm" width="70">
+                      </td>
+                      <td class="text-danger fw-bold total-cell">
+                        <%= donHang.ram %> <%= donHang.rom %>
+                      </td>
+                      <td>
+                        <%= donHang.totalQuantity %>
+                      </td>
+                      <td>
+                        <a href="/don-hang/chi-tiet/<%= donHang._id %> " class="btn btn-primary icon-btn ms-2 me-2">Chi
+                          tiết</a>
+                      </td>
+                    </tr>
+                    <% }); %>
               </tbody>
             </table>
         </div>
@@ -90,6 +120,27 @@
       function changeText(selectedYear) {
         document.getElementById("dropdownMenuButton").textContent ="Ngày "+ selectedYear;
       }
+    </script>
+     <script>
+      // Function to format date as hh:mm dd/mm/yyyy
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${hours}:${minutes} ${day}/${month}/${year}`;
+      }
+  
+      // Call formatDate function for each timestamp in the table
+      document.addEventListener("DOMContentLoaded", function () {
+        const timeCells = document.querySelectorAll(".time-cell");
+        timeCells.forEach(cell => {
+          const timestamp = cell.textContent.trim();
+          cell.textContent = formatDate(timestamp);
+        });
+      });
     </script>
   </body>
 </html>

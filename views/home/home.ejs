@@ -13,8 +13,88 @@
   <!-- ////// css sidebar ////////// -->
   <script src="https://kit.fontawesome.com/ae360af17e.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
   <link rel="stylesheet" href="../stylesheets/sidebar.css">
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js'
+    // If you enabled Analytics in your project, add the Firebase SDK for Google Analytics
+    import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-analytics.js'
+
+    // Add Firebase products that you want to use
+    import { getAuth } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js'
+    import { getDatabase, ref, push, set, onValue, equalTo, orderByChild, orderByKey, query } from 'https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js'
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQTaVbsAvnb1KWVl1HlhoOum8YwcbEbZE",
+      authDomain: "skylap-md03.firebaseapp.com",
+      databaseURL: "https://skylap-md03-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "skylap-md03",
+      storageBucket: "skylap-md03.appspot.com",
+      messagingSenderId: "206926809191",
+      appId: "1:206926809191:web:e8dc6a3da11ea129b4ecc2",
+      measurementId: "G-TSY3SXB2F5"
+    };
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const dataMess = ref(database, '/messages');
+
+    window.getCountNewMess = function () {
+      const today = new Date();
+
+
+      onValue(dataMess, snapshot => {
+        let newMessagesCount = 0;
+
+        snapshot.forEach(childSnapshot => {
+          const messageData = childSnapshot.val();
+
+
+        
+          
+          // Kiểm tra xem tin nhắn có được tạo trong ngày hôm nay không
+         
+          
+          if (isSameDay(convertDateFormat(messageData.thoiGian), today) && messageData.idAccount !== '662d1a0734546b019fea813d') {
+            newMessagesCount++;
+          }
+        });
+
+        // Gán số lượng tin nhắn mới vào phần tử HTML
+        document.querySelector('.messToday').textContent = newMessagesCount;
+      });
+    }
+    function isSameDay(date1, date2) {
+     console.log(date1);
+      return date1.getDate() === date2.getDate() &&
+             date1.getMonth() === date2.getMonth() &&
+             date1.getFullYear() === date2.getFullYear();
+    
+    }
+
+    function convertDateFormat(inputDateStr) {
+    // Tách ngày, tháng, năm và thời gian từ chuỗi đầu vào
+    const parts = inputDateStr.split(/[\s:-]+/);
+    
+    // Chuyển đổi sang định dạng ngày tháng của JavaScript
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthIndex = parseInt(parts[1]) - 1;
+    const formattedDate = new Date(parts[2], monthIndex, parts[0], parts[3], parts[4], parts[5]);
+    
+    // Trả về ngày tháng đã được định dạng lại
+    return formattedDate;
+}
+
+
+
+  
+    getCountNewMess();
+   
+  </script>
 </head>
+
 <body>
   <div class="wrapper">
     <%- include('../inc/sidebar') %>
@@ -27,14 +107,14 @@
                   <div class=" d-flex flex-column bg-primary text-light p-1 shadow rounded">
                     <div class="top d-flex flex-row justify-content-between  ">
                       <img width="50" height="40" src="/images/chatIcon.png" alt="" srcset="">
-                      <p class="fw-bold">10</p>
+                      <p class="fw-bold messToday"></p>
                     </div>
                     <div class="bot text-end">
                       <p>Tin nhắn mới</p>
                     </div>
                   </div>
                   <div class="bot text-end ">
-                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="#">
+                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="/tin-nhan">
                       Xem chi tiết ->
                     </a>
                   </div>
@@ -43,14 +123,17 @@
                   <div class=" d-flex flex-column bg-success text-light p-1 shadow rounded">
                     <div class="top d-flex flex-row justify-content-between  ">
                       <img width="50" height="40" src="/images/donIcon.png" alt="" srcset="">
-                      <p class="fw-bold"> <%= (choXacNhanHomNay + giaoThanhCongHomNay+ChoGiaoHomNay+ DangGiaoHomNay).toLocaleString() %></p>
+                      <p class="fw-bold">
+                        <%= (choXacNhanHomNay + giaoThanhCongHomNay+ChoGiaoHomNay+ DangGiaoHomNay).toLocaleString() %>
+                      </p>
                     </div>
                     <div class="bot text-end">
                       <p>Đơn hàng mới</p>
                     </div>
                   </div>
                   <div class="bot text-end ">
-                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="/don-hang">
+                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="/don-hang">
                       Xem chi tiết ->
                     </a>
                   </div>
@@ -59,7 +142,9 @@
                   <div class=" d-flex flex-column bg-primary text-light p-1 shadow rounded">
                     <div class="top d-flex flex-row justify-content-between  ">
                       <img width="50" height="40" src="/images/usericon.png" alt="" srcset="">
-                      <p class="fw-bold"><%= soLuongThanhVien %></p>
+                      <p class="fw-bold">
+                        <%= soLuongThanhVien %>
+                      </p>
                     </div>
                     <div class="bot text-end">
                       <p>Người dùng</p>
@@ -75,162 +160,206 @@
                   <div class=" d-flex flex-column bg-success text-light p-1 shadow rounded">
                     <div class="top d-flex flex-row justify-content-between  ">
                       <img width="50" height="40" src="/images/doanhThuIcon.png" alt="" srcset="">
-                      <p class="fw-bold"><%= tongDoanhThuNam.toLocaleString() %> </p>
+                      <p class="fw-bold">
+                        <%= tongDoanhThuNam.toLocaleString() %>
+                      </p>
                     </div>
                     <div class="bot text-end">
                       <p>Tổng Doanh Thu</p>
                     </div>
                   </div>
                   <div class="bot text-end ">
-                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="/Thong-ke/Doanh-thu">
+                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="/Thong-ke/Doanh-thu">
                       Xem chi tiết ->
                     </a>
                   </div>
                 </div>
+              </div>
             </div>
-          </div>
-          <!-- noidung chinh -->
-          <div class="content">
-            <div class="row d-flex flex-nowrap m-5 justify-content-center ">
-               <!-- thong ke hang -->
-              <div class="col-4 d-flex flex-column bg-light p-1 shadow bg-body-tertiary rounded  p-4">
-                 <h3 class="border-bottom text-center text-primary fw-bold">Thống kê đơn hàng</h3>
-                 <div class="d-flex flex-row justify-content-between border-bottom p-1">
+            <!-- noidung chinh -->
+            <div class="content">
+              <div class="row d-flex flex-nowrap m-5 justify-content-center ">
+                <!-- thong ke hang -->
+                <div class="col-4 d-flex flex-column bg-light p-1 shadow bg-body-tertiary rounded  p-4">
+                  <h3 class="border-bottom text-center text-primary fw-bold">Thống kê đơn hàng</h3>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
                     <a class="icon-link icon-link-hover text-warning" style="--bs-link-hover-color-rgb: 25, 135, 84;
                     " href="don-hang/?status=Chờ xác nhận">
                       Chờ xác nhận ->
                     </a>
-                    <p class="fw-bold"><%= choXacNhan %></p>
-                 </div>
-                 <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                  <a class="icon-link icon-link-hover text-primary" style="--bs-link-hover-color-rgb: 25, 135, 84;
+                    <p class="fw-bold">
+                      <%= choXacNhan %>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover text-primary" style="--bs-link-hover-color-rgb: 25, 135, 84;
                   " href="don-hang/?status=Chờ giao hàng">
-                    Chờ giao ->
-                  </a>
-                  <p class="fw-bold"><%= choGiao %></p>
-                 </div>
-                 <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                  <a class="icon-link icon-link-hover text-primary-emphasis" style="--bs-link-hover-color-rgb: 25, 135, 84;" 
-                  href="don-hang/?status=Đang giao hàng">
-                    Đang giao ->
-                  </a>
-                  <p class="fw-bold"><%= dangGiao %></p>
-                 </div>
-                 <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                  <a class="icon-link icon-link-hover text-success" style="--bs-link-hover-color-rgb: 25, 135, 84;" 
-                  href="don-hang/?status=Đã giao hàng">
-                    Đã giao ->
-                  </a>
-                  <p class="fw-bold"><%= daGiao %></p>
-                 </div>
-                 <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                  <a class="icon-link icon-link-hover text-danger" style="--bs-link-hover-color-rgb: 25, 135, 84;" 
-                  href="don-hang/?status=Đã hủy">
-                    Đã hủy ->
-                  </a>
-                  <p class="fw-bold"><%= daHuy %></p>
-                 </div>
-                 <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                  <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" 
-                  href="don-hang/?status=Tất cả">
-                    Tổng đơn hàng ->
-                  </a>
-                  <p class="fw-bold"><%= daHuy +daGiao + dangGiao + choGiao+ choXacNhan %></p>
-                 </div>
+                      Chờ giao ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= choGiao %>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover text-primary-emphasis"
+                      style="--bs-link-hover-color-rgb: 25, 135, 84;" href="don-hang/?status=Đang giao hàng">
+                      Đang giao ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= dangGiao %>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover text-success" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="don-hang/?status=Đã giao hàng">
+                      Đã giao ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= daGiao %>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover text-danger" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="don-hang/?status=Đã hủy">
+                      Đã hủy ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= daHuy %>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="don-hang/?status=Tất cả">
+                      Tổng đơn hàng ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= daHuy +daGiao + dangGiao + choGiao+ choXacNhan %>
+                    </p>
+                  </div>
+                </div>
+
+                <!-- thong ke app -->
+                <div class="col-4 d-flex flex-column bg-light p-1 shadow bg-body-tertiary rounded ms-4 p-4">
+                  <h3 class="border-bottom text-center text-primary fw-bold">Thống kê App</h3>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="/user">
+                      Tổng thành viên ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= soLuongThanhVien %>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="/san-pham">
+                      Tổng sản phẩm ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= soLuongSp %>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="/hang">
+                      Tổng hãng ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= soLuongHang %>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="/khuyen-mai">
+                      Tổng khuyến mãi ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= soLuongKM %>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="user/new">
+                      Thành viên mới ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= nguoiDungMoi %>
+                    </p>
+                  </div>
+                </div>
+                <!-- thong ke ngày -->
+                <div class="col-4 d-flex flex-column bg-light p-1 shadow bg-body-tertiary rounded ms-4 p-4">
+                  <h3 class="border-bottom text-center text-primary fw-bold">Thống kê Ngày</h3>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="/Thong-ke/chi-tiet/<%= day %>/<%= month+1%>/<%=year%>">
+                      Doanh thu ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= tongDoanhThu.toLocaleString() %>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover text-warning" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="Thong-ke/chi-tiet/Chờ xác nhận/<%= day %>/<%= month+1 %>/<%= year %>">
+                      Chờ xác nhận ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= choXacNhanHomNay %>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="Thong-ke/chi-tiet/Chờ giao hàng/<%= day %>/<%= month+1 %>/<%= year %>">
+                      Chờ giao hàng ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= ChoGiaoHomNay %>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover text-primary-emphasis"
+                      style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="Thong-ke/chi-tiet/Đang giao hàng/<%= day %>/<%= month+1 %>/<%= year %>">
+                      Đang giao hàng ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= DangGiaoHomNay %>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover text-success" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="Thong-ke/chi-tiet/Đã giao hàng/<%= day %>/<%= month+1 %>/<%= year %>">
+                      Giao thành công ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= giaoThanhCongHomNay%>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a class="icon-link icon-link-hover text-danger" style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="Thong-ke/chi-tiet/Đã hủy/<%= day %>/<%= month+1 %>/<%= year %>">
+                      Đơn hàng đã hủy ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= daHuyHomNay%>
+                    </p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-between border-bottom p-1">
+                    <a id="dynamicLink" class="icon-link icon-link-hover"
+                      style="--bs-link-hover-color-rgb: 25, 135, 84;"
+                      href="/Thong-ke/chi-tiet/<%= month+1 %>/<%= year %>">
+                      Tổng đơn hàng ->
+                    </a>
+                    <p class="fw-bold">
+                      <%= giaoThanhCongHomNay+DangGiaoHomNay+ChoGiaoHomNay+choXacNhanHomNay %>
+                    </p>
+                  </div>
+                </div>
               </div>
-             
-             <!-- thong ke app -->
-             <div class="col-4 d-flex flex-column bg-light p-1 shadow bg-body-tertiary rounded ms-4 p-4">
-              <h3 class="border-bottom text-center text-primary fw-bold">Thống kê App</h3>
-              <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="/user">
-                 Tổng thành viên ->
-                </a>
-                 <p class="fw-bold"><%= soLuongThanhVien %></p>
-              </div>
-              <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="/san-pham">
-                  Tổng sản phẩm ->
-                </a>
-                 <p class="fw-bold"> <%= soLuongSp %></p>
-              </div>
-              <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="/hang">
-                  Tổng hãng ->
-                </a>
-               <p class="fw-bold"><%= soLuongHang %></p>
-              </div>
-              <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="/khuyen-mai">
-                 Tổng khuyến mãi ->
-                </a>
-                 <p class="fw-bold"><%= soLuongKM %></p>
-              </div>
-              <div class="d-flex flex-row justify-content-between border-bottom p-1">
-                <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" href="user/new">
-                 Thành viên mới ->
-                </a>
-                 <p class="fw-bold"><%= nguoiDungMoi %></p>
-              </div>
-           </div>
-           <!-- thong ke ngày -->
-           <div class="col-4 d-flex flex-column bg-light p-1 shadow bg-body-tertiary rounded ms-4 p-4">
-            <h3 class="border-bottom text-center text-primary fw-bold">Thống kê Ngày</h3>
-            <div class="d-flex flex-row justify-content-between border-bottom p-1">
-              <a  class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;"
-               href="/Thong-ke/chi-tiet/<%= day %>/<%= month+1%>/<%=year%>">
-                Doanh thu ->
-              </a>
-              <p class="fw-bold"><%= tongDoanhThu.toLocaleString() %> </p>
-            </div>
-            <div class="d-flex flex-row justify-content-between border-bottom p-1">
-              <a class="icon-link icon-link-hover text-warning" style="--bs-link-hover-color-rgb: 25, 135, 84;" 
-              href="Thong-ke/chi-tiet/Chờ xác nhận/<%= day %>/<%= month+1 %>/<%= year %>">
-               Chờ xác nhận ->
-              </a>
-               <p class="fw-bold"> <%= choXacNhanHomNay %></p>
-            </div>
-            <div class="d-flex flex-row justify-content-between border-bottom p-1">
-              <a class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;"
-              href="Thong-ke/chi-tiet/Chờ giao hàng/<%= day %>/<%= month+1 %>/<%= year %>">
-                Chờ giao hàng ->
-              </a>
-             <p class="fw-bold"><%= ChoGiaoHomNay %></p>
-            </div>
-            <div class="d-flex flex-row justify-content-between border-bottom p-1">
-              <a class="icon-link icon-link-hover text-primary-emphasis" style="--bs-link-hover-color-rgb: 25, 135, 84;"
-               href="Thong-ke/chi-tiet/Đang giao hàng/<%= day %>/<%= month+1 %>/<%= year %>">
-                Đang giao hàng ->
-              </a>
-             <p class="fw-bold"><%= DangGiaoHomNay %></p>
-            </div>
-            <div class="d-flex flex-row justify-content-between border-bottom p-1">
-              <a class="icon-link icon-link-hover text-success" style="--bs-link-hover-color-rgb: 25, 135, 84;" 
-              href="Thong-ke/chi-tiet/Đã giao hàng/<%= day %>/<%= month+1 %>/<%= year %>">
-                Giao thành công ->
-              </a>
-             <p class="fw-bold"> <%= giaoThanhCongHomNay%></p>
-            </div>
-            <div class="d-flex flex-row justify-content-between border-bottom p-1">
-              <a class="icon-link icon-link-hover text-danger" style="--bs-link-hover-color-rgb: 25, 135, 84;" 
-              href="Thong-ke/chi-tiet/Đã hủy/<%= day %>/<%= month+1 %>/<%= year %>">
-                Đơn hàng đã hủy ->
-              </a>
-             <p class="fw-bold"> <%= daHuyHomNay%></p>
-            </div>
-            <div class="d-flex flex-row justify-content-between border-bottom p-1">
-              <a id="dynamicLink" class="icon-link icon-link-hover" style="--bs-link-hover-color-rgb: 25, 135, 84;" 
-              href="/Thong-ke/chi-tiet/<%= month+1 %>/<%= year %>">
-                Tổng đơn hàng ->
-              </a> 
-               <p class="fw-bold"> <%= giaoThanhCongHomNay+DangGiaoHomNay+ChoGiaoHomNay+choXacNhanHomNay %> </p>
-            </div>
-         </div>
             </div>
           </div>
+          <%- include('../inc/footer') %>
       </div>
-      <%- include('../inc/footer') %>
-  </div>
 
 </body>
 
