@@ -4,10 +4,12 @@ const { SanPham } = require('../models/SanPham');
 const MHang = require('../models/Hangsx')
 const MKhuyenMai = require('../models/KhuyenMai');
 const { LoadBundleTask } = require('firebase/firestore');
-exports.home =  async (req,res,next)=>{
-     user = req.session.Account;
-     const year = new Date().getFullYear(); // Lấy năm hiện tại
-     try {
+const { realtimeDatabase } = require('../middlewares/firebase.config');
+exports.home = async (req, res, next) => {
+    user = req.session.Account;
+    const newMessagesCount = 0;
+    const year = new Date().getFullYear(); // Lấy năm hiện tại
+    try {
         // Tạo ngày bắt đầu và ngày kết thúc của ngày hiện tại
         let today = new Date();
         let year = today.getFullYear();
@@ -35,14 +37,14 @@ exports.home =  async (req,res,next)=>{
                             "trangThai": trangThai,
                             "thoiGian": {
                                 $gte: new Date(year, monthS - 1, dayS),
-                                $lt: new Date(year, monthE-1, dayE)
+                                $lt: new Date(year, monthE - 1, dayE)
                             },
-                            isNow : true
+                            isNow: true
                         }
                     },
-                    
+
                 };
-        
+
                 const result = await DonHang.aggregate([
                     { $match: filter },
                     {
@@ -52,7 +54,7 @@ exports.home =  async (req,res,next)=>{
                         }
                     }
                 ]);
-        
+
                 const soLuong = result.length > 0 ? result[0].soLuongDonHang : 0;
                 return soLuong; // Trả về giá trị soLuong
             } catch (error) {
@@ -66,8 +68,8 @@ exports.home =  async (req,res,next)=>{
             const year = date.getFullYear();
             const day = date.getDate();
             const month = date.getMonth();
-            const startFillter = new Date(year, month ,day,0,0,0,0)
-            const endFillter = new Date(year, month ,day,23,59,59,999)
+            const startFillter = new Date(year, month, day, 0, 0, 0, 0)
+            const endFillter = new Date(year, month, day, 23, 59, 59, 999)
             try {
                 const filter = {
                     "trangThai": {
@@ -77,12 +79,12 @@ exports.home =  async (req,res,next)=>{
                                 $gte: startFillter,
                                 $lt: endFillter
                             },
-                            isNow : true
+                            isNow: true
                         }
                     },
-                    
+
                 };
-        
+
                 const result = await DonHang.aggregate([
                     { $match: filter },
                     {
@@ -92,7 +94,7 @@ exports.home =  async (req,res,next)=>{
                         }
                     }
                 ]);
-        
+
                 const soLuong = result.length > 0 ? result[0].soLuongDonHang : 0;
                 return soLuong; // Trả về giá trị soLuong
             } catch (error) {
@@ -131,48 +133,48 @@ exports.home =  async (req,res,next)=>{
                 }
             }
         ]);
-        
+
         const ThanhVien = await MAccount.aggregate([
             {
-        
-            $group: {
-                _id: null,
-                soLuong: { $sum: 1 }
-            }
+
+                $group: {
+                    _id: null,
+                    soLuong: { $sum: 1 }
+                }
             }
         ]
         )
         const SLSP = await SanPham.aggregate([
             {
-        
+
                 $group: {
                     _id: null,
                     soLuong: { $sum: 1 }
                 }
-                }
+            }
         ]
-           
+
         )
         const Hang = await MHang.aggregate([
             {
-        
+
                 $group: {
                     _id: null,
                     soLuong: { $sum: 1 }
                 }
-                }
+            }
         ]
         )
         const KhuyenMai = await MKhuyenMai.aggregate([
             {
-        
+
                 $group: {
                     _id: null,
                     soLuong: { $sum: 1 }
                 }
-                }
-        ] 
-        ) 
+            }
+        ]
+        )
         const resultDoanhUserNew = await MAccount.aggregate([
             {
                 $match: {
@@ -189,9 +191,9 @@ exports.home =  async (req,res,next)=>{
                 }
             }
         ]);
-        
-        
-        
+
+
+
         const tongDoanhThu = resultDonHang.length > 0 ? resultDonHang[0].tongDoanhThu : 0;
         const soLuongThanhVien = ThanhVien.length > 0 ? ThanhVien[0].soLuong : 0;
         const soLuongKM = KhuyenMai.length > 0 ? KhuyenMai[0].soLuong : 0;
@@ -200,39 +202,41 @@ exports.home =  async (req,res,next)=>{
         const tongDoanhThuNam = resultDoanhThuNam.length > 0 ? resultDoanhThuNam[0].tongDoanhThu : 0;
         const soLuongAcountNew = resultDoanhUserNew.length > 0 ? resultDoanhUserNew[0].soLuong : 0;
         // Gửi kết quả về client để xử lý trong front-end
-
-       // Hoặc render trang và truyền dữ liệu vào đó
+        /// đọc số lượng tin nhắn 
+       
+        // Hoặc render trang và truyền dữ liệu vào đó
         res.render('home/home', {
             user: req.session.Account,
             title: "Trang chủ",
             tongDoanhThu: tongDoanhThu,
-            soLuongThanhVien:soLuongThanhVien,
+            soLuongThanhVien: soLuongThanhVien,
             soLuongKM: soLuongKM,
-            soLuongHang:soLuongHang,
-            soLuongSp:soLuongSp,
-            tongDoanhThuNam:tongDoanhThuNam,
-            choXacNhan: await filterDonHangSl("Chờ xác nhận", year, "1" ,"12", "1", "31"),
-            choGiao: await filterDonHangSl("Chờ giao hàng", year, "1" ,"12", "1", "31"),
-            dangGiao: await filterDonHangSl("Đang giao hàng", year, "1" ,"12", "1", "31"),
-            daGiao: await filterDonHangSl("Đã giao hàng", year, "1" ,"12", "1", "31"),
-            daHuy: await filterDonHangSl("Đã hủy",  year, "1" ,"12", "1", "31"),
+            soLuongHang: soLuongHang,
+            soLuongSp: soLuongSp,
+            tongDoanhThuNam: tongDoanhThuNam,
+            choXacNhan: await filterDonHangSl("Chờ xác nhận", year, "1", "12", "1", "31"),
+            choGiao: await filterDonHangSl("Chờ giao hàng", year, "1", "12", "1", "31"),
+            dangGiao: await filterDonHangSl("Đang giao hàng", year, "1", "12", "1", "31"),
+            daGiao: await filterDonHangSl("Đã giao hàng", year, "1", "12", "1", "31"),
+            daHuy: await filterDonHangSl("Đã hủy", year, "1", "12", "1", "31"),
             choXacNhanHomNay: await filterDonHangTrongNgay("Chờ xác nhận"),
             giaoThanhCongHomNay: await filterDonHangTrongNgay("Đã giao hàng"),
             ChoGiaoHomNay: await filterDonHangTrongNgay("Chờ giao hàng"),
             daHuyHomNay: await filterDonHangTrongNgay("Đã hủy"),
             DangGiaoHomNay: await filterDonHangTrongNgay("Đang giao hàng"),
-            nguoiDungMoi : soLuongAcountNew,
+            nguoiDungMoi: soLuongAcountNew,
             year: year,
             month: month,
-            day: day
+            day: day,
+            
         });
-    
+
     } catch (error) {
         // Ghi log lỗi ra console
         console.error('Error occurred:', error);
         // Gửi thông báo lỗi về client
         res.status(500).send(error.message || 'Internal Server Error');
     }
-    
+
 }
 
