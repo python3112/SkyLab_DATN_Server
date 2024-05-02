@@ -20,36 +20,34 @@
     <div class="main ">
       <%- include('../inc/header') %>
     <div class="content col-md-10 sm-10"style="overflow: auto; height: 80vh">
-      <form id="myForm">
+      <form id="searchForm" action="/san-pham/search" method="GET">
         <div class="row g-3">
-          <div class="col">
-            <input type="text" id="name" name="name" class="form-control" placeholder="Tên">
-          </div>
-          <div class="col">
-            <input type="text" id="cpu" name="cpu" class="form-control" placeholder="CPU">
-          </div>
-          <div class="col">
-            <input type="text" id="gpu" name="gpu" class="form-control" placeholder="GPU">
-          </div>
-          <div class="col-auto">
-            <button type="button" class="btn btn-primary">Tìm</button>
-          </div>
-          <div class="col-auto">
-            <button type="button" class="btn btn-secondary">Clear</button>
-          </div>
-          <div class="col-auto">
-            <button type="button" id="addProductButton" class="btn btn-success">Thêm</button>
-          </div>
+            <div class="col">
+                <input required="true" type="text" id="textQuery" name="query"
+                    class="form-control" placeholder="Nhập tên laptop...">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Tìm</button>
+            </div>
+            <div class="col-auto">
+                <button id="clear" class="btn btn-secondary">Làm mới</button>
+            </div>
+            <div class="col-auto">
+                <a href="/san-pham" id="clear" class="btn btn-secondary">Tất cả</a>
+            </div>
+            <div class="col-auto">
+              <button type="button" id="addProductButton" class="btn btn-success">Thêm</button>
+            </div>
         </div>
-      </form>
+    </form>
+      
       <table class="table table-bordered table-hover mt-3">
         <thead>
           <tr class="align-middle text-center">
             <th scope="col" class="col-md-0.5 sm-0.5">STT</th>
             <th scope="col" class="col-md-1 sm-1">Ảnh</th>
-            <th scope="col" class="col-md-3 sm-3">Tên laptop</th>
-            <th scope="col" class="col-md-1.5 sm-1.5">CPU</th>
-            <th scope="col" class="col-md-1.5 sm-1.5">GPU</th>
+            <th scope="col" class="col-md-4 sm-4">Tên laptop</th>
+            <th scope="col" class="col-md-1.5 sm-1.5">Số lượng</th>
             <th scope="col" class="col-md-1.5 sm-1.5">Trạng thái</th>
             <th scope="col" class="col-md-3.5 sm-3.5">Hành động</th>
           </tr>
@@ -67,13 +65,18 @@
                   <%= product.tenSanPham.length> 30 ? '...' : '' %>
               </td>
               <td>
-                <%= product.cpu %>
+                <% let totalVariants = 0; %>
+                <% product.bienThe.forEach(variant => { %>
+                  <% totalVariants += variant.soLuong; %>
+                <% }); %>
+                <%= totalVariants %>
               </td>
               <td>
-                <%= product.gpu %>
-              </td>
-              <td>
-                <%= product.trangThai %>
+                <% if(product.trangThai){ %>
+                  Hiển thị
+                  <% }else{ %>
+                      Ẩn
+                      <% } %>
               </td>
               <td>
                 <a href="/san-pham/chi-tiet/<%= product._id %>" class="btn btn-primary icon-btn ms-2 me-2">Chi tiết</a>
@@ -149,7 +152,6 @@
           });
         });
       </script>
-      
 </body>
 
 </html>

@@ -23,9 +23,8 @@
       <div class=" main">
         <%- include('../inc/header') %>
           <div class="content col-md-10 sm-10" style="overflow: auto; height: 80vh">
-            <form id="myForm">
-              <div class="row g-3">
-                <div class="btn-group col col-xl-2 col-lg-2 col-md-2 col-sm-12">
+            <div id="myForm" class="col row">
+                <div class="btn-group col-md-3">
                   <select id="statusDropdown" class="form-select">
                     <option value="Tất cả" <%=status==='Tất cả' ? 'selected' : '' %>>Tất cả</option>
                     <option value="Chờ xác nhận" <%=status==='Chờ xác nhận' ? 'selected' : '' %>>Chờ xác nhận</option>
@@ -37,28 +36,21 @@
                     <option value="Đã hủy" <%=status==='Đã hủy' ? 'selected' : '' %>>Đã hủy</option>
                   </select>
                 </div>
-
-
-                <div class="col col-xl-2 col-lg-2 col-md-2 col-sm-12">
-                  <input type="text" id="iddh" name="iddh" class="form-control" placeholder="ID đơn hàng">
-                </div>
-                <div class="col col-xl-3 col-lg-3 col-md-3 col-sm-12">
-                  <input type="text" id="hoTen" name="hoTen" class="form-control" placeholder="Họ tên khách hàng">
-                </div>
-                <div class="col col-xl-2 col-lg-2 col-md-2 col-sm-12">
-                  <input type="text" id="sdt" name="sdt" class="form-control" placeholder="Số điện thoại">
-                </div>
-                <div class="col-auto col-xl-1 col-lg-1 col-md-1 col-sm-4">
-                  <button type="button" class="btn btn-primary">Tìm</button>
-                </div>
-                <div class="col-auto col-xl-1 col-lg-1 col-md-1 col-sm-4">
-                  <button type="button" class="btn btn-secondary">Clear</button>
-                </div>
-                <div class="col-auto col-xl-1 col-lg-1 col-md-1 col-sm-4">
-                  <button type="button" class="btn btn-success">Thêm</button>
-                </div>
-              </div>
-            </form>
+                <form class="col-md-8" id="searchForm" action="/don-hang/search" method="GET">
+                  <div class="row g-3">
+                      <div class="col-md-8">
+                          <input required="true" type="text" id="textQuery" name="query"
+                              class="form-control" placeholder="Nhập id đơn hàng...">
+                      </div>
+                      <div class="col-auto">
+                          <button type="submit" class="btn btn-primary">Tìm</button>
+                      </div>
+                      <div class="col-auto">
+                          <button id="clear" class="btn btn-secondary">Làm mới</button>
+                      </div>
+                  </div>
+              </form>
+            </div>
             <table class="table table-bordered table-hover mt-3">
               <thead>
                 <tr class="align-middle text-center">

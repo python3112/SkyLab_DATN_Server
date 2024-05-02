@@ -10,7 +10,23 @@ exports.home =async (req,res,next)=>{
         res.status(500).json({ message: error.message });
     }
 }
-
+exports.search = async (req, res, next) => {
+    const queryValue = req.query.query;
+    const user = req.session.Account;
+    try {
+        if (queryValue.lenght === 0) {
+            const listSanPham = await SanPham.find();
+            res.render('sanpham/home_sanpham',{title: "Quản lý sản phẩm",listSanPham: listSanPham , user :  user});
+        }
+        else {
+            const listSanPham = await SanPham.find({ tenSanPham: { $regex: queryValue, $options: 'i' } });
+            res.render('sanpham/home_sanpham',{title: "Quản lý sản phẩm",listSanPham: listSanPham , user :  user});
+        }
+    }
+    catch (error) {
+        res.render("Error/err", { msg: error });
+    }
+}
 exports.chiTiet = async (req, res) => {
     try {
         const user = req.session.Account;

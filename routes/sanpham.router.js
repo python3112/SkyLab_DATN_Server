@@ -9,7 +9,9 @@ var checkLogin = require('../middlewares/validation');
 router.get('/',checkLogin.checkLogin,sanphamCtrl.home);
 router.get('/chi-tiet/:id',checkLogin.checkLogin,sanphamCtrl.chiTiet);
 router.get('/edit/:id',checkLogin.checkLogin, sanphamCtrl.edit);
-router.get('/add',sanphamCtrl.add);
+router.get('/add',checkLogin.checkLogin,sanphamCtrl.add);
+router.get('/search',checkLogin.checkLogin,sanphamCtrl.search);
+
 
 // Xuất router
 module.exports = router;

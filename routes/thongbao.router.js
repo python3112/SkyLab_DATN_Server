@@ -6,8 +6,8 @@ var thongbaoCtrl = require('../controllers/thongbao.controller');
 var checkLogin = require('../middlewares/validation');
 
 // Vào trang home theo địa chỉ '/'
-router.get('/',thongbaoCtrl.home);
-router.post('/', thongbaoCtrl.sendNotification);
+router.get('/',checkLogin.checkLogin,thongbaoCtrl.home);
+router.post('/',checkLogin.checkLogin, thongbaoCtrl.sendNotification);
 
 // Xuất router
 module.exports = router;

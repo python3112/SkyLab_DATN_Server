@@ -471,26 +471,7 @@
         <%- include('../inc/header') %>
           <div class="message-container">
 
-
             <div class="search_and_check">
-              <div class="search_mess">
-                <div class="input-group mb-3 ">
-                  <button class="btn btn-outline-secondary  " type="button">Search</button>
-                  <input type="text" placeholder="tìm kiếm ... " class="form-control function_search"
-                    aria-label="Text input with segmented dropdown button">
-                </div>
-
-              </div>
-
-              <!-- chon chưa đọc và tất cả  -->
-              <div class="check_chat" style="margin-top: 10px; width: 100%; align-items: center;">
-                <button class="btn_all" type="submit" onclick="highlightButton('btn_all')">Tất cả </button>
-                <button class="btn_not_seen" type="submit" onclick="highlightButton('btn_not_seen')"
-                  style="border-radius: 20px; width: 48%;">Chưa đọc </button>
-              </div>
-
-              <!-- /////////////////////// -->
-
 
               <div class="list_chat" style="max-height: max-content; width: 100%; overflow-y: scroll;">
                 <% if (listAccounts==null) { %>

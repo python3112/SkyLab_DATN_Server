@@ -21,7 +21,6 @@
             <div class="main ">
                 <%- include('../inc/header') %>
                     <div class="container my-2">
-                        <h3 class="text-center">Thêm sản phẩm mới</h3>
                         <form id="addProductForm" method="POST" action="/san-pham/add" enctype="multipart/form-data">
                             <div class="row mt-3">
                                 <div class="col col-md-2">
@@ -270,7 +269,59 @@
         document.getElementById('addProductForm').addEventListener('submit', async function (event) {
             // Prevent the form from submitting the traditional way
             event.preventDefault();
+            const soLuong = document.getElementById('soLuong').value;
+            const giaTien = document.getElementById('giaTien').value;
+            const tenSanPham = document.getElementById('tenSanPham').value;
+            const cpu = document.getElementById('cpu').value;
+            const gpu = document.getElementById('gpu').value;
+            const kichThuocManHinh = document.getElementById('display').value;
+            const ram = document.getElementById('ram').value;
+            const rom = document.getElementById('rom').value;
+            const moTa = document.getElementById('moTa').value;
+            const anhSanPham = document.getElementById('anhSanPham').files.length;
+            const anhSlide = document.getElementById('anh').files.length;
+            // Validations
+            let errorMessage = '';
+            if (!tenSanPham.trim()) {
+                errorMessage += 'Tên sản phẩm không được để trống.\n';
+            }
+            if (soLuong <= 0) {
+                errorMessage += 'Số lượng phải lớn hơn 0.\n';
+            }
+            if (giaTien <= 0) {
+                errorMessage += 'Giá tiền phải lớn hơn 0.\n';
+            }
+            if (!cpu.trim()) {
+                errorMessage += 'CPU không được để trống.\n';
+            }
+            if (!gpu.trim()) {
+                errorMessage += 'GPU không được để trống.\n';
+            }
+            if (!kichThuocManHinh.trim()) {
+                errorMessage += 'Kích thước màn hình không được để trống.\n';
+            }
+            if (!ram.trim()) {
+                errorMessage += 'RAM không được để trống.\n';
+            }
+            if (!rom.trim()) {
+                errorMessage += 'ROM không được để trống.\n';
+            }
+            if (!moTa.trim()) {
+                errorMessage += 'Mô tả sản phẩm không được để trống.\n';
+            }
+            if (anhSanPham === 0) {
+                errorMessage += 'Bạn phải chọn ít nhất một ảnh sản phẩm chính.\n';
+            }
+            if (anhSlide === 0) {
+                errorMessage += 'Bạn phải chọn ít nhất một ảnh cho slide.\n';
+            }
+            // Show error message if validation fails
+            if (errorMessage) {
+                alert(errorMessage);
+                return; // Stop the function if there is an error
+            }
             const formData = new FormData(event.target);
+
             try {
                 const response = await fetch('/api/sanPham/add', {
                     method: 'POST',

@@ -48,7 +48,7 @@ exports.home = async (req, res, next) => {
 
         }
         res.render('baohanh/home_baohanh', {
-            title: "Quản lý bảo hàng",
+            title: "Quản lý bảo hành",
             sttStart: sttStart,
             totalPages: totalPages,
             currentPage: page,
@@ -93,11 +93,11 @@ exports.chitiet = async (req, res, next) => {
         }
         // Render trang chi tiết bảo hành với thông tin đã tìm được
         res.render('baohanh/chitiet_baohanh', {
-            title: "Chi tiết bảo hàng",
+            title: "Chi tiết bảo hành",
             user: user,
             baoHanh: baoHanh,
             sanPham: sanPham, 
-            account: account,
+            account: account,donhang:donHang
         });
     } catch (error) {
         // Xử lý lỗi

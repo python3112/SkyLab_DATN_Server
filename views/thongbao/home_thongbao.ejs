@@ -95,12 +95,15 @@
       var tieu_de = document.getElementById("tieu_de").value;
       var noi_dung = document.getElementById("noi_dung").value;
 
-      // Kiểm tra xem cả hai trường đều không được để trống và có độ dài từ 8 đến 30 ký tự
       if (tieu_de.trim() === "" || noi_dung.trim() === "") {
         alert("Vui lòng điền đầy đủ thông tin");
         return false;
-      } else if (tieu_de.length < 8 || tieu_de.length > 30 || noi_dung.length < 8 || noi_dung.length > 30) {
-        alert("Tiêu đề và nội dung phải có từ 8 đến 30 ký tự");
+      } else if (tieu_de.length < 8 || tieu_de.length > 20 ) {
+        alert("Tiêu đề phải có từ 8 đến 20 ký tự");
+        return false;
+      }
+      else if (noi_dung.length < 8 || noi_dung.length > 50) {
+        alert("Nội dung phải có từ 8 đến 50 ký tự");
         return false;
       }
       return true;

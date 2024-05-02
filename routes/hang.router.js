@@ -12,10 +12,10 @@ const upload = multer({ storage: storage });
 
 // Vào trang home theo địa chỉ '/'
 router.get('/',checkLogin.checkLogin,hangCtrl.home);
-router.get('/search',hangCtrl.search);
-router.post('/addHangSX',  upload.single('file'), hangCtrlApi.postHangSxView);
-router.get('/addHangSX', (res,req,next)=>{
+router.get('/search',checkLogin.checkLogin,hangCtrl.search);
+router.post('/addHangSX',checkLogin.checkLogin,upload.single('file'), hangCtrlApi.postHangSxView);
+router.get('/addHangSX',checkLogin.checkLogin, (res,req,next)=>{
     req.redirect('/', hangCtrl.home)
 })
-router.post('/update/:id', upload.single('logoFile'), hangCtrl.update)
+router.post('/update/:id',checkLogin.checkLogin, upload.single('logoFile'), hangCtrl.update)
 module.exports = router;

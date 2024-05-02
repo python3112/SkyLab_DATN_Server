@@ -7,10 +7,10 @@ var checkLogin = require('../middlewares/validation');
 
 // Vào trang home theo địa chỉ '/'
 router.get('/',checkLogin.checkLogin,userCtrl.home);
-router.get('/userActiveTrue',userCtrl.findUserTrue);
-router.get('/userActiveFalse',userCtrl.findUserFales);
-router.get('/queryUser',userCtrl.query);
-router.get('/new',userCtrl.nguoiDungMoi);
+router.get('/userActiveTrue',checkLogin.checkLogin,userCtrl.findUserTrue);
+router.get('/userActiveFalse',checkLogin.checkLogin,userCtrl.findUserFales);
+router.get('/queryUser',checkLogin.checkLogin,userCtrl.query);
+router.get('/new',checkLogin.checkLogin,userCtrl.nguoiDungMoi);
 // Xuất router
-router.post('/update/:id',userCtrl.update);
+router.post('/update/:id',checkLogin.checkLogin,userCtrl.update);
 module.exports = router;

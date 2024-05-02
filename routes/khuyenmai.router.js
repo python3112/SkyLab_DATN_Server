@@ -9,12 +9,12 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 router.get('/',checkLogin.checkLogin,khuyenmaiCtrl.home);
-router.get('/search',khuyenmaiCtrl.search);
+router.get('/search',checkLogin.checkLogin,khuyenmaiCtrl.search);
 // router.post('/addKhuyenMai',upload.single('file'), khuyenmaiCtrl.postHangSxView);
-router.get('/addKhuyenMai', (res,req,next)=>{
+router.get('/addKhuyenMai',checkLogin.checkLogin, (res,req,next)=>{
     req.redirect('/', khuyenmaiCtrl.home)
 })
-router.post('/update/:id',upload.single('file'), khuyenmaiCtrl.update);
-router.post('/addKhuyenMai',upload.single('file'), khuyenmaiCtrl.addKhuyenMai)
+router.post('/update/:id',checkLogin.checkLogin,upload.single('file'), khuyenmaiCtrl.update);
+router.post('/addKhuyenMai',checkLogin.checkLogin,upload.single('file'), khuyenmaiCtrl.addKhuyenMai)
 // Xuất router
 module.exports = router;

@@ -110,8 +110,8 @@
                             </button>
                             <ul class="dropdown-menu">
                               <li><a class="dropdown-item" href="/user">Tất cả</a></li>
-                              <li><a class="dropdown-item" href="/user/userActiveTrue">Đang hoạt động</a></li>
-                              <li><a class="dropdown-item" href="/user/userActiveFalse">Không còn hoạt động</a></li>
+                              <li><a class="dropdown-item" href="/user/userActiveTrue">Hoạt động</a></li>
+                              <li><a class="dropdown-item" href="/user/userActiveFalse">Chặn</a></li>
                             </ul>
                           </div>
                         <div class="col">
@@ -121,7 +121,7 @@
                             <button type="submit" class="btn btn-primary">Tìm</button>
                         </div>
                         <div class="col-auto">
-                            <a id="clear" class="btn btn-secondary">Clear</a>
+                            <a id="clear" class="btn btn-secondary">Làm mới</a>
                         </div>
                     </div>
                 </form>
@@ -141,11 +141,15 @@
                       <td><%= user._id %></td>
                       <td><%= user.taiKhoan %></td>
                       <td><%= user.sdt %></td>
-                      <td><%= user.trangThai %></td>
+                      <td><% if(user.trangThai){ %>
+                        Hoạt động
+                        <% }else{ %>
+                            Chặn
+                            <% } %></td>
                       <td>
                            <!-- Button trigger modal -->
-                           <button class=" btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal<%= index %>">
-                            Chi tiết
+                           <button class=" btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal<%= index %>">
+                            Cập nhật
                             </button>
                             <!-- Modal -->
                             <form action="/user/update/<%= user._id %>" method="post">
@@ -194,8 +198,8 @@
                                              
                                         </div>
                                         <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="button submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                        <button type="button submit" class="btn btn-primary" data-bs-dismiss="modal">Lưu thay đổi</button>
                                         </div>
                                     </div>
                                     </div>

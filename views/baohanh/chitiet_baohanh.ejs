@@ -28,23 +28,36 @@
                 </div>
                 <div class="card-body">
                   <div class="row">
-                    <div class="col-md-4">
-                      <img src="<%= sanPham.anhSanPham %>" alt="Ảnh sản phẩm" class="img-fluid mb-3">
+                    <div class="col-md-6">
+                      <img src="<%= sanPham.anhSanPham %>" alt="Ảnh sản phẩm" class="img-fluid mb-3" style="width: 250px;">
                       <h5 class="card-title">
                         <%= sanPham.tenSanPham %>
                       </h5>
-                      <p class="card-text"><strong>Giá sản phẩm:</strong>
-                        <%= sanPham.giaTien %>
-                      </p>
-                    </div>
-                    <div class="col-md-4">
-                      <h5 class="card-title">Thông tin người đặt</h5>
+                      <% const idBienTheDonHang=donhang.idBienThe.toString(); %>
+                        <% sanPham.bienThe.forEach(variant=> { %>
+                          <% if (variant._id.toString()===idBienTheDonHang) { %>
+                            <% tienSanPham=variant.giaTien; %>
+                              <p class="card-text"><strong>Giá sản phẩm:</strong>
+                                <span class="text-danger fw-bold total-cell">
+                                  <%= variant.giaTien %>
+                                </span>
+                              </p>
+
+                              <p class="card-text"><strong>Cấu hình:</strong>
+                                RAM: <%= variant.ram %>, ROM: <%= variant.rom %>
+                              </p>
+                              <% } %>
+                                <% }); %>
+                                <p class="card-text"><strong>Imei:</strong>
+                                  <%= baoHanh.imei %>
+                                </p>
+                                <h5 class="card-title">Thông tin khách hàng</h5>
                       <p class="card-text">
                         <strong>Tên:</strong>
                         <% if(account && account.hoTen) { %>
                           <%= account.hoTen %>
                             <% } else { %>
-                              Chưa có dữ liệu
+                              <%= account.taiKhoan %>
                               <% } %>
                       </p>
                       <p class="card-text">
@@ -63,23 +76,22 @@
                               Chưa có dữ liệu
                               <% } %>
                       </p>
-                      <% if(account && account.avatar) { %>
-                        <img src="<%= account.avatar %>" alt="Avatar" class="img-fluid">
-                        <% } else { %>
-                          <p class="card-text">Chưa có dữ liệu</p>
-                          <% } %>
                     </div>
-                    <div class="col-md-4">
-                      <h5 class="card-title">Thông tin đơn hàng</h5>
+                    
+                    <div class="col-md-6">
+                      <h5 class="card-title">Thông tin bảo hành</h5>
+                      <p class="card-text"><strong>Id đơn hàng:</strong>
+                        <%= donhang._id %>
+                      </p>
                       <p class="card-text"><strong>Lý do:</strong>
                         <%= baoHanh.lyDo %>
                       </p>
-                      <h5 class="card-title">Danh sách ảnh bảo hành</h5>
+                      <strong class="card-title">Ảnh bảo hành: </strong>
                       <% if (baoHanh.anh && baoHanh.anh.length> 0) { %>
                         <div class="row">
                           <% baoHanh.anh.forEach((anh, index)=> { %>
                             <div class="col-md-6 mb-3">
-                              <img src="<%= anh %>" alt="Ảnh bảo hành <%= index + 1 %>" class="img-fluid">
+                              <img src="<%= anh %>" alt="Ảnh bảo hành <%= index + 1 %>" class="img-fluid" style="width: 130px; height: 130px;">
                             </div>
                             <% }); %>
                         </div>
@@ -121,18 +133,18 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="/bao-hanh/chi-tiet/<%= baoHanh._id %>?status=2" method="POST">
-            <div class="modal-body">
-              <p>Bạn có chắc chắn muốn đồng ý với yêu cầu bảo hành này không?</p>
-              <div class="mb-3">
-                <label for="feedbackInput" class="form-label">Phản hồi:</label>
-                <textarea class="form-control" id="lyDoTuChoi" name="lyDoTuChoi" rows="2"></textarea>
+              <div class="modal-body">
+                <p>Bạn có chắc chắn muốn đồng ý với yêu cầu bảo hành này không?</p>
+                <div class="mb-3">
+                  <label for="feedbackInput" class="form-label">Phản hồi:</label>
+                  <textarea class="form-control" id="lyDoTuChoi" name="lyDoTuChoi" rows="2"></textarea>
+                </div>
               </div>
-            </div>
-            <div class="modal-footer">
+              <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 <button type="submit" class="btn btn-success">Đồng ý</button>
-            </div>
-          </form>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -146,18 +158,18 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="/bao-hanh/chi-tiet/<%= baoHanh._id %>?status=3" method="POST">
-            <div class="modal-body">
-              <p>Bạn có chắc chắn muốn từ chối yêu cầu bảo hành này không?</p>
-              <div class="mb-3">
-                <label for="feedbackInput" class="form-label">Phản hồi:</label>
-                <textarea class="form-control" id="lyDoTuChoi" name="lyDoTuChoi" rows="2"></textarea>
+              <div class="modal-body">
+                <p>Bạn có chắc chắn muốn từ chối yêu cầu bảo hành này không?</p>
+                <div class="mb-3">
+                  <label for="feedbackInput" class="form-label">Phản hồi:</label>
+                  <textarea class="form-control" id="lyDoTuChoi" name="lyDoTuChoi" rows="2"></textarea>
+                </div>
               </div>
-            </div>
-            <div class="modal-footer">
+              <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 <button type="submit" class="btn btn-danger">Từ chối</button>
-            </div>
-          </form>
+              </div>
+            </form>
           </div>
         </div>
       </div>

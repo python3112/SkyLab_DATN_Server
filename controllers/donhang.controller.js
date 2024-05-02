@@ -1,8 +1,9 @@
 const DonHang = require('../models/DonDatHang');
-const {BaoHanh} = require('../models/DonDatHang');
+const { BaoHanh } = require('../models/DonDatHang');
 const { SanPham } = require('../models/SanPham');
 const Account = require('../models/Account');
 const { ThongBao } = require('../models/ThongBao');
+const KhuyenMai = require('../models/KhuyenMai')
 const axios = require('axios');
 
 exports.home = async (req, res, next) => {
@@ -71,6 +72,131 @@ exports.home = async (req, res, next) => {
         res.status(500).json({ message: error.message });
     }
 };
+exports.search = async (req, res, next) => {
+    const queryValue = req.query.query;
+    const user = req.session.Account;
+    try {
+        if (queryValue.lenght === 0) {
+            let listDonHang;
+            const page = parseInt(req.query.page) || 1;
+            const perPage = 10;
+            const skip = (page - 1) * perPage;
+
+            // Khởi tạo filter object để lọc
+            let filter = {};
+            if (req.query.status && req.query.status !== "Tất cả") {
+                // Nếu có trạng thái được chọn và không phải là "Tất cả", thêm điều kiện lọc vào filter
+                filter = {
+                    "trangThai": {
+                        $elemMatch: { // Tìm các phần tử trong mảng trạng thái thỏa mãn các điều kiện sau:
+                            "trangThai": req.query.status, // Trạng thái phải là trạng thái được truyền vào
+                            "isNow": true // Và trạng thái isNow phải là true
+                        }
+                    }
+                };
+            }
+
+            // Lấy số lượng đơn hàng đã lọc
+            const totalFilteredDonHang = await DonHang.countDocuments(filter);
+            const totalPages = Math.ceil(totalFilteredDonHang / perPage);
+            listDonHang = await DonHang.find();
+            // Sắp xếp lại mảng listDonHang theo thời gian của trạng thái isNow gần nhất
+            listDonHang.sort((a, b) => {
+                const timeA = a.trangThai.find(tt => tt.isNow)?.thoiGian || 0;
+                const timeB = b.trangThai.find(tt => tt.isNow)?.thoiGian || 0;
+                return new Date(timeB) - new Date(timeA);
+            });
+
+            const sttStart = (page - 1) * perPage + 1;
+
+            const listSanPham = [];
+            const listAccount = [];
+
+            for (const donhang of listDonHang) {
+                const sanPham = await SanPham.findById(donhang.idSanPham);
+                const account = await Account.findById(donhang.idAccount);
+                if (sanPham) {
+                    listSanPham.push(sanPham);
+                }
+                if (account) {
+                    listAccount.push(account);
+                }
+            }
+            res.render('donhang/home_donhang', {
+                title: "Quản lý đơn hàng",
+                sttStart: sttStart,
+                totalPages: totalPages,
+                currentPage: page,
+                listDonHang: listDonHang,
+                listSanPham: listSanPham,
+                listAccount: listAccount,
+                status: req.query.status,
+                user: user // Chuyển thêm tham số trạng thái để giữ trạng thái khi chuyển trang
+            });
+        }
+        else {
+            let listDonHang;
+            const page = parseInt(req.query.page) || 1;
+            const perPage = 10;
+            const skip = (page - 1) * perPage;
+
+            // Khởi tạo filter object để lọc
+            let filter = {};
+            if (req.query.status && req.query.status !== "Tất cả") {
+                // Nếu có trạng thái được chọn và không phải là "Tất cả", thêm điều kiện lọc vào filter
+                filter = {
+                    "trangThai": {
+                        $elemMatch: { // Tìm các phần tử trong mảng trạng thái thỏa mãn các điều kiện sau:
+                            "trangThai": req.query.status, // Trạng thái phải là trạng thái được truyền vào
+                            "isNow": true // Và trạng thái isNow phải là true
+                        }
+                    }
+                };
+            }
+
+            // Lấy số lượng đơn hàng đã lọc
+            const totalFilteredDonHang = await DonHang.countDocuments(filter);
+            const totalPages = Math.ceil(totalFilteredDonHang / perPage);
+            listDonHang = await DonHang.find({ _id: queryValue.toLowerCase() });
+            // Sắp xếp lại mảng listDonHang theo thời gian của trạng thái isNow gần nhất
+            listDonHang.sort((a, b) => {
+                const timeA = a.trangThai.find(tt => tt.isNow)?.thoiGian || 0;
+                const timeB = b.trangThai.find(tt => tt.isNow)?.thoiGian || 0;
+                return new Date(timeB) - new Date(timeA);
+            });
+
+            const sttStart = (page - 1) * perPage + 1;
+
+            const listSanPham = [];
+            const listAccount = [];
+
+            for (const donhang of listDonHang) {
+                const sanPham = await SanPham.findById(donhang.idSanPham);
+                const account = await Account.findById(donhang.idAccount);
+                if (sanPham) {
+                    listSanPham.push(sanPham);
+                }
+                if (account) {
+                    listAccount.push(account);
+                }
+            }
+            res.render('donhang/home_donhang', {
+                title: "Quản lý đơn hàng",
+                sttStart: sttStart,
+                totalPages: totalPages,
+                currentPage: page,
+                listDonHang: listDonHang,
+                listSanPham: listSanPham,
+                listAccount: listAccount,
+                status: req.query.status,
+                user: user 
+            });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 exports.chitiet = async (req, res, next) => {
     try {
         // Lấy idDonhang từ request
@@ -87,7 +213,10 @@ exports.chitiet = async (req, res, next) => {
         // Tìm sản phẩm và tài khoản liên quan đến đơn hàng
         const sanPham = await SanPham.findById(donhang.idSanPham);
         const account = await Account.findById(donhang.idAccount);
-
+        let khuyenMai = "";
+        if (donhang.idKhuyenMai) {
+            khuyenMai = await KhuyenMai.findById(donhang.idKhuyenMai);
+        }
         // Kiểm tra xem sản phẩm và tài khoản có tồn tại không
         if (!sanPham) {
             return res.status(404).json({ message: "Sản phẩm không tồn tại" });
@@ -98,7 +227,7 @@ exports.chitiet = async (req, res, next) => {
         }
 
         // Render trang với thông tin đơn hàng, sản phẩm và tài khoản
-        res.render('donhang/chitiet_donhang', { title: "Thông tin đơn hàng", donhang: donhang, sanPham: sanPham, account: account, ttNow: ttNow, user: user });
+        res.render('donhang/chitiet_donhang', { title: "Thông tin đơn hàng", khuyenMai: khuyenMai, donhang: donhang, sanPham: sanPham, account: account, ttNow: ttNow, user: user });
     } catch (error) {
         // Xử lý lỗi nếu có
         res.status(500).json({ message: error.message });
@@ -139,7 +268,7 @@ exports.themTrangThaiPost = async (req, res) => {
                     const idSP = donHang.idSanPham;
                     const idAC = donHang.idAccount;
                     const idDH = donHang._id;
-                    const newBH = {idDonDatHang:idDH,idSanPham:idSP,idAccount:idAC, imei, tinhTrang: 0 };
+                    const newBH = { idDonDatHang: idDH, idSanPham: idSP, idAccount: idAC, imei, tinhTrang: 0 };
                     donHang.baoHanh.push(newBH);
                 }
                 await donHang.save();
